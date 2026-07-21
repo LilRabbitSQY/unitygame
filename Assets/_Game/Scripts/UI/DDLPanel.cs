@@ -13,6 +13,7 @@ namespace FinalDefense.UI
 
         private void Start()
         {
+            ApplyPanelStyle();
             RefreshDisplay();
         }
 
@@ -32,14 +33,43 @@ namespace FinalDefense.UI
                 if (ddl.completed) continue;
                 var go = new GameObject("DDLItem");
                 go.transform.SetParent(ddlListContainer, false);
-                var rt = go.AddComponent<RectTransform>();
+                go.AddComponent<RectTransform>();
+                var image = go.AddComponent<Image>();
                 var le = go.AddComponent<UnityEngine.UI.LayoutElement>();
-                le.minHeight = 30;
-                var tmp = go.AddComponent<TextMeshProUGUI>();
+                le.minHeight = 44;
+                le.preferredHeight = 44;
+                UIStyler.ApplyMutedPanelStyle(go);
+                image.color = ddl.remainingDays <= 1
+                    ? Color.Lerp(UITheme.Instance.stateError, Color.white, 0.82f)
+                    : UITheme.Instance.surfaceSoft;
+
+                var textGo = new GameObject("Text");
+                textGo.transform.SetParent(go.transform, false);
+                var textRect = textGo.AddComponent<RectTransform>();
+                textRect.anchorMin = Vector2.zero;
+                textRect.anchorMax = Vector2.one;
+                textRect.offsetMin = new Vector2(14, 6);
+                textRect.offsetMax = new Vector2(-14, -6);
+                var tmp = textGo.AddComponent<TextMeshProUGUI>();
                 tmp.fontSize = 14;
-                tmp.color = ddl.remainingDays <= 1 ? Color.red : Color.white;
+                tmp.fontStyle = FontStyles.Bold;
+                tmp.color = ddl.remainingDays <= 1 ? UITheme.Instance.stateError : UITheme.Instance.foreground;
+                tmp.alignment = TextAlignmentOptions.MidlineLeft;
                 tmp.text = $"{ddl.data.ddlName} - 剩余{ddl.remainingDays}天";
             }
+        }
+
+        private void ApplyPanelStyle()
+        {
+            if (ddlTitleText != null)
+            {
+                UIStyler.ApplyHeaderTextStyle(ddlTitleText, false);
+                ddlTitleText.fontSize = 22;
+                ddlTitleText.color = UITheme.Instance.foreground;
+            }
+
+            if (ddlListContainer is RectTransform listRect)
+                UIStyler.EnsureBackdrop(listRect, "DDLPanelCard", new Vector2(48, 58), UITheme.Instance.surfaceTint);
         }
     }
 }

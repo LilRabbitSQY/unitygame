@@ -22,6 +22,11 @@ namespace FinalDefense.UI
             lastBattleWon = won;
         }
 
+        private void Awake()
+        {
+            ApplyThemeStyling();
+        }
+
         private void OnEnable()
         {
             EventBus.OnBattleWon += OnWon;
@@ -69,6 +74,61 @@ namespace FinalDefense.UI
                 {
                     retryText.text = gm.RetryCount == 0 ? "免费重试" : "重试 (-5 GPA)";
                 }
+            }
+
+            ApplyThemeStyling();
+        }
+
+        private void ApplyThemeStyling()
+        {
+            var theme = UITheme.Instance;
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+                UIStyler.EnsurePageBackground(canvas, "ResultBackground");
+
+            if (resultText != null)
+            {
+                UIStyler.SetCenteredRect(resultText.rectTransform, new Vector2(0f, 210f), new Vector2(520f, 76f));
+                UIStyler.ApplyHeaderTextStyle(resultText, true);
+                resultText.color = lastBattleWon ? theme.stateSuccess : theme.stateError;
+                resultText.alignment = TextAlignmentOptions.Center;
+                UIStyler.EnsureBackdrop(resultText.rectTransform, "ResultHeroCard", new Vector2(160, 120), Color.white);
+            }
+
+            if (gpaText != null)
+            {
+                UIStyler.SetCenteredRect(gpaText.rectTransform, new Vector2(0f, 70f), new Vector2(360f, 48f));
+                UIStyler.ApplyStatValueTextStyle(gpaText);
+                gpaText.color = theme.chart2;
+                gpaText.alignment = TextAlignmentOptions.Center;
+                UIStyler.EnsureBackdrop(gpaText.rectTransform, "ResultGPACard", new Vector2(80, 42), theme.surfaceSoft, true);
+            }
+
+            if (goldText != null)
+            {
+                UIStyler.SetCenteredRect(goldText.rectTransform, new Vector2(0f, 0f), new Vector2(360f, 48f));
+                UIStyler.ApplyStatValueTextStyle(goldText);
+                goldText.color = theme.chart3;
+                goldText.alignment = TextAlignmentOptions.Center;
+                UIStyler.EnsureBackdrop(goldText.rectTransform, "ResultGoldCard", new Vector2(80, 42), theme.surfaceSoft, true);
+            }
+
+            if (returnButton != null)
+            {
+                UIStyler.SetCenteredRect(returnButton.GetComponent<RectTransform>(), new Vector2(-140f, -150f), new Vector2(220f, 54f));
+                UIStyler.ApplySecondaryButtonStyle(returnButton);
+            }
+
+            if (shopButton != null)
+            {
+                UIStyler.SetCenteredRect(shopButton.GetComponent<RectTransform>(), new Vector2(140f, -150f), new Vector2(220f, 54f));
+                UIStyler.ApplyGradientButtonStyle(shopButton);
+            }
+
+            if (retryButton != null)
+            {
+                UIStyler.SetCenteredRect(retryButton.GetComponent<RectTransform>(), new Vector2(140f, -150f), new Vector2(220f, 54f));
+                UIStyler.ApplyGradientButtonStyle(retryButton);
             }
         }
 

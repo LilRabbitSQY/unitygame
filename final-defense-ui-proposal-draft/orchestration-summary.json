@@ -1,0 +1,423 @@
+{
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.07.06.8",
+    "version_source": "skill-version.json",
+    "runtime_skill_dir": "/Users/bytedance/.trae-cn/builtin/design/default/skills/solo-design",
+    "recorded_at": "2026-07-21T00:00:00.000Z"
+  },
+  "project": {
+    "name": "期末保卫战 UI 提案-游戏化改稿",
+    "path": "/Users/bytedance/unitygame/final-defense-ui-proposal-draft",
+    "operation": "redesign",
+    "deviceType": "desktop",
+    "language": "zh-CN",
+    "dashboardMode": false,
+    "intentProfile": {
+      "caseFamily": "free_exploration",
+      "graphicStrategy": null,
+      "sourceType": null,
+      "routingReason": "基于现有提案重做一版更像游戏界面的比较稿"
+    },
+    "replicationMode": null,
+    "sourceUrl": null,
+    "contextReadBudget": {
+      "workflowFileReadLimit": 1,
+      "largeWorkflowFilesCachedInSummary": [],
+      "restoreInputsCached": [],
+      "subAgentReadsFullSummary": false
+    },
+    "readBudgetLedger": [
+      {
+        "file": "workflows/create-project-free-fast.md",
+        "readCount": 1,
+        "limit": 1,
+        "reason": "initial free-explore route-locked workflow read",
+        "exceeded": false
+      }
+    ],
+    "dispatchPreflightManifest": [],
+    "cssPreflightEvidence": {
+      "applies": true,
+      "status": "passed",
+      "command": "node /Users/bytedance/.trae-cn/builtin/design/default/skills/solo-design/script/fill-html-head.mjs /Users/bytedance/unitygame/final-defense-ui-proposal-draft/colors_and_type-draft.css /Users/bytedance/unitygame/final-defense-ui-proposal-draft/pages/personality-test.html /Users/bytedance/unitygame/final-defense-ui-proposal-draft/pages/schedule.html /Users/bytedance/unitygame/final-defense-ui-proposal-draft/pages/battle.html /Users/bytedance/unitygame/final-defense-ui-proposal-draft/pages/shop.html --replace-head --prefix=finaldefense",
+      "brandPrefix": "finaldefense",
+      "checks": {
+        "themeVars": "present",
+        "semanticTokenFallback": "present",
+        "themeInline": "present",
+        "tailwindCdn": "present",
+        "htmlClass": "present",
+        "semanticMappings": "resolved"
+      },
+      "retryCount": 0,
+      "blockingReason": null
+    },
+    "repairEntryEvidence": [
+      {
+        "repairPolicyRead": true,
+        "renderBlockingErrorPresent": true,
+        "softWarningOnly": false,
+        "ownerClassified": true,
+        "postValidationMutationDetected": false,
+        "validationErrorClasses": [
+          "app-shell-viewport",
+          "restore-evidence-summary-misclassification"
+        ],
+        "repairBudget": {
+          "validationRunsSoFar": 1,
+          "maxValidationRuns": 3
+        },
+        "recorded_at": "2026-07-21T07:28:00.000Z"
+      }
+    ],
+    "finishReadinessEvidence": {
+      "validationReportSuccess": true,
+      "postValidationMutationDetected": false,
+      "pageSummaryTablePrepared": true,
+      "manualArtifactLinksIncluded": false,
+      "restoreEvidenceReviewPassed": true,
+      "deviceTypeConsistency": {
+        "summaryDeviceType": "desktop",
+        "designDeviceType": "desktop",
+        "status": "matched"
+      },
+      "mobileBackgroundCoverage": {
+        "status": "passed",
+        "unresolvedBodyVars": []
+      }
+    },
+    "styleDefinitionBrief": "更深色、更偏战斗 HUD、卡组面板、关卡盘面和道具卡的校园策略游戏界面",
+    "designRead": "校园策略游戏 UI / 学生玩家 / 更强游戏感 / 更像可玩界面而不是网页展示",
+    "designDials": {
+      "layoutVariance": 3,
+      "motionIntensity": 2,
+      "visualDensity": 3
+    },
+    "styleContinuityAnchors": {
+      "colorSystem": {
+        "primaryColorRole": "高饱和粉色作为主战斗强调色",
+        "brandHuePolicy": "深底色为基础，粉色、靛蓝、暖橙和青绿分别承担战斗层级与状态表达",
+        "stateColors": "成功用青绿色，警告用暖橙色，危险用亮粉红"
+      },
+      "shapeSystem": "中大圆角面板、卡组卡片、HUD 模块感更强",
+      "typographySystem": "标题更像游戏 UI，用更重字重和更短行长",
+      "spacingSystem": "模块分区更明确，优先保障战斗和状态信息对比",
+      "componentLanguage": "所有信息改成角色面板、资源条、卡组卡和情报块",
+      "surfaceAndDepth": "深色背景搭配发光式高亮与半透明玻璃感面板",
+      "imageryAndIconography": "仍以图标为主，但表达方式更像游戏操作界面",
+      "interactionTone": "按钮更像行动指令和战斗操作，而不是网页 CTA"
+    },
+    "specsConstraints": null,
+    "sharedProjectShellContract": {
+      "navigationShell": "顶部资源 HUD + 中央主玩法区 + 两侧辅助面板",
+      "primaryColorSystem": "深色底 + 亮粉主强调 + 蓝橙绿状态层级",
+      "typographySystem": "中文重标题 + 小号 HUD 标签 + 紧凑资源字级",
+      "radiusScale": "面板 20-26px，按钮 16px 左右",
+      "surfaceDepthModel": "深色玻璃面板 + 微发光层次 + 更强对比",
+      "ctaStyle": "主按钮高对比渐变，次按钮半透明描边",
+      "alignmentRules": "状态与资源优先，信息块像游戏 HUD 一样模块化"
+    },
+    "generationTree": {
+      "root": {
+        "nodeId": "gen-project-shell",
+        "kind": "project-shell",
+        "pageIds": [
+          "page-personality-test",
+          "page-schedule",
+          "page-battle",
+          "page-shop"
+        ],
+        "output": "partials/project-shell.html",
+        "sharedRegions": [
+          "soft academy palette",
+          "rounded panel language",
+          "desktop game shell rhythm"
+        ],
+        "privateRegions": [],
+        "mutableSlots": [
+          "pageTitle",
+          "primaryAction"
+        ],
+        "status": "generated",
+        "children": []
+      }
+    }
+  },
+  "designSource": {
+    "operatingMode": "free-explore",
+    "libraryIdentity": {
+      "name": null,
+      "id": null,
+      "version": null,
+      "scope": null,
+      "path": null,
+      "versionSource": null
+    },
+    "libraryPath": null,
+    "cssFilePath": "/Users/bytedance/unitygame/final-defense-ui-proposal/colors_and_type.css",
+    "brandPrefix": "finaldefense",
+    "themeMode": "light",
+    "designDecisionSummary": "校园二次元风格的 Unity 游戏界面提案，优先可读性与接入感",
+    "componentContractKind": null,
+    "forbiddenInventedComponents": [],
+    "allowedComponents": [],
+    "styleConstraints": {
+      "radiusMax": 30,
+      "spacingBase": 4,
+      "fontSizeBody": 15,
+      "fontSizeMin": 12,
+      "controlHeightDefault": 48,
+      "controlHeightLarge": 56
+    },
+    "productContext": {
+      "kitType": "game-ui-proposal",
+      "productType": "campus tower-defense management game"
+    },
+    "actualTokenNameReference": [
+      {
+        "semanticPurpose": "Primary background",
+        "tokenName": "finaldefense-background"
+      },
+      {
+        "semanticPurpose": "Primary action",
+        "tokenName": "finaldefense-primary"
+      },
+      {
+        "semanticPurpose": "Primary surface",
+        "tokenName": "finaldefense-card"
+      },
+      {
+        "semanticPurpose": "Border",
+        "tokenName": "finaldefense-border"
+      }
+    ]
+  },
+  "pages": [
+    {
+      "nodeId": "page-personality-test",
+      "slug": "personality-test",
+      "title": "人格测试",
+      "htmlSrc": "pages/personality-test.html",
+      "pageIndex": 1,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "showcase",
+      "viewportMode": "app-shell",
+      "businessScenario": "游戏开场人格测试页",
+      "visualNorthStar": "像校园视觉小说开场画面一样温柔，但要一眼看懂这是功能入口页",
+      "compositionPattern": "split-screen story card",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "大圆角与轻阴影",
+        "主按钮粉紫渐变"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "左侧大视觉与右侧答题区域的比例平衡"
+      ]
+    },
+    {
+      "nodeId": "page-schedule",
+      "slug": "schedule",
+      "title": "日程安排",
+      "htmlSrc": "pages/schedule.html",
+      "pageIndex": 2,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "information-dense",
+      "viewportMode": "app-shell",
+      "businessScenario": "战斗前的时间规划与属性成长页",
+      "visualNorthStar": "像轻策略养成游戏的桌面控制台，信息多但要保持温柔和有序",
+      "compositionPattern": "three-panel task board",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "数据标签胶囊化",
+        "主次操作分层"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "高信息密度但不能压缩阅读"
+      ]
+    },
+    {
+      "nodeId": "page-battle",
+      "slug": "battle",
+      "title": "战斗 HUD",
+      "htmlSrc": "pages/battle.html",
+      "pageIndex": 3,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "task-driven",
+      "viewportMode": "app-shell",
+      "businessScenario": "塔防战斗主界面与关卡 HUD",
+      "visualNorthStar": "像完整可玩的关卡 HUD，而不是开发调试图层",
+      "compositionPattern": "deck + board + tactical rail",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "数值模块规则化",
+        "地图区更柔和更游戏化"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "地图预览区需要足够大",
+        "左右信息栏不能抢中心战场"
+      ]
+    },
+    {
+      "nodeId": "page-battle-map-tower-ui",
+      "slug": "battle-map-tower-ui",
+      "title": "战斗 HUD - 地图与塔 UI 强化",
+      "htmlSrc": "pages/battle-map-tower-ui.html",
+      "pageIndex": 4,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "comparison-from-source",
+      "sourcePageId": "page-battle",
+      "sourceHtmlSrc": "pages/battle.html",
+      "pageType": "task-driven",
+      "viewportMode": "app-shell",
+      "businessScenario": "塔防地图部署与塔牌选择专用界面",
+      "visualNorthStar": "让玩家明确看到地图格子、敌人路径、可部署点、塔位状态、塔牌选择和升级面板，而不是只有抽象地图示意",
+      "compositionPattern": "tower deck + tile map board + selected tower inspector",
+      "continuityAnchors": [
+        "深色游戏 HUD",
+        "地图格子与路径层",
+        "塔牌卡组与选中态",
+        "部署状态反馈"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "地图格子数量多但必须保持可读",
+        "塔详情面板不能遮挡核心盘面"
+      ]
+    },
+    {
+      "nodeId": "page-shop",
+      "slug": "shop",
+      "title": "商店界面",
+      "htmlSrc": "pages/shop.html",
+      "pageIndex": 5,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "information-dense",
+      "viewportMode": "app-shell",
+      "businessScenario": "战斗前补给与商品选择页",
+      "visualNorthStar": "像角色养成游戏物资卡册，购买反馈清楚并带一点甜品店气质",
+      "compositionPattern": "catalog + basket summary",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "商品卡彩色分类",
+        "主次操作分层"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "商品卡多但仍要保持节奏统一"
+      ]
+    }
+  ],
+  "assets": [],
+  "wiringPlan": [
+    {
+      "sourceNodeId": "page-personality-test",
+      "domId": "cta-start-schedule",
+      "targetPageId": "page-schedule"
+    },
+    {
+      "sourceNodeId": "page-schedule",
+      "domId": "open-shop",
+      "targetPageId": "page-shop"
+    },
+    {
+      "sourceNodeId": "page-schedule",
+      "domId": "go-battle",
+      "targetPageId": "page-battle"
+    },
+    {
+      "sourceNodeId": "page-battle",
+      "domId": "go-shop-battle",
+      "targetPageId": "page-shop"
+    },
+    {
+      "sourceNodeId": "page-battle-map-tower-ui",
+      "domId": "go-shop-map-tower",
+      "targetPageId": "page-shop"
+    },
+    {
+      "sourceNodeId": "page-shop",
+      "domId": "back-schedule",
+      "targetPageId": "page-schedule"
+    },
+    {
+      "sourceNodeId": "page-shop",
+      "domId": "go-battle-from-shop",
+      "targetPageId": "page-battle"
+    }
+  ],
+  "hiddenInteractionPlan": [
+    {
+      "sourceNodeId": "page-battle",
+      "domId": "back-schedule-battle",
+      "targetPageId": "page-schedule",
+      "hideEdge": true,
+      "reason": "secondary return path"
+    }
+  ]
+}

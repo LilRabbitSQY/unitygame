@@ -1,0 +1,86 @@
+{
+  "root": {
+    "nodeId": "gen-project-shell",
+    "kind": "project-shell",
+    "pageIds": [
+      "page-personality-test",
+      "page-schedule",
+      "page-battle",
+      "page-shop"
+    ],
+    "output": "partials/project-shell.html",
+    "sharedRegions": [
+      "soft academy palette",
+      "rounded panel language",
+      "desktop game shell rhythm"
+    ],
+    "privateRegions": [],
+    "mutableSlots": [
+      "pageTitle",
+      "primaryAction"
+    ],
+    "status": "generated",
+    "children": [
+      {
+        "nodeId": "gen-page-personality-test",
+        "kind": "page-leaf",
+        "pageIds": [
+          "page-personality-test"
+        ],
+        "output": "pages/personality-test.html",
+        "sharedRegions": [],
+        "privateRegions": [
+          "personality test intro and option grid"
+        ],
+        "mutableSlots": [],
+        "status": "generated",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-schedule",
+        "kind": "page-leaf",
+        "pageIds": [
+          "page-schedule"
+        ],
+        "output": "pages/schedule.html",
+        "sharedRegions": [],
+        "privateRegions": [
+          "daily planner board and ddl sidebar"
+        ],
+        "mutableSlots": [],
+        "status": "generated",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-battle",
+        "kind": "page-leaf",
+        "pageIds": [
+          "page-battle"
+        ],
+        "output": "pages/battle.html",
+        "sharedRegions": [],
+        "privateRegions": [
+          "battlefield hud, tower deck, enemy queue"
+        ],
+        "mutableSlots": [],
+        "status": "generated",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-shop",
+        "kind": "page-leaf",
+        "pageIds": [
+          "page-shop"
+        ],
+        "output": "pages/shop.html",
+        "sharedRegions": [],
+        "privateRegions": [
+          "shop card grid and basket summary"
+        ],
+        "mutableSlots": [],
+        "status": "generated",
+        "children": []
+      }
+    ]
+  }
+}

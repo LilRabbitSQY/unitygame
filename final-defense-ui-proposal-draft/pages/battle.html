@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>战斗界面</title>
+    <style id="theme-vars">
+:root {
+  --finaldefense-background: #17141f;
+  --finaldefense-foreground: #f6f0ff;
+  --finaldefense-card: #221c2d;
+  --finaldefense-card-foreground: #f7f3fb;
+  --finaldefense-popover: #2a2234;
+  --finaldefense-popover-foreground: #f7f3fb;
+  --finaldefense-primary: #ff6b9f;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #2b2336;
+  --finaldefense-secondary-foreground: #e6d9ef;
+  --finaldefense-muted: #2f283b;
+  --finaldefense-muted-foreground: #c6b7d5;
+  --finaldefense-accent: #362d46;
+  --finaldefense-accent-foreground: #f5eefe;
+  --finaldefense-destructive: #ff6684;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #433754;
+  --finaldefense-input: #3a3149;
+  --finaldefense-ring: #ff8ab5;
+  --finaldefense-chart-1: #ff6b9f;
+  --finaldefense-chart-2: #7f83ff;
+  --finaldefense-chart-3: #ffb85c;
+  --finaldefense-chart-4: #49d3ae;
+  --finaldefense-chart-5: #c289ff;
+  --finaldefense-sidebar: #1d1727;
+  --finaldefense-sidebar-foreground: #f7f1ff;
+  --finaldefense-sidebar-primary: #ff6b9f;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #30273d;
+  --finaldefense-sidebar-accent-foreground: #f2e7fb;
+
+  --finaldefense-surface-strong: #2a2236;
+  --finaldefense-surface-soft: #241d2f;
+  --finaldefense-surface-tint: #1d1727;
+  --finaldefense-state-success: #45d19c;
+  --finaldefense-state-warning: #ffb24c;
+  --finaldefense-state-error: #ff6684;
+  --finaldefense-state-info: #7785ff;
+
+  --finaldefense-radius-small: 12px;
+  --finaldefense-radius-medium: 16px;
+  --finaldefense-radius-large: 22px;
+  --finaldefense-radius-sm: 12px;
+  --finaldefense-radius-md: 16px;
+  --finaldefense-radius-lg: 22px;
+
+  --finaldefense-font-primary: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-font-display: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.24);
+  --finaldefense-shadow-card: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.dark {
+  --finaldefense-background: #17141f;
+  --finaldefense-foreground: #f6f0ff;
+  --finaldefense-card: #221c2d;
+  --finaldefense-card-foreground: #f7f3fb;
+  --finaldefense-popover: #2a2234;
+  --finaldefense-popover-foreground: #f7f3fb;
+  --finaldefense-primary: #ff6b9f;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #2b2336;
+  --finaldefense-secondary-foreground: #e6d9ef;
+  --finaldefense-muted: #2f283b;
+  --finaldefense-muted-foreground: #c6b7d5;
+  --finaldefense-accent: #362d46;
+  --finaldefense-accent-foreground: #f5eefe;
+  --finaldefense-destructive: #ff6684;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #433754;
+  --finaldefense-input: #3a3149;
+  --finaldefense-ring: #ff8ab5;
+  --finaldefense-sidebar: #1d1727;
+  --finaldefense-sidebar-foreground: #f7f1ff;
+  --finaldefense-sidebar-primary: #ff6b9f;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #30273d;
+  --finaldefense-sidebar-accent-foreground: #f2e7fb;
+  --finaldefense-surface-strong: #2a2236;
+  --finaldefense-surface-soft: #241d2f;
+  --finaldefense-surface-tint: #1d1727;
+  --finaldefense-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.24);
+  --finaldefense-shadow-card: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+body {
+  font-family: var(--finaldefense-font-primary);
+  background:
+    radial-gradient(circle at top left, rgba(255, 107, 159, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(127, 131, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #17141f 0%, #120f19 100%);
+}
+
+.finaldefense-display {
+  font-family: var(--finaldefense-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.finaldefense-h1 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.finaldefense-h2 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.14;
+  font-weight: 700;
+}
+
+.finaldefense-body {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.finaldefense-panel {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%),
+    var(--finaldefense-card);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--finaldefense-shadow-card);
+  backdrop-filter: blur(14px);
+}
+
+.finaldefense-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.finaldefense-hud-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #b5a6c5;
+  font-weight: 700;
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--finaldefense-background);
+    --color-foreground: var(--finaldefense-foreground);
+    --color-card: var(--finaldefense-card);
+    --color-card-foreground: var(--finaldefense-card-foreground);
+    --color-popover: var(--finaldefense-popover);
+    --color-popover-foreground: var(--finaldefense-popover-foreground);
+    --color-primary: var(--finaldefense-primary);
+    --color-primary-foreground: var(--finaldefense-primary-foreground);
+    --color-secondary: var(--finaldefense-secondary);
+    --color-secondary-foreground: var(--finaldefense-secondary-foreground);
+    --color-muted: var(--finaldefense-muted);
+    --color-muted-foreground: var(--finaldefense-muted-foreground);
+    --color-accent: var(--finaldefense-accent);
+    --color-accent-foreground: var(--finaldefense-accent-foreground);
+    --color-destructive: var(--finaldefense-destructive);
+    --color-destructive-foreground: var(--finaldefense-destructive-foreground);
+    --color-border: var(--finaldefense-border);
+    --color-input: var(--finaldefense-input);
+    --color-ring: var(--finaldefense-ring);
+    --color-chart-1: var(--finaldefense-chart-1);
+    --color-chart-2: var(--finaldefense-chart-2);
+    --color-chart-3: var(--finaldefense-chart-3);
+    --color-chart-4: var(--finaldefense-chart-4);
+    --color-chart-5: var(--finaldefense-chart-5);
+    --color-sidebar: var(--finaldefense-sidebar);
+    --color-sidebar-foreground: var(--finaldefense-sidebar-foreground);
+    --color-sidebar-primary: var(--finaldefense-sidebar-primary);
+    --color-sidebar-primary-foreground: var(--finaldefense-sidebar-primary-foreground);
+    --color-sidebar-accent: var(--finaldefense-sidebar-accent);
+    --color-sidebar-accent-foreground: var(--finaldefense-sidebar-accent-foreground);
+    --radius-sm: var(--finaldefense-radius-sm);
+    --radius-md: var(--finaldefense-radius-md);
+    --radius-lg: var(--finaldefense-radius-lg);
+  }
+  @layer base {
+    body { background: var(--finaldefense-background); color: var(--finaldefense-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--finaldefense-background); }
+      .text-background { color: var(--finaldefense-background); }
+      .border-background { border-color: var(--finaldefense-background); }
+      .ring-background { --tw-ring-color: var(--finaldefense-background); }
+      .bg-foreground { background-color: var(--finaldefense-foreground); }
+      .text-foreground { color: var(--finaldefense-foreground); }
+      .border-foreground { border-color: var(--finaldefense-foreground); }
+      .ring-foreground { --tw-ring-color: var(--finaldefense-foreground); }
+      .bg-card { background-color: var(--finaldefense-card); }
+      .text-card { color: var(--finaldefense-card); }
+      .border-card { border-color: var(--finaldefense-card); }
+      .ring-card { --tw-ring-color: var(--finaldefense-card); }
+      .bg-card-foreground { background-color: var(--finaldefense-card-foreground); }
+      .text-card-foreground { color: var(--finaldefense-card-foreground); }
+      .border-card-foreground { border-color: var(--finaldefense-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--finaldefense-card-foreground); }
+      .bg-popover { background-color: var(--finaldefense-popover); }
+      .text-popover { color: var(--finaldefense-popover); }
+      .border-popover { border-color: var(--finaldefense-popover); }
+      .ring-popover { --tw-ring-color: var(--finaldefense-popover); }
+      .bg-popover-foreground { background-color: var(--finaldefense-popover-foreground); }
+      .text-popover-foreground { color: var(--finaldefense-popover-foreground); }
+      .border-popover-foreground { border-color: var(--finaldefense-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--finaldefense-popover-foreground); }
+      .bg-primary { background-color: var(--finaldefense-primary); }
+      .text-primary { color: var(--finaldefense-primary); }
+      .border-primary { border-color: var(--finaldefense-primary); }
+      .ring-primary { --tw-ring-color: var(--finaldefense-primary); }
+      .bg-primary-foreground { background-color: var(--finaldefense-primary-foreground); }
+      .text-primary-foreground { color: var(--finaldefense-primary-foreground); }
+      .border-primary-foreground { border-color: var(--finaldefense-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--finaldefense-primary-foreground); }
+      .bg-secondary { background-color: var(--finaldefense-secondary); }
+      .text-secondary { color: var(--finaldefense-secondary); }
+      .border-secondary { border-color: var(--finaldefense-secondary); }
+      .ring-secondary { --tw-ring-color: var(--finaldefense-secondary); }
+      .bg-secondary-foreground { background-color: var(--finaldefense-secondary-foreground); }
+      .text-secondary-foreground { color: var(--finaldefense-secondary-foreground); }
+      .border-secondary-foreground { border-color: var(--finaldefense-secondary-foreground); }
+      .ring-secondary-foreground { --tw-ring-color: var(--finaldefense-secondary-foreground); }
+      .bg-muted { background-color: var(--finaldefense-muted); }
+      .text-muted { color: var(--finaldefense-muted); }
+      .border-muted { border-color: var(--finaldefense-muted); }
+      .ring-muted { --tw-ring-color: var(--finaldefense-muted); }
+      .bg-muted-foreground { background-color: var(--finaldefense-muted-foreground); }
+      .text-muted-foreground { color: var(--finaldefense-muted-foreground); }
+      .border-muted-foreground { border-color: var(--finaldefense-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--finaldefense-muted-foreground); }
+      .bg-accent { background-color: var(--finaldefense-accent); }
+      .text-accent { color: var(--finaldefense-accent); }
+      .border-accent { border-color: var(--finaldefense-accent); }
+      .ring-accent { --tw-ring-color: var(--finaldefense-accent); }
+      .bg-accent-foreground { background-color: var(--finaldefense-accent-foreground); }
+      .text-accent-foreground { color: var(--finaldefense-accent-foreground); }
+      .border-accent-foreground { border-color: var(--finaldefense-accent-foreground); }
+      .ring-accent-foreground { --tw-ring-color: var(--finaldefense-accent-foreground); }
+      .bg-destructive { background-color: var(--finaldefense-destructive); }
+      .text-destructive { color: var(--finaldefense-destructive); }
+      .border-destructive { border-color: var(--finaldefense-destructive); }
+      .ring-destructive { --tw-ring-color: var(--finaldefense-destructive); }
+      .bg-destructive-foreground { background-color: var(--finaldefense-destructive-foreground); }
+      .text-destructive-foreground { color: var(--finaldefense-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--finaldefense-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--finaldefense-destructive-foreground); }
+      .bg-border { background-color: var(--finaldefense-border); }
+      .text-border { color: var(--finaldefense-border); }
+      .border-border { border-color: var(--finaldefense-border); }
+      .ring-border { --tw-ring-color: var(--finaldefense-border); }
+      .bg-input { background-color: var(--finaldefense-input); }
+      .text-input { color: var(--finaldefense-input); }
+      .border-input { border-color: var(--finaldefense-input); }
+      .ring-input { --tw-ring-color: var(--finaldefense-input); }
+      .bg-ring { background-color: var(--finaldefense-ring); }
+      .text-ring { color: var(--finaldefense-ring); }
+      .border-ring { border-color: var(--finaldefense-ring); }
+      .ring-ring { --tw-ring-color: var(--finaldefense-ring); }
+      .bg-chart-1 { background-color: var(--finaldefense-chart-1); }
+      .text-chart-1 { color: var(--finaldefense-chart-1); }
+      .border-chart-1 { border-color: var(--finaldefense-chart-1); }
+      .ring-chart-1 { --tw-ring-color: var(--finaldefense-chart-1); }
+      .bg-chart-2 { background-color: var(--finaldefense-chart-2); }
+      .text-chart-2 { color: var(--finaldefense-chart-2); }
+      .border-chart-2 { border-color: var(--finaldefense-chart-2); }
+      .ring-chart-2 { --tw-ring-color: var(--finaldefense-chart-2); }
+      .bg-chart-3 { background-color: var(--finaldefense-chart-3); }
+      .text-chart-3 { color: var(--finaldefense-chart-3); }
+      .border-chart-3 { border-color: var(--finaldefense-chart-3); }
+      .ring-chart-3 { --tw-ring-color: var(--finaldefense-chart-3); }
+      .bg-chart-4 { background-color: var(--finaldefense-chart-4); }
+      .text-chart-4 { color: var(--finaldefense-chart-4); }
+      .border-chart-4 { border-color: var(--finaldefense-chart-4); }
+      .ring-chart-4 { --tw-ring-color: var(--finaldefense-chart-4); }
+      .bg-chart-5 { background-color: var(--finaldefense-chart-5); }
+      .text-chart-5 { color: var(--finaldefense-chart-5); }
+      .border-chart-5 { border-color: var(--finaldefense-chart-5); }
+      .ring-chart-5 { --tw-ring-color: var(--finaldefense-chart-5); }
+      .bg-sidebar { background-color: var(--finaldefense-sidebar); }
+      .text-sidebar { color: var(--finaldefense-sidebar); }
+      .border-sidebar { border-color: var(--finaldefense-sidebar); }
+      .ring-sidebar { --tw-ring-color: var(--finaldefense-sidebar); }
+      .bg-sidebar-foreground { background-color: var(--finaldefense-sidebar-foreground); }
+      .text-sidebar-foreground { color: var(--finaldefense-sidebar-foreground); }
+      .border-sidebar-foreground { border-color: var(--finaldefense-sidebar-foreground); }
+      .ring-sidebar-foreground { --tw-ring-color: var(--finaldefense-sidebar-foreground); }
+      .bg-sidebar-primary { background-color: var(--finaldefense-sidebar-primary); }
+      .text-sidebar-primary { color: var(--finaldefense-sidebar-primary); }
+      .border-sidebar-primary { border-color: var(--finaldefense-sidebar-primary); }
+      .ring-sidebar-primary { --tw-ring-color: var(--finaldefense-sidebar-primary); }
+      .bg-sidebar-primary-foreground { background-color: var(--finaldefense-sidebar-primary-foreground); }
+      .text-sidebar-primary-foreground { color: var(--finaldefense-sidebar-primary-foreground); }
+      .border-sidebar-primary-foreground { border-color: var(--finaldefense-sidebar-primary-foreground); }
+      .ring-sidebar-primary-foreground { --tw-ring-color: var(--finaldefense-sidebar-primary-foreground); }
+      .bg-sidebar-accent { background-color: var(--finaldefense-sidebar-accent); }
+      .text-sidebar-accent { color: var(--finaldefense-sidebar-accent); }
+      .border-sidebar-accent { border-color: var(--finaldefense-sidebar-accent); }
+      .ring-sidebar-accent { --tw-ring-color: var(--finaldefense-sidebar-accent); }
+      .bg-sidebar-accent-foreground { background-color: var(--finaldefense-sidebar-accent-foreground); }
+      .text-sidebar-accent-foreground { color: var(--finaldefense-sidebar-accent-foreground); }
+      .border-sidebar-accent-foreground { border-color: var(--finaldefense-sidebar-accent-foreground); }
+      .ring-sidebar-accent-foreground { --tw-ring-color: var(--finaldefense-sidebar-accent-foreground); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="h-screen overflow-hidden text-white">
+  <main data-viewport-mode="app-shell" class="finaldefense-grid h-screen min-h-0 overflow-hidden p-5 lg:p-6">
+    <div data-scroll-region="primary" class="flex h-full min-h-0 overflow-y-auto flex-col gap-5">
+      <header class="finaldefense-panel grid gap-4 rounded-[26px] px-4 py-4 xl:grid-cols-[1fr_1.05fr_0.9fr]">
+        <div class="min-w-0">
+          <p class="finaldefense-hud-label">Final Defense Battle</p>
+          <h1 class="mt-2 max-w-[18ch] text-[34px] font-black leading-[1.02]" style="text-wrap:balance; word-break:keep-all; overflow-wrap:break-word;">用学习工具守住 GPA，把考试怪挡在挂科线之前</h1>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-3">
+          <div class="rounded-[18px] border px-4 py-3" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+            <p class="finaldefense-hud-label">Shield</p>
+            <p class="mt-2 text-[28px] font-black">86</p>
+            <p class="text-sm text-white/64">GPA 防线</p>
+          </div>
+          <div class="rounded-[18px] border px-4 py-3" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+            <p class="finaldefense-hud-label">Gold</p>
+            <p class="mt-2 text-[28px] font-black">128</p>
+            <p class="text-sm text-white/64">部署储备</p>
+          </div>
+          <div class="rounded-[18px] border px-4 py-3" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+            <p class="finaldefense-hud-label">Wave</p>
+            <p class="mt-2 text-[28px] font-black">3 / 5</p>
+            <p class="text-sm text-white/64">Boss 即将抵达</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-end gap-3">
+          <button data-dom-id="back-schedule-battle" class="inline-flex items-center gap-2 rounded-[16px] px-4 py-3 text-sm font-black text-white" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.08);">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            返回备战
+          </button>
+          <button data-dom-id="go-shop-battle" class="inline-flex items-center gap-2 rounded-[16px] px-4 py-3 text-sm font-black text-white" style="background:linear-gradient(135deg, #ff6b9f 0%, #7f83ff 100%);">
+            战前采购
+            <i data-lucide="shopping-bag" class="h-4 w-4"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="grid min-h-0 flex-1 gap-5 xl:grid-cols-[290px_minmax(0,1fr)_300px]">
+        <aside class="finaldefense-panel flex min-h-0 flex-col rounded-[26px] p-4">
+          <div class="mb-4 flex items-center justify-between">
+            <div>
+              <p class="finaldefense-hud-label">Tower Deck</p>
+              <p class="mt-2 text-2xl font-black">学习卡组</p>
+            </div>
+            <i data-lucide="layers-2" class="h-6 w-6" style="color:#7f83ff;"></i>
+          </div>
+
+          <div class="space-y-3">
+            <article class="rounded-[20px] border p-4" style="background:linear-gradient(180deg, rgba(255,107,159,0.16) 0%, rgba(255,255,255,0.04) 100%); border-color:rgba(255,107,159,0.24);">
+              <div class="mb-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-[14px] text-white" style="background:#ff6b9f;"><i data-lucide="notebook-pen" class="h-5 w-5"></i></div>
+                  <div>
+                    <p class="font-black">笔记本</p>
+                    <p class="text-sm text-white/64">单体输出塔</p>
+                  </div>
+                </div>
+                <span class="rounded-full px-3 py-1 text-xs font-black" style="background:rgba(255,255,255,0.08); color:#ff9cc0;">50 金</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-xs font-black">
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">伤害 5</div>
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">攻速 0.8</div>
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">范围 2.5</div>
+              </div>
+            </article>
+
+            <article class="rounded-[20px] border p-4" style="background:linear-gradient(180deg, rgba(127,131,255,0.16) 0%, rgba(255,255,255,0.04) 100%); border-color:rgba(127,131,255,0.24);">
+              <div class="mb-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-[14px] text-white" style="background:#7f83ff;"><i data-lucide="calculator" class="h-5 w-5"></i></div>
+                  <div>
+                    <p class="font-black">计算器</p>
+                    <p class="text-sm text-white/64">范围均衡塔</p>
+                  </div>
+                </div>
+                <span class="rounded-full px-3 py-1 text-xs font-black" style="background:rgba(255,255,255,0.08); color:#c6c8ff;">80 金</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-xs font-black">
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">伤害 12</div>
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">攻速 1.2</div>
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">范围 3.0</div>
+              </div>
+            </article>
+
+            <article class="rounded-[20px] border p-4" style="background:linear-gradient(180deg, rgba(255,184,92,0.16) 0%, rgba(255,255,255,0.04) 100%); border-color:rgba(255,184,92,0.24);">
+              <div class="mb-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-[14px] text-white" style="background:#ffb85c;"><i data-lucide="coffee" class="h-5 w-5"></i></div>
+                  <div>
+                    <p class="font-black">咖啡杯</p>
+                    <p class="text-sm text-white/64">减速辅助塔</p>
+                  </div>
+                </div>
+                <span class="rounded-full px-3 py-1 text-xs font-black" style="background:rgba(255,255,255,0.08); color:#ffd394;">120 金</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-xs font-black">
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">伤害 8</div>
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">控场</div>
+                <div class="rounded-[12px] px-2 py-2" style="background:rgba(255,255,255,0.08);">范围 2.0</div>
+              </div>
+            </article>
+          </div>
+
+          <div class="mt-auto rounded-[20px] border p-4" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+            <p class="finaldefense-hud-label">Quick Tip</p>
+            <p class="mt-2 text-sm leading-6 text-white/66">左侧变成真正的卡组栏，玩家会更自然地把它理解成“可部署塔”而不是说明卡片。</p>
+          </div>
+        </aside>
+
+        <section class="finaldefense-panel relative overflow-hidden rounded-[26px] p-4">
+          <div class="absolute inset-0 opacity-70" style="background:radial-gradient(circle at top, rgba(255,107,159,0.18), transparent 35%), radial-gradient(circle at bottom right, rgba(127,131,255,0.16), transparent 28%);"></div>
+          <div class="relative flex h-full min-h-0 flex-col">
+            <div class="mb-4 flex items-center justify-between">
+              <div class="rounded-[16px] border px-4 py-2 text-sm font-black" style="background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                关卡地图 · 教学楼走廊
+              </div>
+              <div class="rounded-[16px] border px-4 py-2 text-sm font-black" style="background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1); color:#d8ccea;">
+                下一波 00:18
+              </div>
+            </div>
+
+            <div class="grid flex-1 min-h-0 gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+              <div class="relative min-h-[420px] overflow-hidden rounded-[24px] border" style="background:linear-gradient(180deg, #241d2f 0%, #1c1725 100%); border-color:rgba(255,255,255,0.08);">
+                <div class="absolute inset-0 opacity-50" style="background-image:linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size:28px 28px;"></div>
+                <div class="absolute left-10 top-10 right-16 h-4 rounded-full" style="background:linear-gradient(90deg, #453960 0%, #564778 100%);"></div>
+                <div class="absolute right-16 top-10 h-44 w-4 rounded-full" style="background:linear-gradient(180deg, #564778 0%, #453960 100%);"></div>
+                <div class="absolute left-[34%] top-[34%] h-4 w-[42%] rounded-full" style="background:linear-gradient(90deg, #564778 0%, #453960 100%);"></div>
+                <div class="absolute left-[34%] top-[34%] h-[35%] w-4 rounded-full" style="background:linear-gradient(180deg, #564778 0%, #453960 100%);"></div>
+                <div class="absolute left-[34%] bottom-12 h-4 w-[46%] rounded-full" style="background:linear-gradient(90deg, #564778 0%, #453960 100%);"></div>
+
+                <div class="absolute left-8 top-7 flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/15 text-sm font-black text-white" style="background:#ff6b9f;">S</div>
+                <div class="absolute bottom-8 right-8 flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/15 text-sm font-black text-white" style="background:#45d19c;">E</div>
+
+                <div class="absolute left-[23%] top-[21%]">
+                  <div class="flex h-16 w-16 items-center justify-center rounded-[18px] border-2 border-white/10 text-white" style="background:linear-gradient(135deg, #7f83ff 0%, #5465ff 100%); box-shadow:0 10px 26px rgba(0,0,0,0.26);">
+                    <i data-lucide="calculator" class="h-7 w-7"></i>
+                  </div>
+                  <div class="mt-2 rounded-full px-3 py-1 text-center text-xs font-black" style="background:rgba(127,131,255,0.18); color:#cfd0ff;">Lv.2</div>
+                </div>
+
+                <div class="absolute left-[47%] top-[55%]">
+                  <div class="flex h-16 w-16 items-center justify-center rounded-[18px] border-2 border-white/10 text-white" style="background:linear-gradient(135deg, #ff6b9f 0%, #ff84b1 100%); box-shadow:0 10px 26px rgba(0,0,0,0.26);">
+                    <i data-lucide="notebook-pen" class="h-7 w-7"></i>
+                  </div>
+                  <div class="mt-2 rounded-full px-3 py-1 text-center text-xs font-black" style="background:rgba(255,107,159,0.18); color:#ffc0d6;">Lv.3</div>
+                </div>
+
+                <div class="absolute right-[15%] bottom-[21%]">
+                  <div class="flex h-16 w-16 items-center justify-center rounded-[18px] border-2 border-white/10 text-white" style="background:linear-gradient(135deg, #ffb85c 0%, #ff9d48 100%); box-shadow:0 10px 26px rgba(0,0,0,0.26);">
+                    <i data-lucide="coffee" class="h-7 w-7"></i>
+                  </div>
+                  <div class="mt-2 rounded-full px-3 py-1 text-center text-xs font-black" style="background:rgba(255,184,92,0.18); color:#ffd594;">Slow</div>
+                </div>
+
+                <div class="absolute left-[12%] top-[14%] flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/12 text-sm font-black text-white" style="background:#ff6b9f;">选</div>
+                <div class="absolute right-[18%] top-[35%] flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/12 text-sm font-black text-white" style="background:#ff6b9f;">填</div>
+                <div class="absolute left-[56%] bottom-[20%] flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/12 text-sm font-black text-white" style="background:#ffb85c;">论</div>
+              </div>
+
+              <div class="flex min-h-0 flex-col gap-4">
+                <article class="rounded-[22px] border p-4" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="finaldefense-hud-label">Enemy Queue</p>
+                    <span class="rounded-full px-3 py-1 text-xs font-black" style="background:rgba(255,107,159,0.16); color:#ffb8d1;">高压波次</span>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between rounded-[16px] p-3" style="background:rgba(255,255,255,0.04);">
+                      <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-black text-white" style="background:#ff6b9f;">选</span><div><p class="font-black">选择题小怪</p><p class="text-xs text-white/62">速度快 · 数量多</p></div></div>
+                      <span class="text-sm font-black">×6</span>
+                    </div>
+                    <div class="flex items-center justify-between rounded-[16px] p-3" style="background:rgba(255,255,255,0.04);">
+                      <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-black text-white" style="background:#7f83ff;">填</span><div><p class="font-black">填空题中怪</p><p class="text-xs text-white/62">耐久上升</p></div></div>
+                      <span class="text-sm font-black">×2</span>
+                    </div>
+                    <div class="flex items-center justify-between rounded-[16px] p-3" style="background:rgba(255,255,255,0.04);">
+                      <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-black text-white" style="background:#ffb85c;">论</span><div><p class="font-black">论述题 Boss</p><p class="text-xs text-white/62">高伤终结怪</p></div></div>
+                      <span class="text-sm font-black">×1</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="rounded-[22px] border p-4" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="finaldefense-hud-label">实时战术</p>
+                    <i data-lucide="brain-circuit" class="h-5 w-5" style="color:#45d19c;"></i>
+                  </div>
+                  <ul class="space-y-3 text-sm leading-6 text-white/66">
+                    <li>笔记本清前排，计算器守拐角，咖啡杯贴终点减速 Boss。</li>
+                    <li>地图中央改成真正的关卡盘面，而不是网页示意图。</li>
+                    <li>敌人、塔、资源三组信息分得更像可玩的 HUD。</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="finaldefense-panel flex min-h-0 flex-col gap-4 rounded-[26px] p-4">
+          <article class="rounded-[22px] border p-4" style="background:rgba(127,131,255,0.12); border-color:rgba(127,131,255,0.18);">
+            <div class="mb-4 flex items-center justify-between">
+              <p class="finaldefense-hud-label">Deploy Cost</p>
+              <span class="rounded-full px-3 py-1 text-xs font-black" style="background:rgba(255,255,255,0.08); color:#cfd0ff;">8 / 12</span>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center justify-between"><span class="text-white/72">当前回费</span><span class="font-black">+1 / 3 秒</span></div>
+              <div class="flex items-center justify-between"><span class="text-white/72">撤回冷却</span><span class="font-black">15 秒</span></div>
+              <div class="flex items-center justify-between"><span class="text-white/72">复部署成本</span><span class="font-black">3 费</span></div>
+            </div>
+          </article>
+
+          <article class="rounded-[22px] border p-4" style="background:rgba(255,107,159,0.12); border-color:rgba(255,107,159,0.18);">
+            <div class="mb-4 flex items-center justify-between">
+              <p class="finaldefense-hud-label">Stage Risk</p>
+              <i data-lucide="triangle-alert" class="h-5 w-5" style="color:#ff6684;"></i>
+            </div>
+            <div class="space-y-3">
+              <div class="rounded-[16px] border p-3" style="background:rgba(18,15,25,0.26); border-color:rgba(255,255,255,0.08);">
+                <p class="text-sm font-black">高速度小怪波次</p>
+                <p class="mt-1 text-sm text-white/66">建议优先补单体伤害塔。</p>
+              </div>
+              <div class="rounded-[16px] border p-3" style="background:rgba(18,15,25,0.26); border-color:rgba(255,255,255,0.08);">
+                <p class="text-sm font-black">终点压迫感强</p>
+                <p class="mt-1 text-sm text-white/66">减速类塔需要靠后布置。</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="flex-1 rounded-[22px] border p-4" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+            <div class="mb-4 flex items-center justify-between">
+              <p class="finaldefense-hud-label">Game Feeling</p>
+              <i data-lucide="crosshair" class="h-5 w-5" style="color:#ffb85c;"></i>
+            </div>
+            <ul class="space-y-3 text-sm leading-6 text-white/66">
+              <li>这一版把中间区域明确成“关卡盘面”。</li>
+              <li>顶部是即时资源条，左边是卡组，右边是情报与成本。</li>
+              <li>整体更像策略塔防 HUD，而不是网页栅格拼装。</li>
+            </ul>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

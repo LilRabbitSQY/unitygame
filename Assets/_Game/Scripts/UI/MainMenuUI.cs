@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using FinalDefense.Core;
+using FinalDefense.Battle;
 
 namespace FinalDefense.UI
 {
@@ -13,10 +14,65 @@ namespace FinalDefense.UI
         [SerializeField] private TextMeshProUGUI personalityText;
         [SerializeField] private TextMeshProUGUI titleText;
 
+        private void Awake()
+        {
+            ApplyThemeStyling();
+        }
+
         private void Start()
         {
-            startButton.onClick.AddListener(OnStartClicked);
+            if (startButton != null)
+                startButton.onClick.AddListener(OnStartClicked);
             UpdateDisplay();
+        }
+
+        private void ApplyThemeStyling()
+        {
+            var theme = UITheme.Instance;
+            var canvas = GetComponentInParent<Canvas>();
+
+            if (canvas != null)
+            {
+                UIStyler.EnsurePageBackground(canvas, "MainMenuBackground");
+                if (titleText == null)
+                    titleText = UIStyler.FindDeepChild(canvas.transform, "TitleText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (titleText != null)
+            {
+                UIStyler.SetTopRect(titleText.rectTransform, 80f, new Vector2(640f, 82f));
+                UIStyler.ApplyHeaderTextStyle(titleText, true);
+                titleText.color = theme.primary;
+                titleText.alignment = TextAlignmentOptions.Center;
+            }
+            if (gpaText != null)
+            {
+                UIStyler.SetCenteredRect(gpaText.rectTransform, new Vector2(0f, 155f), new Vector2(240f, 58f));
+                UIStyler.ApplyStatValueTextStyle(gpaText);
+                gpaText.color = theme.chart2;
+                gpaText.alignment = TextAlignmentOptions.Center;
+                UIStyler.EnsureBackdrop(gpaText.rectTransform, "GPAStatCard", new Vector2(80, 46), Color.white);
+            }
+            if (gradeText != null)
+            {
+                UIStyler.SetCenteredRect(gradeText.rectTransform, new Vector2(0f, 70f), new Vector2(420f, 54f));
+                UIStyler.ApplyHeaderTextStyle(gradeText, false);
+                gradeText.color = theme.foreground;
+                gradeText.alignment = TextAlignmentOptions.Center;
+            }
+            if (personalityText != null)
+            {
+                UIStyler.SetCenteredRect(personalityText.rectTransform, new Vector2(0f, -10f), new Vector2(420f, 44f));
+                UIStyler.ApplyCaptionTextStyle(personalityText);
+                personalityText.color = theme.mutedForeground;
+                personalityText.alignment = TextAlignmentOptions.Center;
+                UIStyler.EnsureBackdrop(personalityText.rectTransform, "PersonalityInfoCard", new Vector2(96, 42), theme.surfaceSoft, true);
+            }
+            if (startButton != null)
+            {
+                UIStyler.SetCenteredRect(startButton.GetComponent<RectTransform>(), new Vector2(0f, -135f), new Vector2(260f, 58f));
+                UIStyler.ApplyGradientButtonStyle(startButton);
+            }
         }
 
         private void UpdateDisplay()
@@ -24,15 +80,15 @@ namespace FinalDefense.UI
             var gm = GameManager.Instance;
             if (gm == null) return;
 
-            if (gpaText != null) gpaText.text = $"GPA: {gm.CurrentGPA}";
-            if (gradeText != null) gradeText.text = $"年级: {gm.CurrentGrade}  第{gm.CurrentDay}天";
+            if (gpaText != null) gpaText.text = $"{gm.CurrentGPA}";
+            if (gradeText != null) gradeText.text = $"{gm.CurrentGrade}年级  第{gm.CurrentDay}天";
             if (personalityText != null && gm.PersonalitySelected)
             {
                 var config = gm.PersonalityConfigData;
                 if (config != null)
                 {
                     var stats = config.GetStats(gm.CurrentPersonality);
-                    personalityText.text = $"类型: {stats.displayName}";
+                    personalityText.text = stats.displayName;
                 }
             }
         }

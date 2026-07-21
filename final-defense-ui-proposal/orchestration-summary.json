@@ -1,0 +1,381 @@
+{
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.07.06.8",
+    "version_source": "skill-version.json",
+    "runtime_skill_dir": "/Users/bytedance/.trae-cn/builtin/design/default/skills/solo-design",
+    "recorded_at": "2026-07-21T00:00:00.000Z"
+  },
+  "project": {
+    "name": "期末保卫战 UI 提案",
+    "path": "/Users/bytedance/unitygame/final-defense-ui-proposal",
+    "operation": "create",
+    "deviceType": "desktop",
+    "language": "zh-CN",
+    "dashboardMode": false,
+    "intentProfile": {
+      "caseFamily": "free_exploration",
+      "graphicStrategy": null,
+      "sourceType": null,
+      "routingReason": "基于 Unity 校园塔防项目补一套新的四页游戏 UI 提案"
+    },
+    "replicationMode": null,
+    "sourceUrl": null,
+    "contextReadBudget": {
+      "workflowFileReadLimit": 1,
+      "largeWorkflowFilesCachedInSummary": [],
+      "restoreInputsCached": [],
+      "subAgentReadsFullSummary": false
+    },
+    "readBudgetLedger": [
+      {
+        "file": "workflows/create-project-free-fast.md",
+        "readCount": 1,
+        "limit": 1,
+        "reason": "initial free-explore route-locked workflow read",
+        "exceeded": false
+      }
+    ],
+    "dispatchPreflightManifest": [],
+    "cssPreflightEvidence": {
+      "applies": true,
+      "status": "passed",
+      "command": "node /Users/bytedance/.trae-cn/builtin/design/default/skills/solo-design/script/fill-html-head.mjs /Users/bytedance/unitygame/final-defense-ui-proposal/colors_and_type.css /Users/bytedance/unitygame/final-defense-ui-proposal/.preflight/preflight.html --title=\"Preflight\" --lang=zh-CN --prefix=finaldefense",
+      "brandPrefix": "finaldefense",
+      "checks": {
+        "themeVars": "present",
+        "semanticTokenFallback": "present",
+        "themeInline": "present",
+        "tailwindCdn": "present",
+        "htmlClass": "present",
+        "semanticMappings": "resolved"
+      },
+      "retryCount": 0,
+      "blockingReason": null
+    },
+    "repairEntryEvidence": [
+      {
+        "repairPolicyRead": true,
+        "renderBlockingErrorPresent": true,
+        "softWarningOnly": false,
+        "ownerClassified": true,
+        "postValidationMutationDetected": false,
+        "validationErrorClasses": [
+          "app-shell-viewport",
+          "restore-evidence-summary-misclassification"
+        ],
+        "repairBudget": {
+          "validationRunsSoFar": 1,
+          "maxValidationRuns": 3
+        },
+        "recorded_at": "2026-07-21T07:28:00.000Z"
+      }
+    ],
+    "finishReadinessEvidence": {
+      "validationReportSuccess": true,
+      "postValidationMutationDetected": false,
+      "pageSummaryTablePrepared": true,
+      "manualArtifactLinksIncluded": false,
+      "restoreEvidenceReviewPassed": true,
+      "deviceTypeConsistency": {
+        "summaryDeviceType": "desktop",
+        "designDeviceType": "desktop",
+        "status": "matched"
+      },
+      "mobileBackgroundCoverage": {
+        "status": "passed",
+        "unresolvedBodyVars": []
+      }
+    },
+    "styleDefinitionBrief": "校园二次元、柔和粉彩、游戏化卡牌界面、信息清晰可接入 Unity",
+    "designRead": "校园策略游戏 UI / 学生玩家 / 轻甜但有压力感 / 中等密度 / 避免工业化冷硬 HUD",
+    "designDials": {
+      "layoutVariance": 3,
+      "motionIntensity": 2,
+      "visualDensity": 3
+    },
+    "styleContinuityAnchors": {
+      "colorSystem": {
+        "primaryColorRole": "柔和粉玫瑰色作为主要按钮和高优先级提示",
+        "brandHuePolicy": "以粉色为唯一主品牌色，紫色和暖橙只作为辅助信息层次，不作为第二品牌色",
+        "stateColors": "成功用青绿色，警告用暖橙色，危险用莓红色"
+      },
+      "shapeSystem": "大圆角卡片、软边框、偏卡牌式容器，不使用锐利工业轮廓",
+      "typographySystem": "中文无衬线，标题更粗更紧凑，正文清楚温和",
+      "spacingSystem": "大块面板之间留白明显，卡片内用 12-16px 节奏",
+      "componentLanguage": "所有信息都尽量卡片化、胶囊化、标签化，像校园养成游戏界面",
+      "surfaceAndDepth": "浅底色、白卡面、非常克制的粉色阴影",
+      "imageryAndIconography": "以 Lucide 图标替代重插画，保持后续接入成本低",
+      "interactionTone": "按钮可爱但不幼稚，强调轻松校园感和策略反馈"
+    },
+    "specsConstraints": null,
+    "sharedProjectShellContract": {
+      "navigationShell": "顶部信息条 + 主内容区 + 侧边辅助信息板",
+      "primaryColorSystem": "粉玫瑰主色配白色卡面",
+      "typographySystem": "中文粗标题 + 15px 正文 + 小号大写信息标签",
+      "radiusScale": "卡片 24-30px，次级按钮 18-22px",
+      "surfaceDepthModel": "白色或淡彩卡片搭配极浅阴影和柔边框",
+      "ctaStyle": "主按钮渐变粉紫，次按钮白底描边",
+      "alignmentRules": "标题区左对齐，关键数值用规则化胶囊或统计卡"
+    },
+    "generationTree": {
+      "root": {
+        "nodeId": "gen-project-shell",
+        "kind": "project-shell",
+        "pageIds": [
+          "page-personality-test",
+          "page-schedule",
+          "page-battle",
+          "page-shop"
+        ],
+        "output": "partials/project-shell.html",
+        "sharedRegions": [
+          "soft academy palette",
+          "rounded panel language",
+          "desktop game shell rhythm"
+        ],
+        "privateRegions": [],
+        "mutableSlots": [
+          "pageTitle",
+          "primaryAction"
+        ],
+        "status": "generated",
+        "children": []
+      }
+    }
+  },
+  "designSource": {
+    "operatingMode": "free-explore",
+    "libraryIdentity": {
+      "name": null,
+      "id": null,
+      "version": null,
+      "scope": null,
+      "path": null,
+      "versionSource": null
+    },
+    "libraryPath": null,
+    "cssFilePath": "/Users/bytedance/unitygame/final-defense-ui-proposal/colors_and_type.css",
+    "brandPrefix": "finaldefense",
+    "themeMode": "light",
+    "designDecisionSummary": "校园二次元风格的 Unity 游戏界面提案，优先可读性与接入感",
+    "componentContractKind": null,
+    "forbiddenInventedComponents": [],
+    "allowedComponents": [],
+    "styleConstraints": {
+      "radiusMax": 30,
+      "spacingBase": 4,
+      "fontSizeBody": 15,
+      "fontSizeMin": 12,
+      "controlHeightDefault": 48,
+      "controlHeightLarge": 56
+    },
+    "productContext": {
+      "kitType": "game-ui-proposal",
+      "productType": "campus tower-defense management game"
+    },
+    "actualTokenNameReference": [
+      {
+        "semanticPurpose": "Primary background",
+        "tokenName": "finaldefense-background"
+      },
+      {
+        "semanticPurpose": "Primary action",
+        "tokenName": "finaldefense-primary"
+      },
+      {
+        "semanticPurpose": "Primary surface",
+        "tokenName": "finaldefense-card"
+      },
+      {
+        "semanticPurpose": "Border",
+        "tokenName": "finaldefense-border"
+      }
+    ]
+  },
+  "pages": [
+    {
+      "nodeId": "page-personality-test",
+      "slug": "personality-test",
+      "title": "人格测试",
+      "htmlSrc": "pages/personality-test.html",
+      "pageIndex": 1,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "showcase",
+      "viewportMode": "app-shell",
+      "businessScenario": "游戏开场人格测试页",
+      "visualNorthStar": "像校园视觉小说开场画面一样温柔，但要一眼看懂这是功能入口页",
+      "compositionPattern": "split-screen story card",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "大圆角与轻阴影",
+        "主按钮粉紫渐变"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "左侧大视觉与右侧答题区域的比例平衡"
+      ]
+    },
+    {
+      "nodeId": "page-schedule",
+      "slug": "schedule",
+      "title": "日程安排",
+      "htmlSrc": "pages/schedule.html",
+      "pageIndex": 2,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "information-dense",
+      "viewportMode": "app-shell",
+      "businessScenario": "战斗前的时间规划与属性成长页",
+      "visualNorthStar": "像轻策略养成游戏的桌面控制台，信息多但要保持温柔和有序",
+      "compositionPattern": "three-panel task board",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "数据标签胶囊化",
+        "主次操作分层"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "高信息密度但不能压缩阅读"
+      ]
+    },
+    {
+      "nodeId": "page-battle",
+      "slug": "battle",
+      "title": "战斗 HUD",
+      "htmlSrc": "pages/battle.html",
+      "pageIndex": 3,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "task-driven",
+      "viewportMode": "app-shell",
+      "businessScenario": "塔防战斗主界面与关卡 HUD",
+      "visualNorthStar": "像完整可玩的关卡 HUD，而不是开发调试图层",
+      "compositionPattern": "deck + board + tactical rail",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "数值模块规则化",
+        "地图区更柔和更游戏化"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "地图预览区需要足够大",
+        "左右信息栏不能抢中心战场"
+      ]
+    },
+    {
+      "nodeId": "page-shop",
+      "slug": "shop",
+      "title": "商店界面",
+      "htmlSrc": "pages/shop.html",
+      "pageIndex": 4,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "information-dense",
+      "viewportMode": "app-shell",
+      "businessScenario": "战斗前补给与商品选择页",
+      "visualNorthStar": "像角色养成游戏物资卡册，购买反馈清楚并带一点甜品店气质",
+      "compositionPattern": "catalog + basket summary",
+      "continuityAnchors": [
+        "粉白卡片体系",
+        "商品卡彩色分类",
+        "主次操作分层"
+      ],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "componentPlan": [],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "qualityRisks": [
+        "商品卡多但仍要保持节奏统一"
+      ]
+    }
+  ],
+  "assets": [],
+  "wiringPlan": [
+    {
+      "sourceNodeId": "page-personality-test",
+      "domId": "cta-start-schedule",
+      "targetPageId": "page-schedule"
+    },
+    {
+      "sourceNodeId": "page-schedule",
+      "domId": "open-shop",
+      "targetPageId": "page-shop"
+    },
+    {
+      "sourceNodeId": "page-schedule",
+      "domId": "go-battle",
+      "targetPageId": "page-battle"
+    },
+    {
+      "sourceNodeId": "page-battle",
+      "domId": "go-shop-battle",
+      "targetPageId": "page-shop"
+    },
+    {
+      "sourceNodeId": "page-shop",
+      "domId": "back-schedule",
+      "targetPageId": "page-schedule"
+    },
+    {
+      "sourceNodeId": "page-shop",
+      "domId": "go-battle-from-shop",
+      "targetPageId": "page-battle"
+    }
+  ],
+  "hiddenInteractionPlan": [
+    {
+      "sourceNodeId": "page-battle",
+      "domId": "back-schedule-battle",
+      "targetPageId": "page-schedule",
+      "hideEdge": true,
+      "reason": "secondary return path"
+    }
+  ]
+}

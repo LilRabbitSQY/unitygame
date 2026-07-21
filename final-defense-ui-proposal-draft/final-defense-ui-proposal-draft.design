@@ -1,0 +1,141 @@
+{
+  "data": [
+    {
+      "id": "page-personality-test",
+      "title": "人格测试",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1780001000000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/personality-test.html",
+        "interactions": [
+          {
+            "domId": "cta-start-schedule",
+            "targetPageId": "page-schedule",
+            "transitionLabel": "进入安排"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-schedule",
+      "title": "日程安排",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1780001000001,
+      "canvasData": {
+        "x": 620,
+        "y": 0,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/schedule.html",
+        "interactions": [
+          {
+            "domId": "open-shop",
+            "targetPageId": "page-shop",
+            "transitionLabel": "前往商店"
+          },
+          {
+            "domId": "go-battle",
+            "targetPageId": "page-battle",
+            "transitionLabel": "进入战斗"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-battle",
+      "title": "战斗 HUD",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1780001000002,
+      "canvasData": {
+        "x": 0,
+        "y": 377,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/battle.html",
+        "interactions": [
+          {
+            "domId": "back-schedule-battle",
+            "targetPageId": "page-schedule",
+            "hideEdge": true,
+            "transitionLabel": "返回备战"
+          },
+          {
+            "domId": "go-shop-battle",
+            "targetPageId": "page-shop",
+            "transitionLabel": "战前采购"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-battle-map-tower-ui",
+      "title": "战斗 HUD - 地图与塔 UI 强化",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1780001000004,
+      "canvasData": {
+        "x": 0,
+        "y": 754,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/battle-map-tower-ui.html",
+        "interactions": [
+          {
+            "domId": "back-battle-original",
+            "targetPageId": "page-battle",
+            "hideEdge": true,
+            "transitionLabel": "返回原战斗页"
+          },
+          {
+            "domId": "go-shop-map-tower",
+            "targetPageId": "page-shop",
+            "transitionLabel": "打开补给"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-shop",
+      "title": "商店界面",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1780001000003,
+      "canvasData": {
+        "x": 620,
+        "y": 377,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/shop.html",
+        "interactions": [
+          {
+            "domId": "back-schedule",
+            "targetPageId": "page-schedule",
+            "transitionLabel": "返回安排"
+          },
+          {
+            "domId": "go-battle-from-shop",
+            "targetPageId": "page-battle",
+            "transitionLabel": "准备开战"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "期末保卫战 UI 提案-游戏化改稿"
+  }
+}

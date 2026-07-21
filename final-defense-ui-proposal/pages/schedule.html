@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日程安排</title>
+    <style id="theme-vars">
+:root {
+  --finaldefense-background: #fff8fb;
+  --finaldefense-foreground: #2c2134;
+  --finaldefense-card: #ffffff;
+  --finaldefense-card-foreground: #2f2340;
+  --finaldefense-popover: #fffafd;
+  --finaldefense-popover-foreground: #2f2340;
+  --finaldefense-primary: #e66b8a;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #f8d7e2;
+  --finaldefense-secondary-foreground: #6d435b;
+  --finaldefense-muted: #f8eef3;
+  --finaldefense-muted-foreground: #7d6475;
+  --finaldefense-accent: #ffe9f1;
+  --finaldefense-accent-foreground: #7f4762;
+  --finaldefense-destructive: #d4556f;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #edd6df;
+  --finaldefense-input: #f1dfe7;
+  --finaldefense-ring: #f09ab1;
+  --finaldefense-chart-1: #e66b8a;
+  --finaldefense-chart-2: #7f7ce0;
+  --finaldefense-chart-3: #f3b55a;
+  --finaldefense-chart-4: #7ec8b8;
+  --finaldefense-chart-5: #b78cf5;
+  --finaldefense-sidebar: #fff2f7;
+  --finaldefense-sidebar-foreground: #382b42;
+  --finaldefense-sidebar-primary: #e66b8a;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #fce5ee;
+  --finaldefense-sidebar-accent-foreground: #6e4761;
+
+  --finaldefense-surface-strong: #ffe3ec;
+  --finaldefense-surface-soft: #fff2f6;
+  --finaldefense-surface-tint: #fff7fa;
+  --finaldefense-state-success: #4aa886;
+  --finaldefense-state-warning: #e5a34f;
+  --finaldefense-state-error: #d4556f;
+  --finaldefense-state-info: #6d7de7;
+
+  --finaldefense-radius-small: 10px;
+  --finaldefense-radius-medium: 18px;
+  --finaldefense-radius-large: 28px;
+  --finaldefense-radius-sm: 10px;
+  --finaldefense-radius-md: 18px;
+  --finaldefense-radius-lg: 28px;
+
+  --finaldefense-font-primary: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-font-display: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-shadow-soft: 0 14px 34px rgba(230, 107, 138, 0.10);
+  --finaldefense-shadow-card: 0 8px 22px rgba(91, 63, 96, 0.06);
+}
+
+.dark {
+  --finaldefense-background: #1c1623;
+  --finaldefense-foreground: #f9edf4;
+  --finaldefense-card: #261f30;
+  --finaldefense-card-foreground: #faeef5;
+  --finaldefense-popover: #2b2234;
+  --finaldefense-popover-foreground: #faeef5;
+  --finaldefense-primary: #f08aaa;
+  --finaldefense-primary-foreground: #291b27;
+  --finaldefense-secondary: #3d2c3f;
+  --finaldefense-secondary-foreground: #f5d9e7;
+  --finaldefense-muted: #312737;
+  --finaldefense-muted-foreground: #d2b8c6;
+  --finaldefense-accent: #372b3b;
+  --finaldefense-accent-foreground: #f2dce7;
+  --finaldefense-destructive: #ff8ea4;
+  --finaldefense-destructive-foreground: #2b1621;
+  --finaldefense-border: #4b3950;
+  --finaldefense-input: #46354a;
+  --finaldefense-ring: #f3a6bc;
+  --finaldefense-sidebar: #221a2a;
+  --finaldefense-sidebar-foreground: #f8eef4;
+  --finaldefense-sidebar-primary: #f08aaa;
+  --finaldefense-sidebar-primary-foreground: #291b27;
+  --finaldefense-sidebar-accent: #382b3b;
+  --finaldefense-sidebar-accent-foreground: #f1dce6;
+  --finaldefense-surface-strong: #372835;
+  --finaldefense-surface-soft: #2f2535;
+  --finaldefense-surface-tint: #251d2d;
+  --finaldefense-shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.28);
+  --finaldefense-shadow-card: 0 10px 26px rgba(0, 0, 0, 0.20);
+}
+
+body {
+  font-family: var(--finaldefense-font-primary);
+}
+
+.finaldefense-display {
+  font-family: var(--finaldefense-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.finaldefense-h1 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.finaldefense-h2 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.14;
+  font-weight: 700;
+}
+
+.finaldefense-body {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--finaldefense-background);
+    --color-foreground: var(--finaldefense-foreground);
+    --color-card: var(--finaldefense-card);
+    --color-card-foreground: var(--finaldefense-card-foreground);
+    --color-popover: var(--finaldefense-popover);
+    --color-popover-foreground: var(--finaldefense-popover-foreground);
+    --color-primary: var(--finaldefense-primary);
+    --color-primary-foreground: var(--finaldefense-primary-foreground);
+    --color-secondary: var(--finaldefense-secondary);
+    --color-secondary-foreground: var(--finaldefense-secondary-foreground);
+    --color-muted: var(--finaldefense-muted);
+    --color-muted-foreground: var(--finaldefense-muted-foreground);
+    --color-accent: var(--finaldefense-accent);
+    --color-accent-foreground: var(--finaldefense-accent-foreground);
+    --color-destructive: var(--finaldefense-destructive);
+    --color-destructive-foreground: var(--finaldefense-destructive-foreground);
+    --color-border: var(--finaldefense-border);
+    --color-input: var(--finaldefense-input);
+    --color-ring: var(--finaldefense-ring);
+    --color-chart-1: var(--finaldefense-chart-1);
+    --color-chart-2: var(--finaldefense-chart-2);
+    --color-chart-3: var(--finaldefense-chart-3);
+    --color-chart-4: var(--finaldefense-chart-4);
+    --color-chart-5: var(--finaldefense-chart-5);
+    --color-sidebar: var(--finaldefense-sidebar);
+    --color-sidebar-foreground: var(--finaldefense-sidebar-foreground);
+    --color-sidebar-primary: var(--finaldefense-sidebar-primary);
+    --color-sidebar-primary-foreground: var(--finaldefense-sidebar-primary-foreground);
+    --color-sidebar-accent: var(--finaldefense-sidebar-accent);
+    --color-sidebar-accent-foreground: var(--finaldefense-sidebar-accent-foreground);
+    --radius-sm: var(--finaldefense-radius-sm);
+    --radius-md: var(--finaldefense-radius-md);
+    --radius-lg: var(--finaldefense-radius-lg);
+  }
+  @layer base {
+    body { background: var(--finaldefense-background); color: var(--finaldefense-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--finaldefense-background); }
+      .text-background { color: var(--finaldefense-background); }
+      .border-background { border-color: var(--finaldefense-background); }
+      .ring-background { --tw-ring-color: var(--finaldefense-background); }
+      .bg-foreground { background-color: var(--finaldefense-foreground); }
+      .text-foreground { color: var(--finaldefense-foreground); }
+      .border-foreground { border-color: var(--finaldefense-foreground); }
+      .ring-foreground { --tw-ring-color: var(--finaldefense-foreground); }
+      .bg-card { background-color: var(--finaldefense-card); }
+      .text-card { color: var(--finaldefense-card); }
+      .border-card { border-color: var(--finaldefense-card); }
+      .ring-card { --tw-ring-color: var(--finaldefense-card); }
+      .bg-card-foreground { background-color: var(--finaldefense-card-foreground); }
+      .text-card-foreground { color: var(--finaldefense-card-foreground); }
+      .border-card-foreground { border-color: var(--finaldefense-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--finaldefense-card-foreground); }
+      .bg-popover { background-color: var(--finaldefense-popover); }
+      .text-popover { color: var(--finaldefense-popover); }
+      .border-popover { border-color: var(--finaldefense-popover); }
+      .ring-popover { --tw-ring-color: var(--finaldefense-popover); }
+      .bg-popover-foreground { background-color: var(--finaldefense-popover-foreground); }
+      .text-popover-foreground { color: var(--finaldefense-popover-foreground); }
+      .border-popover-foreground { border-color: var(--finaldefense-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--finaldefense-popover-foreground); }
+      .bg-primary { background-color: var(--finaldefense-primary); }
+      .text-primary { color: var(--finaldefense-primary); }
+      .border-primary { border-color: var(--finaldefense-primary); }
+      .ring-primary { --tw-ring-color: var(--finaldefense-primary); }
+      .bg-primary-foreground { background-color: var(--finaldefense-primary-foreground); }
+      .text-primary-foreground { color: var(--finaldefense-primary-foreground); }
+      .border-primary-foreground { border-color: var(--finaldefense-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--finaldefense-primary-foreground); }
+      .bg-secondary { background-color: var(--finaldefense-secondary); }
+      .text-secondary { color: var(--finaldefense-secondary); }
+      .border-secondary { border-color: var(--finaldefense-secondary); }
+      .ring-secondary { --tw-ring-color: var(--finaldefense-secondary); }
+      .bg-secondary-foreground { background-color: var(--finaldefense-secondary-foreground); }
+      .text-secondary-foreground { color: var(--finaldefense-secondary-foreground); }
+      .border-secondary-foreground { border-color: var(--finaldefense-secondary-foreground); }
+      .ring-secondary-foreground { --tw-ring-color: var(--finaldefense-secondary-foreground); }
+      .bg-muted { background-color: var(--finaldefense-muted); }
+      .text-muted { color: var(--finaldefense-muted); }
+      .border-muted { border-color: var(--finaldefense-muted); }
+      .ring-muted { --tw-ring-color: var(--finaldefense-muted); }
+      .bg-muted-foreground { background-color: var(--finaldefense-muted-foreground); }
+      .text-muted-foreground { color: var(--finaldefense-muted-foreground); }
+      .border-muted-foreground { border-color: var(--finaldefense-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--finaldefense-muted-foreground); }
+      .bg-accent { background-color: var(--finaldefense-accent); }
+      .text-accent { color: var(--finaldefense-accent); }
+      .border-accent { border-color: var(--finaldefense-accent); }
+      .ring-accent { --tw-ring-color: var(--finaldefense-accent); }
+      .bg-accent-foreground { background-color: var(--finaldefense-accent-foreground); }
+      .text-accent-foreground { color: var(--finaldefense-accent-foreground); }
+      .border-accent-foreground { border-color: var(--finaldefense-accent-foreground); }
+      .ring-accent-foreground { --tw-ring-color: var(--finaldefense-accent-foreground); }
+      .bg-destructive { background-color: var(--finaldefense-destructive); }
+      .text-destructive { color: var(--finaldefense-destructive); }
+      .border-destructive { border-color: var(--finaldefense-destructive); }
+      .ring-destructive { --tw-ring-color: var(--finaldefense-destructive); }
+      .bg-destructive-foreground { background-color: var(--finaldefense-destructive-foreground); }
+      .text-destructive-foreground { color: var(--finaldefense-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--finaldefense-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--finaldefense-destructive-foreground); }
+      .bg-border { background-color: var(--finaldefense-border); }
+      .text-border { color: var(--finaldefense-border); }
+      .border-border { border-color: var(--finaldefense-border); }
+      .ring-border { --tw-ring-color: var(--finaldefense-border); }
+      .bg-input { background-color: var(--finaldefense-input); }
+      .text-input { color: var(--finaldefense-input); }
+      .border-input { border-color: var(--finaldefense-input); }
+      .ring-input { --tw-ring-color: var(--finaldefense-input); }
+      .bg-ring { background-color: var(--finaldefense-ring); }
+      .text-ring { color: var(--finaldefense-ring); }
+      .border-ring { border-color: var(--finaldefense-ring); }
+      .ring-ring { --tw-ring-color: var(--finaldefense-ring); }
+      .bg-chart-1 { background-color: var(--finaldefense-chart-1); }
+      .text-chart-1 { color: var(--finaldefense-chart-1); }
+      .border-chart-1 { border-color: var(--finaldefense-chart-1); }
+      .ring-chart-1 { --tw-ring-color: var(--finaldefense-chart-1); }
+      .bg-chart-2 { background-color: var(--finaldefense-chart-2); }
+      .text-chart-2 { color: var(--finaldefense-chart-2); }
+      .border-chart-2 { border-color: var(--finaldefense-chart-2); }
+      .ring-chart-2 { --tw-ring-color: var(--finaldefense-chart-2); }
+      .bg-chart-3 { background-color: var(--finaldefense-chart-3); }
+      .text-chart-3 { color: var(--finaldefense-chart-3); }
+      .border-chart-3 { border-color: var(--finaldefense-chart-3); }
+      .ring-chart-3 { --tw-ring-color: var(--finaldefense-chart-3); }
+      .bg-chart-4 { background-color: var(--finaldefense-chart-4); }
+      .text-chart-4 { color: var(--finaldefense-chart-4); }
+      .border-chart-4 { border-color: var(--finaldefense-chart-4); }
+      .ring-chart-4 { --tw-ring-color: var(--finaldefense-chart-4); }
+      .bg-chart-5 { background-color: var(--finaldefense-chart-5); }
+      .text-chart-5 { color: var(--finaldefense-chart-5); }
+      .border-chart-5 { border-color: var(--finaldefense-chart-5); }
+      .ring-chart-5 { --tw-ring-color: var(--finaldefense-chart-5); }
+      .bg-sidebar { background-color: var(--finaldefense-sidebar); }
+      .text-sidebar { color: var(--finaldefense-sidebar); }
+      .border-sidebar { border-color: var(--finaldefense-sidebar); }
+      .ring-sidebar { --tw-ring-color: var(--finaldefense-sidebar); }
+      .bg-sidebar-foreground { background-color: var(--finaldefense-sidebar-foreground); }
+      .text-sidebar-foreground { color: var(--finaldefense-sidebar-foreground); }
+      .border-sidebar-foreground { border-color: var(--finaldefense-sidebar-foreground); }
+      .ring-sidebar-foreground { --tw-ring-color: var(--finaldefense-sidebar-foreground); }
+      .bg-sidebar-primary { background-color: var(--finaldefense-sidebar-primary); }
+      .text-sidebar-primary { color: var(--finaldefense-sidebar-primary); }
+      .border-sidebar-primary { border-color: var(--finaldefense-sidebar-primary); }
+      .ring-sidebar-primary { --tw-ring-color: var(--finaldefense-sidebar-primary); }
+      .bg-sidebar-primary-foreground { background-color: var(--finaldefense-sidebar-primary-foreground); }
+      .text-sidebar-primary-foreground { color: var(--finaldefense-sidebar-primary-foreground); }
+      .border-sidebar-primary-foreground { border-color: var(--finaldefense-sidebar-primary-foreground); }
+      .ring-sidebar-primary-foreground { --tw-ring-color: var(--finaldefense-sidebar-primary-foreground); }
+      .bg-sidebar-accent { background-color: var(--finaldefense-sidebar-accent); }
+      .text-sidebar-accent { color: var(--finaldefense-sidebar-accent); }
+      .border-sidebar-accent { border-color: var(--finaldefense-sidebar-accent); }
+      .ring-sidebar-accent { --tw-ring-color: var(--finaldefense-sidebar-accent); }
+      .bg-sidebar-accent-foreground { background-color: var(--finaldefense-sidebar-accent-foreground); }
+      .text-sidebar-accent-foreground { color: var(--finaldefense-sidebar-accent-foreground); }
+      .border-sidebar-accent-foreground { border-color: var(--finaldefense-sidebar-accent-foreground); }
+      .ring-sidebar-accent-foreground { --tw-ring-color: var(--finaldefense-sidebar-accent-foreground); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="h-screen overflow-hidden" style="background:var(--finaldefense-background); color:var(--finaldefense-foreground);">
+  <main data-viewport-mode="app-shell" class="h-screen min-h-0 overflow-hidden p-5 lg:p-6">
+    <div data-scroll-region="primary" class="grid h-full min-h-0 overflow-y-auto gap-5 xl:grid-cols-[280px_minmax(0,1fr)_330px]">
+      <aside class="flex min-h-0 flex-col rounded-[30px] border p-5" style="background:linear-gradient(180deg, #fff7fa 0%, #ffedf3 100%); border-color:var(--finaldefense-border); box-shadow:var(--finaldefense-shadow-card);">
+        <div class="mb-6 flex items-center gap-3">
+          <div class="flex h-14 w-14 items-center justify-center rounded-[22px] text-white" style="background:linear-gradient(135deg, #e66b8a 0%, #8d7ee8 100%);">
+            <i data-lucide="calendar-heart" class="h-7 w-7"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium" style="color:#987284;">第 7 周 · 备考周</p>
+            <h1 class="text-[26px] font-extrabold leading-none">本周安排</h1>
+          </div>
+        </div>
+
+        <div class="grid gap-3">
+          <article class="rounded-[24px] border p-4" style="border-color:rgba(255,255,255,0.72); background:rgba(255,255,255,0.82);">
+            <p class="mb-3 text-sm font-semibold" style="color:#9e7083;">核心状态</p>
+            <div class="space-y-3">
+              <div>
+                <div class="mb-1 flex items-center justify-between text-sm"><span>GPA</span><span>88 / 100</span></div>
+                <div class="h-2 rounded-full" style="background:#f4e2ea;"><div class="h-2 rounded-full" style="width:88%; background:#e66b8a;"></div></div>
+              </div>
+              <div>
+                <div class="mb-1 flex items-center justify-between text-sm"><span>行动点</span><span>4 / 5</span></div>
+                <div class="h-2 rounded-full" style="background:#f4e2ea;"><div class="h-2 rounded-full" style="width:80%; background:#7f7ce0;"></div></div>
+              </div>
+              <div>
+                <div class="mb-1 flex items-center justify-between text-sm"><span>学力值</span><span>13</span></div>
+                <div class="h-2 rounded-full" style="background:#f4e2ea;"><div class="h-2 rounded-full" style="width:66%; background:#69b0a4;"></div></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="rounded-[24px] border p-4" style="border-color:rgba(255,255,255,0.72); background:rgba(255,255,255,0.82);">
+            <div class="mb-3 flex items-center justify-between">
+              <p class="text-sm font-semibold" style="color:#9e7083;">人格加成</p>
+              <span class="rounded-full px-3 py-1 text-xs font-semibold" style="background:#ffe7f0; color:#c45d7c;">学术人</span>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center justify-between"><span>夜间学习收益</span><span class="font-semibold" style="color:#4aa886;">+20%</span></div>
+              <div class="flex items-center justify-between"><span>DDL 焦虑抵抗</span><span class="font-semibold" style="color:#6d7de7;">+12%</span></div>
+              <div class="flex items-center justify-between"><span>体力消耗</span><span class="font-semibold" style="color:#d27f43;">略高</span></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="mt-auto rounded-[24px] border p-4" style="border-color:rgba(255,255,255,0.72); background:rgba(255,255,255,0.8);">
+          <p class="mb-3 text-sm font-semibold" style="color:#9e7083;">视觉策略</p>
+          <p class="text-sm leading-6" style="color:#7a6571;">
+            这页把“排课”做成温柔但高信息密度的桌面面板：左侧是角色状态，中间是行动选择，右侧持续提醒 DDL 压力。
+          </p>
+        </div>
+      </aside>
+
+      <section class="flex min-h-0 flex-col rounded-[30px] border p-5" style="background:var(--finaldefense-card); border-color:var(--finaldefense-border); box-shadow:var(--finaldefense-shadow-card);">
+        <div class="mb-5 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <p class="mb-2 text-sm font-semibold uppercase tracking-[0.2em]" style="color:#a96d85;">Action Board</p>
+            <h2 class="finaldefense-h2 max-w-[16ch]" style="text-wrap:balance; word-break:keep-all; overflow-wrap:break-word;">安排今天的时间，决定下一场保卫战准备得够不够</h2>
+          </div>
+          <div class="rounded-full border px-4 py-2 text-sm font-medium" style="border-color:var(--finaldefense-border); background:var(--finaldefense-muted); color:#775f70;">
+            星期四 · 夜晚时段已解锁
+          </div>
+        </div>
+
+        <div class="grid min-h-0 flex-1 gap-4 lg:grid-cols-3">
+          <article class="flex min-h-0 flex-col rounded-[26px] border p-4" style="border-color:var(--finaldefense-border); background:linear-gradient(180deg, #fffafc 0%, #fff2f6 100%);">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium" style="color:#9a7183;">上午</p>
+                <p class="text-xl font-bold">高强度学习</p>
+              </div>
+              <div class="rounded-2xl p-3 text-white" style="background:#8d7ee8;">
+                <i data-lucide="notebook-text" class="h-5 w-5"></i>
+              </div>
+            </div>
+            <p class="mb-4 line-clamp-3 text-sm leading-6" style="color:#766370;">提升学力与毅力，最适合在离考试还剩两天的时候使用。</p>
+            <div class="mb-4 flex flex-wrap gap-2 text-xs font-semibold">
+              <span class="rounded-full px-3 py-1" style="background:#ffe8f0; color:#c1597a;">学力 +3</span>
+              <span class="rounded-full px-3 py-1" style="background:#eef0ff; color:#6874df;">毅力 +2</span>
+              <span class="rounded-full px-3 py-1" style="background:#fff1dc; color:#d08939;">行动点 -2</span>
+            </div>
+            <button class="mt-auto inline-flex items-center justify-center gap-2 rounded-[18px] px-4 py-3 text-sm font-semibold text-white" style="background:#e66b8a;">
+              选择学习
+              <i data-lucide="arrow-right" class="h-4 w-4"></i>
+            </button>
+          </article>
+
+          <article class="flex min-h-0 flex-col rounded-[26px] border p-4" style="border-color:#efd9bc; background:linear-gradient(180deg, #fffaf2 0%, #fff3e5 100%);">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium" style="color:#9d7761;">下午</p>
+                <p class="text-xl font-bold">健身 / 社团</p>
+              </div>
+              <div class="rounded-2xl p-3 text-white" style="background:#f0b47a;">
+                <i data-lucide="dumbbell" class="h-5 w-5"></i>
+              </div>
+            </div>
+            <p class="mb-4 line-clamp-3 text-sm leading-6" style="color:#7b6656;">补足体力与情绪，降低连续学习造成的负反馈。</p>
+            <div class="mb-4 flex flex-wrap gap-2 text-xs font-semibold">
+              <span class="rounded-full px-3 py-1" style="background:#fff5dc; color:#cc8c3f;">体力 +3</span>
+              <span class="rounded-full px-3 py-1" style="background:#ffe8f0; color:#c1597a;">情绪 +2</span>
+              <span class="rounded-full px-3 py-1" style="background:#f5ecff; color:#8b6dda;">学力 -1</span>
+            </div>
+            <button class="mt-auto inline-flex items-center justify-center gap-2 rounded-[18px] px-4 py-3 text-sm font-semibold" style="background:#fff; color:#85553f; border:1px solid rgba(214,154,87,0.2);">
+              选择活动
+              <i data-lucide="plus" class="h-4 w-4"></i>
+            </button>
+          </article>
+
+          <article class="flex min-h-0 flex-col rounded-[26px] border p-4" style="border-color:#dfe2fb; background:linear-gradient(180deg, #f8f8ff 0%, #eff0ff 100%);">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium" style="color:#7374aa;">夜晚</p>
+                <p class="text-xl font-bold">图书馆冲刺</p>
+              </div>
+              <div class="rounded-2xl p-3 text-white" style="background:#7f7ce0;">
+                <i data-lucide="library-big" class="h-5 w-5"></i>
+              </div>
+            </div>
+            <p class="mb-4 line-clamp-3 text-sm leading-6" style="color:#64668c;">夜晚时段收益更高，但如果行动点不足会触发拖延惩罚。</p>
+            <div class="mb-4 flex flex-wrap gap-2 text-xs font-semibold">
+              <span class="rounded-full px-3 py-1" style="background:#eef0ff; color:#6874df;">学力 +4</span>
+              <span class="rounded-full px-3 py-1" style="background:#f0fff8; color:#4aa886;">DDL 压力 -1</span>
+              <span class="rounded-full px-3 py-1" style="background:#fff1dc; color:#d08939;">行动点 -2</span>
+            </div>
+            <button class="mt-auto inline-flex items-center justify-center gap-2 rounded-[18px] px-4 py-3 text-sm font-semibold" style="background:#fff; color:#5e61ae; border:1px solid rgba(127,124,224,0.22);">
+              晚间冲刺
+              <i data-lucide="moon-star" class="h-4 w-4"></i>
+            </button>
+          </article>
+        </div>
+
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-[24px] border px-4 py-4" style="border-color:var(--finaldefense-border); background:var(--finaldefense-muted);">
+          <div class="min-w-0">
+            <p class="text-sm font-medium" style="color:#836a79;">今日推荐路线</p>
+            <p class="truncate text-base font-semibold">上午学习 → 夜晚图书馆 → 战前去商店补充咖啡</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button data-dom-id="open-shop" class="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-semibold" style="background:#ffffff; color:#6a5060; border:1px solid var(--finaldefense-border);">
+              去商店补给
+              <i data-lucide="shopping-bag" class="h-4 w-4"></i>
+            </button>
+            <button data-dom-id="go-battle" class="inline-flex items-center gap-2 rounded-[18px] px-5 py-3 text-sm font-semibold text-white" style="background:linear-gradient(135deg, #e66b8a 0%, #8d7ee8 100%);">
+              进入保卫战
+              <i data-lucide="swords" class="h-4 w-4"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="flex min-h-0 flex-col gap-4 rounded-[30px] border p-5" style="background:var(--finaldefense-card); border-color:var(--finaldefense-border); box-shadow:var(--finaldefense-shadow-card);">
+        <article class="rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:linear-gradient(180deg, #fffafc 0%, #fff3f7 100%);">
+          <div class="mb-4 flex items-center justify-between">
+            <p class="text-sm font-semibold uppercase tracking-[0.18em]" style="color:#9e7083;">DDL 追踪</p>
+            <i data-lucide="siren" class="h-5 w-5" style="color:#d4556f;"></i>
+          </div>
+          <div class="space-y-3">
+            <div class="rounded-[18px] border p-3" style="border-color:#f4d1dc; background:#fff;">
+              <div class="mb-1 flex items-center justify-between text-sm font-semibold"><span>实验报告</span><span style="color:#d4556f;">剩 2 天</span></div>
+              <p class="text-sm leading-6" style="color:#796673;">如果今天不补学力，战斗胜利奖励会打折。</p>
+            </div>
+            <div class="rounded-[18px] border p-3" style="border-color:#f4d1dc; background:#fff;">
+              <div class="mb-1 flex items-center justify-between text-sm font-semibold"><span>小组展示</span><span style="color:#e5a34f;">剩 4 天</span></div>
+              <p class="text-sm leading-6" style="color:#796673;">社交活动能提升情绪，避免展示前崩盘。</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:var(--finaldefense-muted);">
+          <div class="mb-4 flex items-center justify-between">
+            <p class="text-sm font-semibold uppercase tracking-[0.18em]" style="color:#9e7083;">行动预算</p>
+            <span class="rounded-full px-3 py-1 text-xs font-semibold" style="background:#fff; color:#7b6472;">已规划 4 / 5</span>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between text-sm"><span>学习</span><span>2 点</span></div>
+            <div class="flex items-center justify-between text-sm"><span>社交 / 健身</span><span>1 点</span></div>
+            <div class="flex items-center justify-between text-sm"><span>商店补给</span><span>1 点</span></div>
+          </div>
+        </article>
+
+        <article class="flex-1 rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:#fff;">
+          <div class="mb-4 flex items-center justify-between">
+            <p class="text-sm font-semibold uppercase tracking-[0.18em]" style="color:#9e7083;">UI 设计重点</p>
+            <i data-lucide="palette" class="h-5 w-5" style="color:#7f7ce0;"></i>
+          </div>
+          <ul class="space-y-3 text-sm leading-6" style="color:#74616e;">
+            <li>把原本抽象的属性成长，变成更像卡牌游戏的反馈标签。</li>
+            <li>中间行动卡保留足够信息密度，但每张卡都能一眼看懂收益。</li>
+            <li>右侧持续提示 DDL 风险，让“模拟经营 + 塔防”关系更明确。</li>
+          </ul>
+        </article>
+      </aside>
+    </div>
+  </main>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

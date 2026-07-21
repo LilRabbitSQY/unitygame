@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>战斗地图与防御塔界面</title>
+    <style id="theme-vars">
+:root {
+  --finaldefense-background: #17141f;
+  --finaldefense-foreground: #f6f0ff;
+  --finaldefense-card: #221c2d;
+  --finaldefense-card-foreground: #f7f3fb;
+  --finaldefense-popover: #2a2234;
+  --finaldefense-popover-foreground: #f7f3fb;
+  --finaldefense-primary: #ff6b9f;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #2b2336;
+  --finaldefense-secondary-foreground: #e6d9ef;
+  --finaldefense-muted: #2f283b;
+  --finaldefense-muted-foreground: #c6b7d5;
+  --finaldefense-accent: #362d46;
+  --finaldefense-accent-foreground: #f5eefe;
+  --finaldefense-destructive: #ff6684;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #433754;
+  --finaldefense-input: #3a3149;
+  --finaldefense-ring: #ff8ab5;
+  --finaldefense-chart-1: #ff6b9f;
+  --finaldefense-chart-2: #7f83ff;
+  --finaldefense-chart-3: #ffb85c;
+  --finaldefense-chart-4: #49d3ae;
+  --finaldefense-chart-5: #c289ff;
+  --finaldefense-sidebar: #1d1727;
+  --finaldefense-sidebar-foreground: #f7f1ff;
+  --finaldefense-sidebar-primary: #ff6b9f;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #30273d;
+  --finaldefense-sidebar-accent-foreground: #f2e7fb;
+
+  --finaldefense-surface-strong: #2a2236;
+  --finaldefense-surface-soft: #241d2f;
+  --finaldefense-surface-tint: #1d1727;
+  --finaldefense-state-success: #45d19c;
+  --finaldefense-state-warning: #ffb24c;
+  --finaldefense-state-error: #ff6684;
+  --finaldefense-state-info: #7785ff;
+
+  --finaldefense-radius-small: 12px;
+  --finaldefense-radius-medium: 16px;
+  --finaldefense-radius-large: 22px;
+  --finaldefense-radius-sm: 12px;
+  --finaldefense-radius-md: 16px;
+  --finaldefense-radius-lg: 22px;
+
+  --finaldefense-font-primary: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-font-display: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.24);
+  --finaldefense-shadow-card: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.dark {
+  --finaldefense-background: #17141f;
+  --finaldefense-foreground: #f6f0ff;
+  --finaldefense-card: #221c2d;
+  --finaldefense-card-foreground: #f7f3fb;
+  --finaldefense-popover: #2a2234;
+  --finaldefense-popover-foreground: #f7f3fb;
+  --finaldefense-primary: #ff6b9f;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #2b2336;
+  --finaldefense-secondary-foreground: #e6d9ef;
+  --finaldefense-muted: #2f283b;
+  --finaldefense-muted-foreground: #c6b7d5;
+  --finaldefense-accent: #362d46;
+  --finaldefense-accent-foreground: #f5eefe;
+  --finaldefense-destructive: #ff6684;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #433754;
+  --finaldefense-input: #3a3149;
+  --finaldefense-ring: #ff8ab5;
+  --finaldefense-sidebar: #1d1727;
+  --finaldefense-sidebar-foreground: #f7f1ff;
+  --finaldefense-sidebar-primary: #ff6b9f;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #30273d;
+  --finaldefense-sidebar-accent-foreground: #f2e7fb;
+  --finaldefense-surface-strong: #2a2236;
+  --finaldefense-surface-soft: #241d2f;
+  --finaldefense-surface-tint: #1d1727;
+  --finaldefense-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.24);
+  --finaldefense-shadow-card: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+body {
+  font-family: var(--finaldefense-font-primary);
+  background:
+    radial-gradient(circle at top left, rgba(255, 107, 159, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(127, 131, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #17141f 0%, #120f19 100%);
+}
+
+.finaldefense-display {
+  font-family: var(--finaldefense-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.finaldefense-h1 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.finaldefense-h2 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.14;
+  font-weight: 700;
+}
+
+.finaldefense-body {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.finaldefense-panel {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%),
+    var(--finaldefense-card);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--finaldefense-shadow-card);
+  backdrop-filter: blur(14px);
+}
+
+.finaldefense-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.finaldefense-hud-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #b5a6c5;
+  font-weight: 700;
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--finaldefense-background);
+    --color-foreground: var(--finaldefense-foreground);
+    --color-card: var(--finaldefense-card);
+    --color-card-foreground: var(--finaldefense-card-foreground);
+    --color-popover: var(--finaldefense-popover);
+    --color-popover-foreground: var(--finaldefense-popover-foreground);
+    --color-primary: var(--finaldefense-primary);
+    --color-primary-foreground: var(--finaldefense-primary-foreground);
+    --color-secondary: var(--finaldefense-secondary);
+    --color-secondary-foreground: var(--finaldefense-secondary-foreground);
+    --color-muted: var(--finaldefense-muted);
+    --color-muted-foreground: var(--finaldefense-muted-foreground);
+    --color-accent: var(--finaldefense-accent);
+    --color-accent-foreground: var(--finaldefense-accent-foreground);
+    --color-destructive: var(--finaldefense-destructive);
+    --color-destructive-foreground: var(--finaldefense-destructive-foreground);
+    --color-border: var(--finaldefense-border);
+    --color-input: var(--finaldefense-input);
+    --color-ring: var(--finaldefense-ring);
+    --color-chart-1: var(--finaldefense-chart-1);
+    --color-chart-2: var(--finaldefense-chart-2);
+    --color-chart-3: var(--finaldefense-chart-3);
+    --color-chart-4: var(--finaldefense-chart-4);
+    --color-chart-5: var(--finaldefense-chart-5);
+    --color-sidebar: var(--finaldefense-sidebar);
+    --color-sidebar-foreground: var(--finaldefense-sidebar-foreground);
+    --color-sidebar-primary: var(--finaldefense-sidebar-primary);
+    --color-sidebar-primary-foreground: var(--finaldefense-sidebar-primary-foreground);
+    --color-sidebar-accent: var(--finaldefense-sidebar-accent);
+    --color-sidebar-accent-foreground: var(--finaldefense-sidebar-accent-foreground);
+    --radius-sm: var(--finaldefense-radius-sm);
+    --radius-md: var(--finaldefense-radius-md);
+    --radius-lg: var(--finaldefense-radius-lg);
+  }
+  @layer base {
+    body { background: var(--finaldefense-background); color: var(--finaldefense-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--finaldefense-background); }
+      .text-background { color: var(--finaldefense-background); }
+      .border-background { border-color: var(--finaldefense-background); }
+      .ring-background { --tw-ring-color: var(--finaldefense-background); }
+      .bg-foreground { background-color: var(--finaldefense-foreground); }
+      .text-foreground { color: var(--finaldefense-foreground); }
+      .border-foreground { border-color: var(--finaldefense-foreground); }
+      .ring-foreground { --tw-ring-color: var(--finaldefense-foreground); }
+      .bg-card { background-color: var(--finaldefense-card); }
+      .text-card { color: var(--finaldefense-card); }
+      .border-card { border-color: var(--finaldefense-card); }
+      .ring-card { --tw-ring-color: var(--finaldefense-card); }
+      .bg-card-foreground { background-color: var(--finaldefense-card-foreground); }
+      .text-card-foreground { color: var(--finaldefense-card-foreground); }
+      .border-card-foreground { border-color: var(--finaldefense-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--finaldefense-card-foreground); }
+      .bg-popover { background-color: var(--finaldefense-popover); }
+      .text-popover { color: var(--finaldefense-popover); }
+      .border-popover { border-color: var(--finaldefense-popover); }
+      .ring-popover { --tw-ring-color: var(--finaldefense-popover); }
+      .bg-popover-foreground { background-color: var(--finaldefense-popover-foreground); }
+      .text-popover-foreground { color: var(--finaldefense-popover-foreground); }
+      .border-popover-foreground { border-color: var(--finaldefense-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--finaldefense-popover-foreground); }
+      .bg-primary { background-color: var(--finaldefense-primary); }
+      .text-primary { color: var(--finaldefense-primary); }
+      .border-primary { border-color: var(--finaldefense-primary); }
+      .ring-primary { --tw-ring-color: var(--finaldefense-primary); }
+      .bg-primary-foreground { background-color: var(--finaldefense-primary-foreground); }
+      .text-primary-foreground { color: var(--finaldefense-primary-foreground); }
+      .border-primary-foreground { border-color: var(--finaldefense-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--finaldefense-primary-foreground); }
+      .bg-secondary { background-color: var(--finaldefense-secondary); }
+      .text-secondary { color: var(--finaldefense-secondary); }
+      .border-secondary { border-color: var(--finaldefense-secondary); }
+      .ring-secondary { --tw-ring-color: var(--finaldefense-secondary); }
+      .bg-secondary-foreground { background-color: var(--finaldefense-secondary-foreground); }
+      .text-secondary-foreground { color: var(--finaldefense-secondary-foreground); }
+      .border-secondary-foreground { border-color: var(--finaldefense-secondary-foreground); }
+      .ring-secondary-foreground { --tw-ring-color: var(--finaldefense-secondary-foreground); }
+      .bg-muted { background-color: var(--finaldefense-muted); }
+      .text-muted { color: var(--finaldefense-muted); }
+      .border-muted { border-color: var(--finaldefense-muted); }
+      .ring-muted { --tw-ring-color: var(--finaldefense-muted); }
+      .bg-muted-foreground { background-color: var(--finaldefense-muted-foreground); }
+      .text-muted-foreground { color: var(--finaldefense-muted-foreground); }
+      .border-muted-foreground { border-color: var(--finaldefense-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--finaldefense-muted-foreground); }
+      .bg-accent { background-color: var(--finaldefense-accent); }
+      .text-accent { color: var(--finaldefense-accent); }
+      .border-accent { border-color: var(--finaldefense-accent); }
+      .ring-accent { --tw-ring-color: var(--finaldefense-accent); }
+      .bg-accent-foreground { background-color: var(--finaldefense-accent-foreground); }
+      .text-accent-foreground { color: var(--finaldefense-accent-foreground); }
+      .border-accent-foreground { border-color: var(--finaldefense-accent-foreground); }
+      .ring-accent-foreground { --tw-ring-color: var(--finaldefense-accent-foreground); }
+      .bg-destructive { background-color: var(--finaldefense-destructive); }
+      .text-destructive { color: var(--finaldefense-destructive); }
+      .border-destructive { border-color: var(--finaldefense-destructive); }
+      .ring-destructive { --tw-ring-color: var(--finaldefense-destructive); }
+      .bg-destructive-foreground { background-color: var(--finaldefense-destructive-foreground); }
+      .text-destructive-foreground { color: var(--finaldefense-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--finaldefense-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--finaldefense-destructive-foreground); }
+      .bg-border { background-color: var(--finaldefense-border); }
+      .text-border { color: var(--finaldefense-border); }
+      .border-border { border-color: var(--finaldefense-border); }
+      .ring-border { --tw-ring-color: var(--finaldefense-border); }
+      .bg-input { background-color: var(--finaldefense-input); }
+      .text-input { color: var(--finaldefense-input); }
+      .border-input { border-color: var(--finaldefense-input); }
+      .ring-input { --tw-ring-color: var(--finaldefense-input); }
+      .bg-ring { background-color: var(--finaldefense-ring); }
+      .text-ring { color: var(--finaldefense-ring); }
+      .border-ring { border-color: var(--finaldefense-ring); }
+      .ring-ring { --tw-ring-color: var(--finaldefense-ring); }
+      .bg-chart-1 { background-color: var(--finaldefense-chart-1); }
+      .text-chart-1 { color: var(--finaldefense-chart-1); }
+      .border-chart-1 { border-color: var(--finaldefense-chart-1); }
+      .ring-chart-1 { --tw-ring-color: var(--finaldefense-chart-1); }
+      .bg-chart-2 { background-color: var(--finaldefense-chart-2); }
+      .text-chart-2 { color: var(--finaldefense-chart-2); }
+      .border-chart-2 { border-color: var(--finaldefense-chart-2); }
+      .ring-chart-2 { --tw-ring-color: var(--finaldefense-chart-2); }
+      .bg-chart-3 { background-color: var(--finaldefense-chart-3); }
+      .text-chart-3 { color: var(--finaldefense-chart-3); }
+      .border-chart-3 { border-color: var(--finaldefense-chart-3); }
+      .ring-chart-3 { --tw-ring-color: var(--finaldefense-chart-3); }
+      .bg-chart-4 { background-color: var(--finaldefense-chart-4); }
+      .text-chart-4 { color: var(--finaldefense-chart-4); }
+      .border-chart-4 { border-color: var(--finaldefense-chart-4); }
+      .ring-chart-4 { --tw-ring-color: var(--finaldefense-chart-4); }
+      .bg-chart-5 { background-color: var(--finaldefense-chart-5); }
+      .text-chart-5 { color: var(--finaldefense-chart-5); }
+      .border-chart-5 { border-color: var(--finaldefense-chart-5); }
+      .ring-chart-5 { --tw-ring-color: var(--finaldefense-chart-5); }
+      .bg-sidebar { background-color: var(--finaldefense-sidebar); }
+      .text-sidebar { color: var(--finaldefense-sidebar); }
+      .border-sidebar { border-color: var(--finaldefense-sidebar); }
+      .ring-sidebar { --tw-ring-color: var(--finaldefense-sidebar); }
+      .bg-sidebar-foreground { background-color: var(--finaldefense-sidebar-foreground); }
+      .text-sidebar-foreground { color: var(--finaldefense-sidebar-foreground); }
+      .border-sidebar-foreground { border-color: var(--finaldefense-sidebar-foreground); }
+      .ring-sidebar-foreground { --tw-ring-color: var(--finaldefense-sidebar-foreground); }
+      .bg-sidebar-primary { background-color: var(--finaldefense-sidebar-primary); }
+      .text-sidebar-primary { color: var(--finaldefense-sidebar-primary); }
+      .border-sidebar-primary { border-color: var(--finaldefense-sidebar-primary); }
+      .ring-sidebar-primary { --tw-ring-color: var(--finaldefense-sidebar-primary); }
+      .bg-sidebar-primary-foreground { background-color: var(--finaldefense-sidebar-primary-foreground); }
+      .text-sidebar-primary-foreground { color: var(--finaldefense-sidebar-primary-foreground); }
+      .border-sidebar-primary-foreground { border-color: var(--finaldefense-sidebar-primary-foreground); }
+      .ring-sidebar-primary-foreground { --tw-ring-color: var(--finaldefense-sidebar-primary-foreground); }
+      .bg-sidebar-accent { background-color: var(--finaldefense-sidebar-accent); }
+      .text-sidebar-accent { color: var(--finaldefense-sidebar-accent); }
+      .border-sidebar-accent { border-color: var(--finaldefense-sidebar-accent); }
+      .ring-sidebar-accent { --tw-ring-color: var(--finaldefense-sidebar-accent); }
+      .bg-sidebar-accent-foreground { background-color: var(--finaldefense-sidebar-accent-foreground); }
+      .text-sidebar-accent-foreground { color: var(--finaldefense-sidebar-accent-foreground); }
+      .border-sidebar-accent-foreground { border-color: var(--finaldefense-sidebar-accent-foreground); }
+      .ring-sidebar-accent-foreground { --tw-ring-color: var(--finaldefense-sidebar-accent-foreground); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="h-screen overflow-hidden font-sans antialiased" style="color: var(--finaldefense-foreground);">
+    <main data-viewport-mode="app-shell" class="finaldefense-grid h-screen min-h-0 overflow-hidden p-4 lg:p-5">
+      <div class="flex h-full min-h-0 flex-col gap-4">
+        <header class="finaldefense-panel shrink-0 rounded-[22px] px-4 py-3" style="border-color: color-mix(in srgb, var(--finaldefense-border) 80%, transparent);">
+          <div class="grid items-center gap-3 xl:grid-cols-[1.2fr_2fr_auto]">
+            <div class="min-w-0">
+              <p class="finaldefense-hud-label truncate">Campus Tower Defense</p>
+              <h1 class="mt-1 truncate text-[26px] font-black leading-tight lg:text-[30px]" style="text-wrap: balance; word-break: keep-all; overflow-wrap: break-word;">教学楼防线实战盘面</h1>
+            </div>
+            <div class="grid gap-2 sm:grid-cols-5">
+              <section class="rounded-[16px] border px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-surface-soft) 82%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 70%, transparent);">
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em]" style="color: var(--finaldefense-muted-foreground);">GPA</p>
+                <p class="mt-1 truncate text-xl font-black">3.86</p>
+              </section>
+              <section class="rounded-[16px] border px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-surface-soft) 82%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 70%, transparent);">
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em]" style="color: var(--finaldefense-muted-foreground);">金币</p>
+                <p class="mt-1 truncate text-xl font-black">128</p>
+              </section>
+              <section class="rounded-[16px] border px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-surface-soft) 82%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 70%, transparent);">
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em]" style="color: var(--finaldefense-muted-foreground);">部署费</p>
+                <p class="mt-1 truncate text-xl font-black">8 / 12</p>
+              </section>
+              <section class="rounded-[16px] border px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-state-info) 14%, var(--finaldefense-surface-soft)); border-color: color-mix(in srgb, var(--finaldefense-state-info) 38%, transparent);">
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em]" style="color: var(--finaldefense-muted-foreground);">波次</p>
+                <p class="mt-1 truncate text-xl font-black">3 / 5</p>
+              </section>
+              <section class="rounded-[16px] border px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 14%, var(--finaldefense-surface-soft)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 38%, transparent);">
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em]" style="color: var(--finaldefense-muted-foreground);">下一波</p>
+                <p class="mt-1 truncate text-xl font-black">00:18</p>
+              </section>
+            </div>
+            <div class="flex items-center justify-end gap-2">
+              <button data-dom-id="back-battle-original" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-[14px] border px-3 text-sm font-black transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2" style="background: color-mix(in srgb, var(--finaldefense-muted) 84%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 80%, transparent); outline-color: var(--finaldefense-ring);">
+                <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                原战斗页
+              </button>
+              <button data-dom-id="go-shop-map-tower" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-[14px] px-3 text-sm font-black transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2" style="background: linear-gradient(135deg, var(--finaldefense-primary), var(--finaldefense-state-info)); color: var(--finaldefense-primary-foreground); outline-color: var(--finaldefense-ring);">
+                塔牌商店
+                <i data-lucide="shopping-bag" class="h-4 w-4"></i>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div data-scroll-region="primary" class="grid min-h-0 flex-1 gap-4 overflow-y-auto xl:grid-cols-[300px_minmax(720px,1fr)_320px]">
+          <aside class="finaldefense-panel flex min-h-0 flex-col rounded-[22px] p-4" style="border-color: color-mix(in srgb, var(--finaldefense-border) 80%, transparent);">
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="finaldefense-hud-label truncate">Tower Deck</p>
+                <h2 class="mt-1 truncate text-2xl font-black">可部署塔牌</h2>
+              </div>
+              <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border" style="background: color-mix(in srgb, var(--finaldefense-primary) 16%, transparent); border-color: color-mix(in srgb, var(--finaldefense-primary) 34%, transparent); color: var(--finaldefense-primary);">
+                <i data-lucide="layers-2" class="h-5 w-5"></i>
+              </span>
+            </div>
+            <div class="min-h-0 space-y-3 overflow-y-auto pr-1">
+              <article class="rounded-[18px] border p-3 transition hover:-translate-y-0.5" style="background: color-mix(in srgb, var(--finaldefense-primary) 18%, var(--finaldefense-card)); border-color: var(--finaldefense-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--finaldefense-primary) 34%, transparent);">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex min-w-0 items-center gap-3">
+                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]" style="background: var(--finaldefense-primary); color: var(--finaldefense-primary-foreground);"><i data-lucide="notebook-pen" class="h-5 w-5"></i></span>
+                    <div class="min-w-0">
+                      <p class="truncate text-base font-black">笔记本</p>
+                      <p class="truncate text-xs font-bold" style="color: var(--finaldefense-muted-foreground);">精准单体 · 已选中</p>
+                    </div>
+                  </div>
+                  <span class="inline-flex h-7 shrink-0 items-center rounded-[10px] px-2 text-xs font-black" style="background: color-mix(in srgb, var(--finaldefense-primary) 24%, transparent); color: var(--finaldefense-primary-foreground);">50 金</span>
+                </div>
+                <div class="mt-3 grid grid-cols-2 gap-2 text-xs font-bold sm:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-4">
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">范围 2.5</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">伤害 56</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">攻速 0.8s</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">核心输出</span>
+                </div>
+              </article>
+
+              <article class="rounded-[18px] border p-3 transition hover:-translate-y-0.5" style="background: color-mix(in srgb, var(--finaldefense-state-info) 12%, var(--finaldefense-card)); border-color: color-mix(in srgb, var(--finaldefense-state-info) 42%, transparent);">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex min-w-0 items-center gap-3">
+                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]" style="background: var(--finaldefense-state-info); color: var(--finaldefense-primary-foreground);"><i data-lucide="calculator" class="h-5 w-5"></i></span>
+                    <div class="min-w-0">
+                      <p class="truncate text-base font-black">计算器</p>
+                      <p class="truncate text-xs font-bold" style="color: var(--finaldefense-muted-foreground);">拐角范围 · 可部署</p>
+                    </div>
+                  </div>
+                  <span class="inline-flex h-7 shrink-0 items-center rounded-[10px] px-2 text-xs font-black" style="background: color-mix(in srgb, var(--finaldefense-state-info) 20%, transparent);">80 金</span>
+                </div>
+                <div class="mt-3 grid grid-cols-2 gap-2 text-xs font-bold sm:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-4">
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">范围 3.0</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">伤害 42</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">攻速 1.2s</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">范围清场</span>
+                </div>
+              </article>
+
+              <article class="rounded-[18px] border p-3 transition hover:-translate-y-0.5" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 12%, var(--finaldefense-card)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 42%, transparent);">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex min-w-0 items-center gap-3">
+                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]" style="background: var(--finaldefense-state-warning); color: var(--finaldefense-background);"><i data-lucide="coffee" class="h-5 w-5"></i></span>
+                    <div class="min-w-0">
+                      <p class="truncate text-base font-black">咖啡杯</p>
+                      <p class="truncate text-xs font-bold" style="color: var(--finaldefense-muted-foreground);">减速控制 · 可部署</p>
+                    </div>
+                  </div>
+                  <span class="inline-flex h-7 shrink-0 items-center rounded-[10px] px-2 text-xs font-black" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 20%, transparent);">120 金</span>
+                </div>
+                <div class="mt-3 grid grid-cols-2 gap-2 text-xs font-bold sm:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-4">
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">范围 2.0</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">伤害 24</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">攻速 1.6s</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">减速 35%</span>
+                </div>
+              </article>
+
+              <article class="rounded-[18px] border p-3 opacity-55" style="background: color-mix(in srgb, var(--finaldefense-muted) 36%, var(--finaldefense-card)); border-color: color-mix(in srgb, var(--finaldefense-border) 60%, transparent);">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex min-w-0 items-center gap-3">
+                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border" style="background: color-mix(in srgb, var(--finaldefense-muted) 62%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 80%, transparent);"><i data-lucide="book-open-check" class="h-5 w-5"></i></span>
+                    <div class="min-w-0">
+                      <p class="truncate text-base font-black">错题本</p>
+                      <p class="truncate text-xs font-bold" style="color: var(--finaldefense-muted-foreground);">复盘增益 · 金币不足</p>
+                    </div>
+                  </div>
+                  <span class="inline-flex h-7 shrink-0 items-center rounded-[10px] px-2 text-xs font-black" style="background: color-mix(in srgb, var(--finaldefense-destructive) 18%, transparent); color: var(--finaldefense-destructive);">160 金</span>
+                </div>
+                <div class="mt-3 grid grid-cols-2 gap-2 text-xs font-bold sm:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-4">
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">范围 2.8</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">伤害 18</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">冷却 12s</span>
+                  <span class="truncate rounded-[10px] px-2 py-1.5" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);">增伤光环</span>
+                </div>
+              </article>
+            </div>
+          </aside>
+
+          <section class="finaldefense-panel flex min-h-[720px] flex-col rounded-[22px] p-4 xl:min-h-0" style="border-color: color-mix(in srgb, var(--finaldefense-border) 80%, transparent);">
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="finaldefense-hud-label truncate">Live Map Board</p>
+                <h2 class="mt-1 truncate text-2xl font-black">教学楼走廊 · 可部署格实装</h2>
+              </div>
+              <div class="flex shrink-0 items-center gap-2 text-xs font-bold">
+                <span class="inline-flex h-8 items-center gap-1 rounded-[10px] border px-2" style="background: color-mix(in srgb, var(--finaldefense-surface-soft) 78%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 70%, transparent);"><span class="h-2 w-2 rounded-full" style="background: var(--finaldefense-state-success);"></span>草地可部署</span>
+                <span class="inline-flex h-8 items-center gap-1 rounded-[10px] border px-2" style="background: color-mix(in srgb, var(--finaldefense-surface-soft) 78%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 70%, transparent);"><span class="h-2 w-2 rounded-full" style="background: var(--finaldefense-state-warning);"></span>敌人路径</span>
+              </div>
+            </div>
+
+            <div class="relative flex-1 overflow-hidden rounded-[20px] border p-4" style="background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--finaldefense-primary) 14%, transparent), transparent 36%), linear-gradient(180deg, var(--finaldefense-surface-soft), var(--finaldefense-background)); border-color: color-mix(in srgb, var(--finaldefense-border) 80%, transparent);">
+              <div class="grid h-full min-h-[520px] grid-cols-12 grid-rows-8 gap-1.5 overflow-visible">
+                <div class="relative rounded-[10px] border p-1" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 30%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 58%, transparent);"><span class="absolute left-1 top-1 inline-flex h-6 w-6 items-center justify-center rounded-[8px] text-[11px] font-black" style="background: var(--finaldefense-primary); color: var(--finaldefense-primary-foreground);">S</span><span class="absolute bottom-1 right-1 h-3 w-3 rounded-full" style="background: var(--finaldefense-destructive);"></span></div>
+                <div class="relative rounded-[10px] border p-1" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 28%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 50%, transparent);"><span class="absolute right-1 top-1 rounded-[7px] px-1 text-[10px] font-black" style="background: var(--finaldefense-destructive); color: var(--finaldefense-primary-foreground);">选</span></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="flex items-center justify-center rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-destructive) 18%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-destructive) 44%, transparent); color: var(--finaldefense-destructive);"><i data-lucide="ban" class="h-4 w-4"></i></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="relative flex items-center justify-center rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-info) 20%, var(--finaldefense-card)); border-color: var(--finaldefense-state-info);"><div class="pointer-events-none absolute -inset-7 rounded-full border-2" style="border-color: color-mix(in srgb, var(--finaldefense-state-info) 42%, transparent); background: color-mix(in srgb, var(--finaldefense-state-info) 10%, transparent);"></div><span class="relative inline-flex h-11 w-11 items-center justify-center rounded-[14px]" style="background: var(--finaldefense-state-info); color: var(--finaldefense-primary-foreground);"><i data-lucide="calculator" class="h-5 w-5"></i></span><span class="absolute bottom-1 right-1 rounded-[7px] px-1 text-[10px] font-black" style="background: var(--finaldefense-state-info);">选中</span></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="flex items-center justify-center rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-destructive) 18%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-destructive) 44%, transparent); color: var(--finaldefense-destructive);"><i data-lucide="lock" class="h-4 w-4"></i></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="relative rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"><span class="absolute bottom-1 right-1 rounded-[7px] px-1 text-[10px] font-black" style="background: var(--finaldefense-state-info); color: var(--finaldefense-primary-foreground);">填</span></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="flex items-center justify-center rounded-[10px] border border-dashed" style="background: color-mix(in srgb, var(--finaldefense-state-success) 14%, var(--finaldefense-surface-tint)); border-color: var(--finaldefense-state-success); color: var(--finaldefense-state-success);"><i data-lucide="plus" class="h-5 w-5"></i></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="relative rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"><span class="absolute bottom-1 right-1 rounded-[7px] px-1 text-[10px] font-black" style="background: var(--finaldefense-destructive); color: var(--finaldefense-primary-foreground);">选</span></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="relative flex items-center justify-center rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-primary) 20%, var(--finaldefense-card)); border-color: var(--finaldefense-primary);"><span class="inline-flex h-11 w-11 items-center justify-center rounded-[14px]" style="background: var(--finaldefense-primary); color: var(--finaldefense-primary-foreground);"><i data-lucide="notebook-pen" class="h-5 w-5"></i></span><span class="absolute bottom-1 right-1 rounded-[7px] px-1 text-[10px] font-black" style="background: var(--finaldefense-primary);">Lv.3</span></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="flex items-center justify-center rounded-[10px] border border-dashed" style="background: color-mix(in srgb, var(--finaldefense-state-success) 14%, var(--finaldefense-surface-tint)); border-color: var(--finaldefense-state-success); color: var(--finaldefense-state-success);"><i data-lucide="plus" class="h-5 w-5"></i></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="relative rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"><span class="absolute bottom-1 right-1 rounded-[7px] px-1 text-[10px] font-black" style="background: var(--finaldefense-state-warning); color: var(--finaldefense-background);">论</span></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="relative flex items-center justify-center rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 20%, var(--finaldefense-card)); border-color: var(--finaldefense-state-warning);"><span class="inline-flex h-11 w-11 items-center justify-center rounded-[14px]" style="background: var(--finaldefense-state-warning); color: var(--finaldefense-background);"><i data-lucide="coffee" class="h-5 w-5"></i></span><span class="absolute bottom-1 right-1 rounded-[7px] px-1 text-[10px] font-black" style="background: var(--finaldefense-state-warning); color: var(--finaldefense-background);">Slow</span></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="flex items-center justify-center rounded-[10px] border border-dashed" style="background: color-mix(in srgb, var(--finaldefense-state-success) 14%, var(--finaldefense-surface-tint)); border-color: var(--finaldefense-state-success); color: var(--finaldefense-state-success);"><i data-lucide="plus" class="h-5 w-5"></i></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 26%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-warning) 48%, transparent);"></div>
+                <div class="relative rounded-[10px] border p-1" style="background: color-mix(in srgb, var(--finaldefense-state-warning) 32%, var(--finaldefense-muted)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 62%, transparent);"><span class="absolute bottom-1 right-1 inline-flex h-6 w-6 items-center justify-center rounded-[8px] text-[11px] font-black" style="background: var(--finaldefense-state-success); color: var(--finaldefense-background);">E</span></div>
+
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+                <div class="rounded-[10px] border" style="background: color-mix(in srgb, var(--finaldefense-state-success) 18%, var(--finaldefense-surface-tint)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 35%, transparent);"></div>
+              </div>
+
+              <div class="absolute left-5 top-5 rounded-[12px] border px-3 py-2 text-xs font-black" style="background: color-mix(in srgb, var(--finaldefense-popover) 90%, transparent); border-color: color-mix(in srgb, var(--finaldefense-primary) 38%, transparent);">敌人入口 · 自习室</div>
+              <div class="absolute bottom-5 right-5 rounded-[12px] border px-3 py-2 text-xs font-black" style="background: color-mix(in srgb, var(--finaldefense-popover) 90%, transparent); border-color: color-mix(in srgb, var(--finaldefense-state-success) 42%, transparent);">GPA 终点 · 及格线</div>
+            </div>
+
+            <div class="mt-3 grid gap-3 lg:grid-cols-[1fr_auto]">
+              <div class="rounded-[16px] border px-4 py-3" style="background: color-mix(in srgb, var(--finaldefense-primary) 12%, var(--finaldefense-card)); border-color: color-mix(in srgb, var(--finaldefense-primary) 38%, transparent);">
+                <div class="flex flex-wrap items-center gap-2 text-sm font-black">
+                  <span class="inline-flex h-7 items-center rounded-[9px] px-2" style="background: var(--finaldefense-primary); color: var(--finaldefense-primary-foreground);">选择塔牌</span>
+                  <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                  <span class="inline-flex h-7 items-center rounded-[9px] px-2" style="background: color-mix(in srgb, var(--finaldefense-state-success) 24%, transparent); color: var(--finaldefense-state-success);">点击可部署格</span>
+                  <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                  <span class="inline-flex h-7 items-center rounded-[9px] px-2" style="background: color-mix(in srgb, var(--finaldefense-state-info) 24%, transparent); color: var(--finaldefense-state-info);">确认部署</span>
+                </div>
+                <p class="mt-2 line-clamp-2 text-sm" style="color: var(--finaldefense-muted-foreground);">当前选择：笔记本 · 消耗 50 金。绿色虚线格可部署，红色锁定格反馈为“无效：路线与障碍不可放置”。</p>
+              </div>
+              <button class="inline-flex h-full min-h-14 items-center justify-center gap-2 rounded-[16px] px-5 text-sm font-black transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2" style="background: var(--finaldefense-primary); color: var(--finaldefense-primary-foreground); outline-color: var(--finaldefense-ring);">
+                确认部署
+                <i data-lucide="mouse-pointer-click" class="h-4 w-4"></i>
+              </button>
+            </div>
+          </section>
+
+          <aside class="finaldefense-panel flex min-h-0 flex-col gap-4 rounded-[22px] p-4" style="border-color: color-mix(in srgb, var(--finaldefense-border) 80%, transparent);">
+            <section class="rounded-[18px] border p-4" style="background: color-mix(in srgb, var(--finaldefense-state-info) 12%, var(--finaldefense-card)); border-color: color-mix(in srgb, var(--finaldefense-state-info) 38%, transparent);">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="finaldefense-hud-label truncate">Selected Tower</p>
+                  <h2 class="mt-1 truncate text-2xl font-black">计算器塔</h2>
+                  <p class="mt-1 truncate text-sm font-bold" style="color: var(--finaldefense-muted-foreground);">Lv.2 · 拐角范围输出</p>
+                </div>
+                <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px]" style="background: var(--finaldefense-state-info); color: var(--finaldefense-primary-foreground);"><i data-lucide="calculator" class="h-6 w-6"></i></span>
+              </div>
+              <div class="mt-4 grid grid-cols-2 gap-2 text-sm font-bold">
+                <div class="rounded-[12px] px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);"><p class="truncate" style="color: var(--finaldefense-muted-foreground);">范围</p><p class="truncate text-lg font-black">3.0 格</p></div>
+                <div class="rounded-[12px] px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);"><p class="truncate" style="color: var(--finaldefense-muted-foreground);">DPS</p><p class="truncate text-lg font-black">35 / 秒</p></div>
+                <div class="rounded-[12px] px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);"><p class="truncate" style="color: var(--finaldefense-muted-foreground);">技能</p><p class="truncate text-lg font-black">公式连锁</p></div>
+                <div class="rounded-[12px] px-3 py-2" style="background: color-mix(in srgb, var(--finaldefense-background) 42%, transparent);"><p class="truncate" style="color: var(--finaldefense-muted-foreground);">升级</p><p class="truncate text-lg font-black">90 金</p></div>
+              </div>
+              <div class="mt-4 rounded-[14px] border p-3" style="background: color-mix(in srgb, var(--finaldefense-primary) 10%, transparent); border-color: color-mix(in srgb, var(--finaldefense-primary) 32%, transparent);">
+                <p class="truncate text-sm font-black">目标预览</p>
+                <p class="mt-1 line-clamp-2 text-sm" style="color: var(--finaldefense-muted-foreground);">攻击范围覆盖 5 个路径格，下一波“填空题中怪”进入拐角时会被连续锁定。</p>
+              </div>
+              <div class="mt-4 grid grid-cols-2 gap-2">
+                <button class="h-10 rounded-[14px] text-sm font-black transition hover:-translate-y-0.5" style="background: var(--finaldefense-primary); color: var(--finaldefense-primary-foreground);">升级</button>
+                <button class="h-10 rounded-[14px] border text-sm font-black transition hover:-translate-y-0.5" style="background: color-mix(in srgb, var(--finaldefense-destructive) 12%, transparent); border-color: color-mix(in srgb, var(--finaldefense-destructive) 44%, transparent); color: var(--finaldefense-destructive);">出售 +42</button>
+              </div>
+            </section>
+
+            <section class="rounded-[18px] border p-4" style="background: color-mix(in srgb, var(--finaldefense-card) 92%, transparent); border-color: color-mix(in srgb, var(--finaldefense-border) 78%, transparent);">
+              <div class="mb-3 flex items-center justify-between gap-3">
+                <p class="finaldefense-hud-label truncate">Wave Markers</p>
+                <span class="inline-flex h-7 items-center rounded-[9px] px-2 text-xs font-black" style="background: color-mix(in srgb, var(--finaldefense-destructive) 16%, transparent); color: var(--finaldefense-destructive);">高压</span>
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-3 rounded-[14px] p-3" style="background: color-mix(in srgb, var(--finaldefense-background) 38%, transparent);"><div class="flex min-w-0 items-center gap-3"><span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-black" style="background: var(--finaldefense-destructive); color: var(--finaldefense-primary-foreground);">选</span><div class="min-w-0"><p class="truncate text-sm font-black">选择题小怪</p><p class="truncate text-xs" style="color: var(--finaldefense-muted-foreground);">快速穿越直线段</p></div></div><span class="shrink-0 text-sm font-black">×6</span></div>
+                <div class="flex items-center justify-between gap-3 rounded-[14px] p-3" style="background: color-mix(in srgb, var(--finaldefense-background) 38%, transparent);"><div class="flex min-w-0 items-center gap-3"><span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-black" style="background: var(--finaldefense-state-info); color: var(--finaldefense-primary-foreground);">填</span><div class="min-w-0"><p class="truncate text-sm font-black">填空题中怪</p><p class="truncate text-xs" style="color: var(--finaldefense-muted-foreground);">耐久上升，吃范围伤害</p></div></div><span class="shrink-0 text-sm font-black">×2</span></div>
+                <div class="flex items-center justify-between gap-3 rounded-[14px] p-3" style="background: color-mix(in srgb, var(--finaldefense-background) 38%, transparent);"><div class="flex min-w-0 items-center gap-3"><span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] font-black" style="background: var(--finaldefense-state-warning); color: var(--finaldefense-background);">论</span><div class="min-w-0"><p class="truncate text-sm font-black">论述题 Boss</p><p class="truncate text-xs" style="color: var(--finaldefense-muted-foreground);">终点前需要减速</p></div></div><span class="shrink-0 text-sm font-black">×1</span></div>
+              </div>
+            </section>
+
+            <section class="rounded-[18px] border p-4" style="background: color-mix(in srgb, var(--finaldefense-state-success) 10%, var(--finaldefense-card)); border-color: color-mix(in srgb, var(--finaldefense-state-success) 34%, transparent);">
+              <p class="finaldefense-hud-label truncate">Placement Feedback</p>
+              <div class="mt-3 space-y-2 text-sm">
+                <p class="line-clamp-2"><span class="font-black" style="color: var(--finaldefense-state-success);">有效：</span>草地高亮格可放置笔记本，部署后覆盖入口前两段路径。</p>
+                <p class="line-clamp-2"><span class="font-black" style="color: var(--finaldefense-destructive);">无效：</span>敌人路径、障碍锁定格、已占用塔基不可放置。</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

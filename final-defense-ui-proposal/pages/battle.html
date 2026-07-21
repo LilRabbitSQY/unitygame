@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>战斗界面</title>
+    <style id="theme-vars">
+:root {
+  --finaldefense-background: #fff8fb;
+  --finaldefense-foreground: #2c2134;
+  --finaldefense-card: #ffffff;
+  --finaldefense-card-foreground: #2f2340;
+  --finaldefense-popover: #fffafd;
+  --finaldefense-popover-foreground: #2f2340;
+  --finaldefense-primary: #e66b8a;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #f8d7e2;
+  --finaldefense-secondary-foreground: #6d435b;
+  --finaldefense-muted: #f8eef3;
+  --finaldefense-muted-foreground: #7d6475;
+  --finaldefense-accent: #ffe9f1;
+  --finaldefense-accent-foreground: #7f4762;
+  --finaldefense-destructive: #d4556f;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #edd6df;
+  --finaldefense-input: #f1dfe7;
+  --finaldefense-ring: #f09ab1;
+  --finaldefense-chart-1: #e66b8a;
+  --finaldefense-chart-2: #7f7ce0;
+  --finaldefense-chart-3: #f3b55a;
+  --finaldefense-chart-4: #7ec8b8;
+  --finaldefense-chart-5: #b78cf5;
+  --finaldefense-sidebar: #fff2f7;
+  --finaldefense-sidebar-foreground: #382b42;
+  --finaldefense-sidebar-primary: #e66b8a;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #fce5ee;
+  --finaldefense-sidebar-accent-foreground: #6e4761;
+
+  --finaldefense-surface-strong: #ffe3ec;
+  --finaldefense-surface-soft: #fff2f6;
+  --finaldefense-surface-tint: #fff7fa;
+  --finaldefense-state-success: #4aa886;
+  --finaldefense-state-warning: #e5a34f;
+  --finaldefense-state-error: #d4556f;
+  --finaldefense-state-info: #6d7de7;
+
+  --finaldefense-radius-small: 10px;
+  --finaldefense-radius-medium: 18px;
+  --finaldefense-radius-large: 28px;
+  --finaldefense-radius-sm: 10px;
+  --finaldefense-radius-md: 18px;
+  --finaldefense-radius-lg: 28px;
+
+  --finaldefense-font-primary: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-font-display: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-shadow-soft: 0 14px 34px rgba(230, 107, 138, 0.10);
+  --finaldefense-shadow-card: 0 8px 22px rgba(91, 63, 96, 0.06);
+}
+
+.dark {
+  --finaldefense-background: #1c1623;
+  --finaldefense-foreground: #f9edf4;
+  --finaldefense-card: #261f30;
+  --finaldefense-card-foreground: #faeef5;
+  --finaldefense-popover: #2b2234;
+  --finaldefense-popover-foreground: #faeef5;
+  --finaldefense-primary: #f08aaa;
+  --finaldefense-primary-foreground: #291b27;
+  --finaldefense-secondary: #3d2c3f;
+  --finaldefense-secondary-foreground: #f5d9e7;
+  --finaldefense-muted: #312737;
+  --finaldefense-muted-foreground: #d2b8c6;
+  --finaldefense-accent: #372b3b;
+  --finaldefense-accent-foreground: #f2dce7;
+  --finaldefense-destructive: #ff8ea4;
+  --finaldefense-destructive-foreground: #2b1621;
+  --finaldefense-border: #4b3950;
+  --finaldefense-input: #46354a;
+  --finaldefense-ring: #f3a6bc;
+  --finaldefense-sidebar: #221a2a;
+  --finaldefense-sidebar-foreground: #f8eef4;
+  --finaldefense-sidebar-primary: #f08aaa;
+  --finaldefense-sidebar-primary-foreground: #291b27;
+  --finaldefense-sidebar-accent: #382b3b;
+  --finaldefense-sidebar-accent-foreground: #f1dce6;
+  --finaldefense-surface-strong: #372835;
+  --finaldefense-surface-soft: #2f2535;
+  --finaldefense-surface-tint: #251d2d;
+  --finaldefense-shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.28);
+  --finaldefense-shadow-card: 0 10px 26px rgba(0, 0, 0, 0.20);
+}
+
+body {
+  font-family: var(--finaldefense-font-primary);
+}
+
+.finaldefense-display {
+  font-family: var(--finaldefense-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.finaldefense-h1 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.finaldefense-h2 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.14;
+  font-weight: 700;
+}
+
+.finaldefense-body {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--finaldefense-background);
+    --color-foreground: var(--finaldefense-foreground);
+    --color-card: var(--finaldefense-card);
+    --color-card-foreground: var(--finaldefense-card-foreground);
+    --color-popover: var(--finaldefense-popover);
+    --color-popover-foreground: var(--finaldefense-popover-foreground);
+    --color-primary: var(--finaldefense-primary);
+    --color-primary-foreground: var(--finaldefense-primary-foreground);
+    --color-secondary: var(--finaldefense-secondary);
+    --color-secondary-foreground: var(--finaldefense-secondary-foreground);
+    --color-muted: var(--finaldefense-muted);
+    --color-muted-foreground: var(--finaldefense-muted-foreground);
+    --color-accent: var(--finaldefense-accent);
+    --color-accent-foreground: var(--finaldefense-accent-foreground);
+    --color-destructive: var(--finaldefense-destructive);
+    --color-destructive-foreground: var(--finaldefense-destructive-foreground);
+    --color-border: var(--finaldefense-border);
+    --color-input: var(--finaldefense-input);
+    --color-ring: var(--finaldefense-ring);
+    --color-chart-1: var(--finaldefense-chart-1);
+    --color-chart-2: var(--finaldefense-chart-2);
+    --color-chart-3: var(--finaldefense-chart-3);
+    --color-chart-4: var(--finaldefense-chart-4);
+    --color-chart-5: var(--finaldefense-chart-5);
+    --color-sidebar: var(--finaldefense-sidebar);
+    --color-sidebar-foreground: var(--finaldefense-sidebar-foreground);
+    --color-sidebar-primary: var(--finaldefense-sidebar-primary);
+    --color-sidebar-primary-foreground: var(--finaldefense-sidebar-primary-foreground);
+    --color-sidebar-accent: var(--finaldefense-sidebar-accent);
+    --color-sidebar-accent-foreground: var(--finaldefense-sidebar-accent-foreground);
+    --radius-sm: var(--finaldefense-radius-sm);
+    --radius-md: var(--finaldefense-radius-md);
+    --radius-lg: var(--finaldefense-radius-lg);
+  }
+  @layer base {
+    body { background: var(--finaldefense-background); color: var(--finaldefense-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--finaldefense-background); }
+      .text-background { color: var(--finaldefense-background); }
+      .border-background { border-color: var(--finaldefense-background); }
+      .ring-background { --tw-ring-color: var(--finaldefense-background); }
+      .bg-foreground { background-color: var(--finaldefense-foreground); }
+      .text-foreground { color: var(--finaldefense-foreground); }
+      .border-foreground { border-color: var(--finaldefense-foreground); }
+      .ring-foreground { --tw-ring-color: var(--finaldefense-foreground); }
+      .bg-card { background-color: var(--finaldefense-card); }
+      .text-card { color: var(--finaldefense-card); }
+      .border-card { border-color: var(--finaldefense-card); }
+      .ring-card { --tw-ring-color: var(--finaldefense-card); }
+      .bg-card-foreground { background-color: var(--finaldefense-card-foreground); }
+      .text-card-foreground { color: var(--finaldefense-card-foreground); }
+      .border-card-foreground { border-color: var(--finaldefense-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--finaldefense-card-foreground); }
+      .bg-popover { background-color: var(--finaldefense-popover); }
+      .text-popover { color: var(--finaldefense-popover); }
+      .border-popover { border-color: var(--finaldefense-popover); }
+      .ring-popover { --tw-ring-color: var(--finaldefense-popover); }
+      .bg-popover-foreground { background-color: var(--finaldefense-popover-foreground); }
+      .text-popover-foreground { color: var(--finaldefense-popover-foreground); }
+      .border-popover-foreground { border-color: var(--finaldefense-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--finaldefense-popover-foreground); }
+      .bg-primary { background-color: var(--finaldefense-primary); }
+      .text-primary { color: var(--finaldefense-primary); }
+      .border-primary { border-color: var(--finaldefense-primary); }
+      .ring-primary { --tw-ring-color: var(--finaldefense-primary); }
+      .bg-primary-foreground { background-color: var(--finaldefense-primary-foreground); }
+      .text-primary-foreground { color: var(--finaldefense-primary-foreground); }
+      .border-primary-foreground { border-color: var(--finaldefense-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--finaldefense-primary-foreground); }
+      .bg-secondary { background-color: var(--finaldefense-secondary); }
+      .text-secondary { color: var(--finaldefense-secondary); }
+      .border-secondary { border-color: var(--finaldefense-secondary); }
+      .ring-secondary { --tw-ring-color: var(--finaldefense-secondary); }
+      .bg-secondary-foreground { background-color: var(--finaldefense-secondary-foreground); }
+      .text-secondary-foreground { color: var(--finaldefense-secondary-foreground); }
+      .border-secondary-foreground { border-color: var(--finaldefense-secondary-foreground); }
+      .ring-secondary-foreground { --tw-ring-color: var(--finaldefense-secondary-foreground); }
+      .bg-muted { background-color: var(--finaldefense-muted); }
+      .text-muted { color: var(--finaldefense-muted); }
+      .border-muted { border-color: var(--finaldefense-muted); }
+      .ring-muted { --tw-ring-color: var(--finaldefense-muted); }
+      .bg-muted-foreground { background-color: var(--finaldefense-muted-foreground); }
+      .text-muted-foreground { color: var(--finaldefense-muted-foreground); }
+      .border-muted-foreground { border-color: var(--finaldefense-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--finaldefense-muted-foreground); }
+      .bg-accent { background-color: var(--finaldefense-accent); }
+      .text-accent { color: var(--finaldefense-accent); }
+      .border-accent { border-color: var(--finaldefense-accent); }
+      .ring-accent { --tw-ring-color: var(--finaldefense-accent); }
+      .bg-accent-foreground { background-color: var(--finaldefense-accent-foreground); }
+      .text-accent-foreground { color: var(--finaldefense-accent-foreground); }
+      .border-accent-foreground { border-color: var(--finaldefense-accent-foreground); }
+      .ring-accent-foreground { --tw-ring-color: var(--finaldefense-accent-foreground); }
+      .bg-destructive { background-color: var(--finaldefense-destructive); }
+      .text-destructive { color: var(--finaldefense-destructive); }
+      .border-destructive { border-color: var(--finaldefense-destructive); }
+      .ring-destructive { --tw-ring-color: var(--finaldefense-destructive); }
+      .bg-destructive-foreground { background-color: var(--finaldefense-destructive-foreground); }
+      .text-destructive-foreground { color: var(--finaldefense-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--finaldefense-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--finaldefense-destructive-foreground); }
+      .bg-border { background-color: var(--finaldefense-border); }
+      .text-border { color: var(--finaldefense-border); }
+      .border-border { border-color: var(--finaldefense-border); }
+      .ring-border { --tw-ring-color: var(--finaldefense-border); }
+      .bg-input { background-color: var(--finaldefense-input); }
+      .text-input { color: var(--finaldefense-input); }
+      .border-input { border-color: var(--finaldefense-input); }
+      .ring-input { --tw-ring-color: var(--finaldefense-input); }
+      .bg-ring { background-color: var(--finaldefense-ring); }
+      .text-ring { color: var(--finaldefense-ring); }
+      .border-ring { border-color: var(--finaldefense-ring); }
+      .ring-ring { --tw-ring-color: var(--finaldefense-ring); }
+      .bg-chart-1 { background-color: var(--finaldefense-chart-1); }
+      .text-chart-1 { color: var(--finaldefense-chart-1); }
+      .border-chart-1 { border-color: var(--finaldefense-chart-1); }
+      .ring-chart-1 { --tw-ring-color: var(--finaldefense-chart-1); }
+      .bg-chart-2 { background-color: var(--finaldefense-chart-2); }
+      .text-chart-2 { color: var(--finaldefense-chart-2); }
+      .border-chart-2 { border-color: var(--finaldefense-chart-2); }
+      .ring-chart-2 { --tw-ring-color: var(--finaldefense-chart-2); }
+      .bg-chart-3 { background-color: var(--finaldefense-chart-3); }
+      .text-chart-3 { color: var(--finaldefense-chart-3); }
+      .border-chart-3 { border-color: var(--finaldefense-chart-3); }
+      .ring-chart-3 { --tw-ring-color: var(--finaldefense-chart-3); }
+      .bg-chart-4 { background-color: var(--finaldefense-chart-4); }
+      .text-chart-4 { color: var(--finaldefense-chart-4); }
+      .border-chart-4 { border-color: var(--finaldefense-chart-4); }
+      .ring-chart-4 { --tw-ring-color: var(--finaldefense-chart-4); }
+      .bg-chart-5 { background-color: var(--finaldefense-chart-5); }
+      .text-chart-5 { color: var(--finaldefense-chart-5); }
+      .border-chart-5 { border-color: var(--finaldefense-chart-5); }
+      .ring-chart-5 { --tw-ring-color: var(--finaldefense-chart-5); }
+      .bg-sidebar { background-color: var(--finaldefense-sidebar); }
+      .text-sidebar { color: var(--finaldefense-sidebar); }
+      .border-sidebar { border-color: var(--finaldefense-sidebar); }
+      .ring-sidebar { --tw-ring-color: var(--finaldefense-sidebar); }
+      .bg-sidebar-foreground { background-color: var(--finaldefense-sidebar-foreground); }
+      .text-sidebar-foreground { color: var(--finaldefense-sidebar-foreground); }
+      .border-sidebar-foreground { border-color: var(--finaldefense-sidebar-foreground); }
+      .ring-sidebar-foreground { --tw-ring-color: var(--finaldefense-sidebar-foreground); }
+      .bg-sidebar-primary { background-color: var(--finaldefense-sidebar-primary); }
+      .text-sidebar-primary { color: var(--finaldefense-sidebar-primary); }
+      .border-sidebar-primary { border-color: var(--finaldefense-sidebar-primary); }
+      .ring-sidebar-primary { --tw-ring-color: var(--finaldefense-sidebar-primary); }
+      .bg-sidebar-primary-foreground { background-color: var(--finaldefense-sidebar-primary-foreground); }
+      .text-sidebar-primary-foreground { color: var(--finaldefense-sidebar-primary-foreground); }
+      .border-sidebar-primary-foreground { border-color: var(--finaldefense-sidebar-primary-foreground); }
+      .ring-sidebar-primary-foreground { --tw-ring-color: var(--finaldefense-sidebar-primary-foreground); }
+      .bg-sidebar-accent { background-color: var(--finaldefense-sidebar-accent); }
+      .text-sidebar-accent { color: var(--finaldefense-sidebar-accent); }
+      .border-sidebar-accent { border-color: var(--finaldefense-sidebar-accent); }
+      .ring-sidebar-accent { --tw-ring-color: var(--finaldefense-sidebar-accent); }
+      .bg-sidebar-accent-foreground { background-color: var(--finaldefense-sidebar-accent-foreground); }
+      .text-sidebar-accent-foreground { color: var(--finaldefense-sidebar-accent-foreground); }
+      .border-sidebar-accent-foreground { border-color: var(--finaldefense-sidebar-accent-foreground); }
+      .ring-sidebar-accent-foreground { --tw-ring-color: var(--finaldefense-sidebar-accent-foreground); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="h-screen overflow-hidden" style="background:var(--finaldefense-background); color:var(--finaldefense-foreground);">
+  <main data-viewport-mode="app-shell" class="h-screen min-h-0 overflow-hidden p-5 lg:p-6">
+    <div data-scroll-region="primary" class="flex h-full min-h-0 overflow-y-auto flex-col gap-5">
+      <header class="grid gap-4 rounded-[30px] border px-5 py-4 xl:grid-cols-[1.1fr_1fr_0.95fr]" style="background:linear-gradient(180deg, #fffafc 0%, #fff2f7 100%); border-color:var(--finaldefense-border); box-shadow:var(--finaldefense-shadow-card);">
+        <div class="min-w-0">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[0.22em]" style="color:#a16883;">Battle HUD</p>
+          <h1 class="finaldefense-h2 max-w-[18ch]" style="text-wrap:balance; word-break:keep-all; overflow-wrap:break-word;">用学习工具守住 GPA，把考试怪物挡在终点之前</h1>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-3">
+          <div class="rounded-[22px] border px-4 py-3" style="border-color:var(--finaldefense-border); background:#fff;">
+            <p class="text-xs font-semibold uppercase tracking-[0.16em]" style="color:#9e7083;">GPA</p>
+            <p class="mt-2 text-[28px] font-extrabold">86</p>
+            <p class="text-sm" style="color:#7e6674;">还剩 4 次失误空间</p>
+          </div>
+          <div class="rounded-[22px] border px-4 py-3" style="border-color:var(--finaldefense-border); background:#fff;">
+            <p class="text-xs font-semibold uppercase tracking-[0.16em]" style="color:#9e7083;">金币</p>
+            <p class="mt-2 text-[28px] font-extrabold">128</p>
+            <p class="text-sm" style="color:#7e6674;">下一座塔可立即部署</p>
+          </div>
+          <div class="rounded-[22px] border px-4 py-3" style="border-color:var(--finaldefense-border); background:#fff;">
+            <p class="text-xs font-semibold uppercase tracking-[0.16em]" style="color:#9e7083;">波次</p>
+            <p class="mt-2 text-[28px] font-extrabold">3 / 5</p>
+            <p class="text-sm" style="color:#7e6674;">论述题 Boss 即将出现</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-end gap-3">
+          <button data-dom-id="back-schedule-battle" class="inline-flex items-center gap-2 rounded-[18px] px-4 py-3 text-sm font-semibold" style="background:#fff; color:#725c6c; border:1px solid var(--finaldefense-border);">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            回到备战
+          </button>
+          <button data-dom-id="go-shop-battle" class="inline-flex items-center gap-2 rounded-[18px] px-5 py-3 text-sm font-semibold text-white" style="background:linear-gradient(135deg, #e66b8a 0%, #8d7ee8 100%);">
+            战前采购
+            <i data-lucide="shopping-bag" class="h-4 w-4"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="grid min-h-0 flex-1 gap-5 xl:grid-cols-[280px_minmax(0,1fr)_320px]">
+        <aside class="flex min-h-0 flex-col rounded-[30px] border p-4" style="background:var(--finaldefense-card); border-color:var(--finaldefense-border); box-shadow:var(--finaldefense-shadow-card);">
+          <div class="mb-4 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.18em]" style="color:#9e7083;">塔牌仓库</p>
+              <p class="text-sm" style="color:#7c6573;">把学习工具做成更明确的卡牌式入口</p>
+            </div>
+            <i data-lucide="shield-plus" class="h-5 w-5" style="color:#7f7ce0;"></i>
+          </div>
+
+          <div class="space-y-3">
+            <article class="rounded-[24px] border p-4" style="border-color:#f0c6d4; background:linear-gradient(180deg, #fff8fb 0%, #fff0f5 100%);">
+              <div class="mb-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-white" style="background:#e66b8a;"><i data-lucide="notebook-pen" class="h-5 w-5"></i></div>
+                  <div>
+                    <p class="font-semibold">笔记本</p>
+                    <p class="text-sm" style="color:#7d6371;">快攻单体塔</p>
+                  </div>
+                </div>
+                <span class="rounded-full px-3 py-1 text-xs font-semibold" style="background:#ffe3ec; color:#c45777;">50 金</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">伤害 5</div>
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">攻速 0.8</div>
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">范围 2.5</div>
+              </div>
+            </article>
+
+            <article class="rounded-[24px] border p-4" style="border-color:#dddff7; background:linear-gradient(180deg, #f9f9ff 0%, #eff0ff 100%);">
+              <div class="mb-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-white" style="background:#7f7ce0;"><i data-lucide="calculator" class="h-5 w-5"></i></div>
+                  <div>
+                    <p class="font-semibold">计算器</p>
+                    <p class="text-sm" style="color:#70719f;">均衡输出塔</p>
+                  </div>
+                </div>
+                <span class="rounded-full px-3 py-1 text-xs font-semibold" style="background:#ececff; color:#676fd6;">80 金</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">伤害 12</div>
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">攻速 1.2</div>
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">范围 3.0</div>
+              </div>
+            </article>
+
+            <article class="rounded-[24px] border p-4" style="border-color:#f2e0c0; background:linear-gradient(180deg, #fffaf2 0%, #fff4e6 100%);">
+              <div class="mb-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-white" style="background:#f0b47a;"><i data-lucide="coffee" class="h-5 w-5"></i></div>
+                  <div>
+                    <p class="font-semibold">咖啡杯</p>
+                    <p class="text-sm" style="color:#8b6a50;">支援 / 减速塔</p>
+                  </div>
+                </div>
+                <span class="rounded-full px-3 py-1 text-xs font-semibold" style="background:#fff0dc; color:#cb8938;">120 金</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">伤害 8</div>
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">控场</div>
+                <div class="rounded-[14px] px-2 py-2" style="background:#fff;">范围 2.0</div>
+              </div>
+            </article>
+          </div>
+
+          <div class="mt-auto rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:var(--finaldefense-muted);">
+            <p class="mb-2 text-sm font-semibold" style="color:#9e7083;">部署提示</p>
+            <p class="text-sm leading-6" style="color:#74616e;">这里建议在 Unity 里保留卡牌入口和数值预览，减少玩家切换焦点的成本。</p>
+          </div>
+        </aside>
+
+        <section class="relative overflow-hidden rounded-[30px] border p-4 lg:p-5" style="background:linear-gradient(180deg, #fffdfd 0%, #fff5f9 100%); border-color:var(--finaldefense-border); box-shadow:var(--finaldefense-shadow-card);">
+          <div class="absolute inset-x-8 top-10 h-24 rounded-full blur-3xl" style="background:rgba(240,154,177,0.16);"></div>
+          <div class="relative flex h-full min-h-0 flex-col">
+            <div class="mb-4 flex items-center justify-between">
+              <div class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold" style="border-color:var(--finaldefense-border); background:#fff;">
+                <i data-lucide="map" class="h-4 w-4"></i>
+                Battle Lane Preview
+              </div>
+              <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium" style="background:#fff; color:#7d6573; border:1px solid var(--finaldefense-border);">
+                <i data-lucide="timer" class="h-4 w-4"></i>
+                下一波 00:18
+              </div>
+            </div>
+
+            <div class="grid flex-1 min-h-0 rounded-[28px] border p-4 lg:grid-cols-[1.1fr_0.9fr]" style="border-color:#f1d8e1; background:linear-gradient(180deg, #fff7fa 0%, #fff 100%);">
+              <div class="relative min-h-[380px] overflow-hidden rounded-[24px] border" style="border-color:#edd9e2; background:linear-gradient(180deg, #ffdce7 0%, #fff4f8 38%, #fff9fb 100%);">
+                <div class="absolute left-10 top-12 right-14 h-5 rounded-full" style="background:#f4c3d2;"></div>
+                <div class="absolute right-14 top-12 h-36 w-5 rounded-full" style="background:#f4c3d2;"></div>
+                <div class="absolute left-[34%] top-[34%] h-5 w-[42%] rounded-full" style="background:#f4c3d2;"></div>
+                <div class="absolute left-[34%] top-[34%] h-[35%] w-5 rounded-full" style="background:#f4c3d2;"></div>
+                <div class="absolute left-[34%] bottom-12 h-5 w-[46%] rounded-full" style="background:#f4c3d2;"></div>
+                <div class="absolute left-10 top-10 flex h-9 w-9 items-center justify-center rounded-full text-white" style="background:#e66b8a;">S</div>
+                <div class="absolute bottom-10 right-10 flex h-10 w-10 items-center justify-center rounded-full text-white" style="background:#7f7ce0;">E</div>
+
+                <div class="absolute left-[23%] top-[22%] flex h-14 w-14 items-center justify-center rounded-[20px] border-4 border-white text-white" style="background:#7f7ce0; box-shadow:0 10px 22px rgba(127,124,224,0.22);">
+                  <i data-lucide="calculator" class="h-6 w-6"></i>
+                </div>
+                <div class="absolute left-[48%] top-[56%] flex h-14 w-14 items-center justify-center rounded-[20px] border-4 border-white text-white" style="background:#e66b8a; box-shadow:0 10px 22px rgba(230,107,138,0.22);">
+                  <i data-lucide="notebook-pen" class="h-6 w-6"></i>
+                </div>
+                <div class="absolute right-[17%] bottom-[22%] flex h-14 w-14 items-center justify-center rounded-[20px] border-4 border-white text-white" style="background:#f0b47a; box-shadow:0 10px 22px rgba(240,180,122,0.22);">
+                  <i data-lucide="coffee" class="h-6 w-6"></i>
+                </div>
+
+                <div class="absolute left-[12%] top-[16%] flex h-9 w-9 items-center justify-center rounded-full border-2 border-white text-white" style="background:#cb6c82;">?</div>
+                <div class="absolute right-[18%] top-[36%] flex h-9 w-9 items-center justify-center rounded-full border-2 border-white text-white" style="background:#cb6c82;">填</div>
+                <div class="absolute left-[56%] bottom-[22%] flex h-10 w-10 items-center justify-center rounded-full border-2 border-white text-white" style="background:#9e77e6;">论</div>
+              </div>
+
+              <div class="flex min-h-0 flex-col gap-4 pl-0 pt-4 lg:pl-4 lg:pt-0">
+                <article class="rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:#fff;">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-sm font-semibold uppercase tracking-[0.16em]" style="color:#9e7083;">敌人队列</p>
+                    <span class="rounded-full px-3 py-1 text-xs font-semibold" style="background:#fff0f4; color:#c45777;">高压波次</span>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between rounded-[18px] px-3 py-3" style="background:#fff5f8;">
+                      <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full text-white" style="background:#cb6c82;">选</span><div><p class="font-semibold">选择题小怪</p><p class="text-xs" style="color:#816776;">速度快 · 数量多</p></div></div>
+                      <span class="text-sm font-semibold">×6</span>
+                    </div>
+                    <div class="flex items-center justify-between rounded-[18px] px-3 py-3" style="background:#f6f3ff;">
+                      <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full text-white" style="background:#8c7be7;">填</span><div><p class="font-semibold">填空题中怪</p><p class="text-xs" style="color:#816776;">耐久上升</p></div></div>
+                      <span class="text-sm font-semibold">×2</span>
+                    </div>
+                    <div class="flex items-center justify-between rounded-[18px] px-3 py-3" style="background:#fff7eb;">
+                      <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full text-white" style="background:#f0b47a;">论</span><div><p class="font-semibold">论述题 Boss</p><p class="text-xs" style="color:#816776;">高伤终结怪</p></div></div>
+                      <span class="text-sm font-semibold">×1</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:var(--finaldefense-muted);">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-sm font-semibold uppercase tracking-[0.16em]" style="color:#9e7083;">即时战术</p>
+                    <i data-lucide="brain-circuit" class="h-5 w-5" style="color:#7f7ce0;"></i>
+                  </div>
+                  <ul class="space-y-3 text-sm leading-6" style="color:#786573;">
+                    <li>笔记本清前排，计算器守拐角，咖啡杯贴终点控制 Boss。</li>
+                    <li>如果把“部署费用”做成独立资源条，战斗决策会更像策略塔防。</li>
+                    <li>血条、波次、金币三组信息已经分层，不需要额外弹窗。</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="flex min-h-0 flex-col gap-4 rounded-[30px] border p-4" style="background:var(--finaldefense-card); border-color:var(--finaldefense-border); box-shadow:var(--finaldefense-shadow-card);">
+          <article class="rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:var(--finaldefense-muted);">
+            <div class="mb-4 flex items-center justify-between">
+              <p class="text-sm font-semibold uppercase tracking-[0.16em]" style="color:#9e7083;">部署费用</p>
+              <span class="rounded-full px-3 py-1 text-xs font-semibold" style="background:#fff; color:#775f70;">8 / 12</span>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between text-sm"><span>当前回费速度</span><span class="font-semibold">+1 / 3 秒</span></div>
+              <div class="flex items-center justify-between text-sm"><span>撤回冷却</span><span class="font-semibold">15 秒</span></div>
+              <div class="flex items-center justify-between text-sm"><span>复部署成本</span><span class="font-semibold">3 费</span></div>
+            </div>
+          </article>
+
+          <article class="flex-1 rounded-[24px] border p-4" style="border-color:var(--finaldefense-border); background:#fff;">
+            <div class="mb-4 flex items-center justify-between">
+              <p class="text-sm font-semibold uppercase tracking-[0.16em]" style="color:#9e7083;">界面落地建议</p>
+              <i data-lucide="wand-sparkles" class="h-5 w-5" style="color:#e66b8a;"></i>
+            </div>
+            <ul class="space-y-3 text-sm leading-6" style="color:#74616e;">
+              <li>把地图中央做成更柔和的桌游盘面，而不是纯工程调试视图。</li>
+              <li>左侧塔牌卡面可以直接映射 `TowerData` 字段，接入成本很低。</li>
+              <li>右侧“敌人队列 + 战术提示”让这一页更像完整关卡 HUD，而不只是数值条堆叠。</li>
+            </ul>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

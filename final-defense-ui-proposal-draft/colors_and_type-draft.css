@@ -1,0 +1,142 @@
+:root {
+  --finaldefense-background: #17141f;
+  --finaldefense-foreground: #f6f0ff;
+  --finaldefense-card: #221c2d;
+  --finaldefense-card-foreground: #f7f3fb;
+  --finaldefense-popover: #2a2234;
+  --finaldefense-popover-foreground: #f7f3fb;
+  --finaldefense-primary: #ff6b9f;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #2b2336;
+  --finaldefense-secondary-foreground: #e6d9ef;
+  --finaldefense-muted: #2f283b;
+  --finaldefense-muted-foreground: #c6b7d5;
+  --finaldefense-accent: #362d46;
+  --finaldefense-accent-foreground: #f5eefe;
+  --finaldefense-destructive: #ff6684;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #433754;
+  --finaldefense-input: #3a3149;
+  --finaldefense-ring: #ff8ab5;
+  --finaldefense-chart-1: #ff6b9f;
+  --finaldefense-chart-2: #7f83ff;
+  --finaldefense-chart-3: #ffb85c;
+  --finaldefense-chart-4: #49d3ae;
+  --finaldefense-chart-5: #c289ff;
+  --finaldefense-sidebar: #1d1727;
+  --finaldefense-sidebar-foreground: #f7f1ff;
+  --finaldefense-sidebar-primary: #ff6b9f;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #30273d;
+  --finaldefense-sidebar-accent-foreground: #f2e7fb;
+
+  --finaldefense-surface-strong: #2a2236;
+  --finaldefense-surface-soft: #241d2f;
+  --finaldefense-surface-tint: #1d1727;
+  --finaldefense-state-success: #45d19c;
+  --finaldefense-state-warning: #ffb24c;
+  --finaldefense-state-error: #ff6684;
+  --finaldefense-state-info: #7785ff;
+
+  --finaldefense-radius-small: 12px;
+  --finaldefense-radius-medium: 16px;
+  --finaldefense-radius-large: 22px;
+  --finaldefense-radius-sm: 12px;
+  --finaldefense-radius-md: 16px;
+  --finaldefense-radius-lg: 22px;
+
+  --finaldefense-font-primary: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-font-display: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.24);
+  --finaldefense-shadow-card: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.dark {
+  --finaldefense-background: #17141f;
+  --finaldefense-foreground: #f6f0ff;
+  --finaldefense-card: #221c2d;
+  --finaldefense-card-foreground: #f7f3fb;
+  --finaldefense-popover: #2a2234;
+  --finaldefense-popover-foreground: #f7f3fb;
+  --finaldefense-primary: #ff6b9f;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #2b2336;
+  --finaldefense-secondary-foreground: #e6d9ef;
+  --finaldefense-muted: #2f283b;
+  --finaldefense-muted-foreground: #c6b7d5;
+  --finaldefense-accent: #362d46;
+  --finaldefense-accent-foreground: #f5eefe;
+  --finaldefense-destructive: #ff6684;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #433754;
+  --finaldefense-input: #3a3149;
+  --finaldefense-ring: #ff8ab5;
+  --finaldefense-sidebar: #1d1727;
+  --finaldefense-sidebar-foreground: #f7f1ff;
+  --finaldefense-sidebar-primary: #ff6b9f;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #30273d;
+  --finaldefense-sidebar-accent-foreground: #f2e7fb;
+  --finaldefense-surface-strong: #2a2236;
+  --finaldefense-surface-soft: #241d2f;
+  --finaldefense-surface-tint: #1d1727;
+  --finaldefense-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.24);
+  --finaldefense-shadow-card: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+body {
+  font-family: var(--finaldefense-font-primary);
+  background:
+    radial-gradient(circle at top left, rgba(255, 107, 159, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(127, 131, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #17141f 0%, #120f19 100%);
+}
+
+.finaldefense-display {
+  font-family: var(--finaldefense-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.finaldefense-h1 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.finaldefense-h2 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.14;
+  font-weight: 700;
+}
+
+.finaldefense-body {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.finaldefense-panel {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%),
+    var(--finaldefense-card);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--finaldefense-shadow-card);
+  backdrop-filter: blur(14px);
+}
+
+.finaldefense-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.finaldefense-hud-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #b5a6c5;
+  font-weight: 700;
+}

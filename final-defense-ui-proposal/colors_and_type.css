@@ -1,0 +1,114 @@
+:root {
+  --finaldefense-background: #fff8fb;
+  --finaldefense-foreground: #2c2134;
+  --finaldefense-card: #ffffff;
+  --finaldefense-card-foreground: #2f2340;
+  --finaldefense-popover: #fffafd;
+  --finaldefense-popover-foreground: #2f2340;
+  --finaldefense-primary: #e66b8a;
+  --finaldefense-primary-foreground: #fff7fb;
+  --finaldefense-secondary: #f8d7e2;
+  --finaldefense-secondary-foreground: #6d435b;
+  --finaldefense-muted: #f8eef3;
+  --finaldefense-muted-foreground: #7d6475;
+  --finaldefense-accent: #ffe9f1;
+  --finaldefense-accent-foreground: #7f4762;
+  --finaldefense-destructive: #d4556f;
+  --finaldefense-destructive-foreground: #fff7fb;
+  --finaldefense-border: #edd6df;
+  --finaldefense-input: #f1dfe7;
+  --finaldefense-ring: #f09ab1;
+  --finaldefense-chart-1: #e66b8a;
+  --finaldefense-chart-2: #7f7ce0;
+  --finaldefense-chart-3: #f3b55a;
+  --finaldefense-chart-4: #7ec8b8;
+  --finaldefense-chart-5: #b78cf5;
+  --finaldefense-sidebar: #fff2f7;
+  --finaldefense-sidebar-foreground: #382b42;
+  --finaldefense-sidebar-primary: #e66b8a;
+  --finaldefense-sidebar-primary-foreground: #fff7fb;
+  --finaldefense-sidebar-accent: #fce5ee;
+  --finaldefense-sidebar-accent-foreground: #6e4761;
+
+  --finaldefense-surface-strong: #ffe3ec;
+  --finaldefense-surface-soft: #fff2f6;
+  --finaldefense-surface-tint: #fff7fa;
+  --finaldefense-state-success: #4aa886;
+  --finaldefense-state-warning: #e5a34f;
+  --finaldefense-state-error: #d4556f;
+  --finaldefense-state-info: #6d7de7;
+
+  --finaldefense-radius-small: 10px;
+  --finaldefense-radius-medium: 18px;
+  --finaldefense-radius-large: 28px;
+  --finaldefense-radius-sm: 10px;
+  --finaldefense-radius-md: 18px;
+  --finaldefense-radius-lg: 28px;
+
+  --finaldefense-font-primary: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-font-display: "Hiragino Sans GB", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --finaldefense-shadow-soft: 0 14px 34px rgba(230, 107, 138, 0.10);
+  --finaldefense-shadow-card: 0 8px 22px rgba(91, 63, 96, 0.06);
+}
+
+.dark {
+  --finaldefense-background: #1c1623;
+  --finaldefense-foreground: #f9edf4;
+  --finaldefense-card: #261f30;
+  --finaldefense-card-foreground: #faeef5;
+  --finaldefense-popover: #2b2234;
+  --finaldefense-popover-foreground: #faeef5;
+  --finaldefense-primary: #f08aaa;
+  --finaldefense-primary-foreground: #291b27;
+  --finaldefense-secondary: #3d2c3f;
+  --finaldefense-secondary-foreground: #f5d9e7;
+  --finaldefense-muted: #312737;
+  --finaldefense-muted-foreground: #d2b8c6;
+  --finaldefense-accent: #372b3b;
+  --finaldefense-accent-foreground: #f2dce7;
+  --finaldefense-destructive: #ff8ea4;
+  --finaldefense-destructive-foreground: #2b1621;
+  --finaldefense-border: #4b3950;
+  --finaldefense-input: #46354a;
+  --finaldefense-ring: #f3a6bc;
+  --finaldefense-sidebar: #221a2a;
+  --finaldefense-sidebar-foreground: #f8eef4;
+  --finaldefense-sidebar-primary: #f08aaa;
+  --finaldefense-sidebar-primary-foreground: #291b27;
+  --finaldefense-sidebar-accent: #382b3b;
+  --finaldefense-sidebar-accent-foreground: #f1dce6;
+  --finaldefense-surface-strong: #372835;
+  --finaldefense-surface-soft: #2f2535;
+  --finaldefense-surface-tint: #251d2d;
+  --finaldefense-shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.28);
+  --finaldefense-shadow-card: 0 10px 26px rgba(0, 0, 0, 0.20);
+}
+
+body {
+  font-family: var(--finaldefense-font-primary);
+}
+
+.finaldefense-display {
+  font-family: var(--finaldefense-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.finaldefense-h1 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.finaldefense-h2 {
+  font-family: var(--finaldefense-font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.14;
+  font-weight: 700;
+}
+
+.finaldefense-body {
+  font-size: 15px;
+  line-height: 1.7;
+}
