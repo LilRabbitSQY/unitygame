@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d0d9332afcc4b24b577f89c34ccd53, type: 3}
+  m_Name: Gym
+  m_EditorClassIdentifier: FinalDefense::FinalDefense.Data.ActivityData
+  activityName: "\u53BB\u5065\u8EAB"
+  description: "\u589E\u5F3A\u4F53\u529B\u6062\u590D\u7CBE\u529B"
+  actPointCost: 1
+  emotionDelta: 1
+  strengthDelta: 3
+  eduPowerDelta: 0
+  determinationDelta: 0

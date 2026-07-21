@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fda24781410745639f416796f066d82, type: 3}
+  m_Name: Calculator
+  m_EditorClassIdentifier: FinalDefense::FinalDefense.Data.TowerData
+  towerName: "\u8BA1\u7B97\u5668"
+  cost: 8
+  deployCost: 8
+  attackRange: 3
+  attackInterval: 1.2
+  damage: 15
+  maxHP: 250
+  redeployCooldown: 15
+  redeployCost: 3
+  maxLevel: 3
+  upgradeHPMultiplier: 1.5
+  upgradeDamageMultiplier: 1.5
+  prefab: {fileID: 0}
+  projectilePrefab: {fileID: 0}
+  icon: {fileID: 0}
+  towerColor: {r: 0.2, g: 0.4, b: 0.9, a: 1}

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2c1436d65b547a394c673c3fb03826, type: 3}
+  m_Name: DemoWave
+  m_EditorClassIdentifier: FinalDefense::FinalDefense.Data.WaveData
+  waves:
+  - enemyType: {fileID: 11400000, guid: e3287d58320ae41d5ad6db932d956f43, type: 2}
+    count: 5
+    spawnInterval: 1.2
+    delayBeforeWave: 3
+  - enemyType: {fileID: 11400000, guid: e3287d58320ae41d5ad6db932d956f43, type: 2}
+    count: 8
+    spawnInterval: 1
+    delayBeforeWave: 5
+  - enemyType: {fileID: 11400000, guid: b70f74dc047e543819b30019326c8f73, type: 2}
+    count: 4
+    spawnInterval: 1.5
+    delayBeforeWave: 5
+  - enemyType: {fileID: 11400000, guid: e3287d58320ae41d5ad6db932d956f43, type: 2}
+    count: 10
+    spawnInterval: 0.8
+    delayBeforeWave: 5
+  - enemyType: {fileID: 11400000, guid: b70f74dc047e543819b30019326c8f73, type: 2}
+    count: 5
+    spawnInterval: 1.2
+    delayBeforeWave: 5
+  - enemyType: {fileID: 11400000, guid: c6a7f237ed9f745ffbad9e2a4a88957b, type: 2}
+    count: 2
+    spawnInterval: 3
+    delayBeforeWave: 5

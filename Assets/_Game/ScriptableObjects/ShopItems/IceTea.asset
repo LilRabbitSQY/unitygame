@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70cfa5bae22fb4b41b234d6aba1b1352, type: 3}
+  m_Name: IceTea
+  m_EditorClassIdentifier: FinalDefense::FinalDefense.Data.ShopItemData
+  itemName: "\u51B0\u7EA2\u8336"
+  description: "\u7EED\u547D\u795E\u5668"
+  price: 10
+  emotionDelta: 3
+  strengthDelta: 1
+  eduPowerDelta: 0
+  determinationDelta: 0
+  gpaDelta: 0
+  actionPointDelta: 0

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: PersonalityConfig
+  m_EditorClassIdentifier: FinalDefense:FinalDefense.Data:PersonalityConfig
+  personalities:
+  - type: 0
+    displayName: "\u4E50\u5B50\u4EBA"
+    description: "\u4E0A\u5927\u5B66\u662F\u4E3A\u4E86\u5565\uFF1F\u56FE\u4E2A\u4E50\u5B50\uFF01"
+    emotion: 17
+    strength: 13
+    eduPower: 7
+    determination: 9
+  - type: 1
+    displayName: "\u6253\u5DE5\u4EBA"
+    description: "\u597D\u7684\u8001\u5E08\uFF0C\u665A\u4E0A\u7ED9\u60A8\u53D1\u8FC7\u53BB\u3002"
+    emotion: 9
+    strength: 9
+    eduPower: 13
+    determination: 11
+  - type: 2
+    displayName: "\u7761\u7F8E\u4EBA"
+    description: "\u65E9\u516B\uFF1F\u8BA9\u6211\u518D\u7761\u4E00\u4F1A\u2026\u2026"
+    emotion: 13
+    strength: 17
+    eduPower: 3
+    determination: 3
+  - type: 3
+    displayName: "\u6C42\u6C42\u4EBA"
+    description: "\u6559\u6388\uFF0C\u6C42\u6C42\uFF0C\u635E\u635E\uFF0C\u545C\u545C\u2026\u2026"
+    emotion: 11
+    strength: 11
+    eduPower: 7
+    determination: 7
+  - type: 4
+    displayName: "\u5B66\u672F\u4EBA"
+    description: "\u5E08\u5144\uFF0C\u4E3A\u4EC0\u4E48\u4F60\u7684\u5B9E\u9A8C\u7ED3\u679C\u6CA1\u6CD5\u590D\u73B0\uFF1F"
+    emotion: 11
+    strength: 9
+    eduPower: 17
+    determination: 15
+  - type: 5
+    displayName: "\u5E72\u996D\u4EBA"
+    description: "\u4E0A\u8BFE\u597D\u7D2F\uFF0C\u4E70\u4EFD\u9EA6\u5F53\u52B3\u5B89\u6170\u4E0B\u81EA\u5DF1\u3002"
+    emotion: 15
+    strength: 15
+    eduPower: 7
+    determination: 9
+  - type: 6
+    displayName: "\u6478\u9C7C\u4EBA"
+    description: "\u6700\u540E\u4E00\u6392\u90A3\u4F4D\u540C\u5B66\uFF0C\u4F60\u6253\u97F3\u6E38\u628A\u524D\u684C\u9707\u9192\u4E86\u3002"
+    emotion: 15
+    strength: 15
+    eduPower: 7
+    determination: 9
+  - type: 7
+    displayName: "\u5747\u8861\u4EBA"
+    description: "\u4E00\u624B\u6293\u7EE9\u70B9\u4E00\u624B\u6293\u8BBA\u6587\u4E00\u624B\u6293\u5B9E\u4E60\u2026\u2026\u4F60\u53EA\u6709\u4E24\u53EA\u624B\uFF1F"
+    emotion: 10
+    strength: 10
+    eduPower: 10
+    determination: 10
