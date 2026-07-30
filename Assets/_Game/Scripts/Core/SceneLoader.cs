@@ -11,6 +11,7 @@ namespace FinalDefense.Core
         public const string ScheduleScene = "Schedule";
         public const string PersonalityTestScene = "PersonalityTest";
         public const string ShopScene = "Shop";
+        public const string DialogueScene = "Dialogue";
 
         public static void LoadScene(string sceneName)
         {
@@ -23,5 +24,6 @@ namespace FinalDefense.Core
         public static void LoadSchedule() => LoadScene(ScheduleScene);
         public static void LoadPersonalityTest() => LoadScene(PersonalityTestScene);
         public static void LoadShop() => LoadScene(ShopScene);
+        public static void LoadDialogue() => LoadScene(DialogueScene);
     }
 }

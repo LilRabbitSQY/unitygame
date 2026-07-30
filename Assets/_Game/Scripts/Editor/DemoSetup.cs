@@ -11,7 +11,6 @@ using FinalDefense.Core;
 using FinalDefense.UI;
 using FinalDefense.Schedule;
 using FinalDefense.Personality;
-using FinalDefense.DDL;
 using FinalDefense.Shop;
 
 namespace FinalDefense.Setup
@@ -28,11 +27,12 @@ namespace FinalDefense.Setup
             SetupPersonalityTestScene();
             SetupMainMenuScene();
             SetupScheduleScene();
+            SetupDialogueScene();
             SetupBattleScene();
             SetupResultScene();
             SetupShopScene();
             SetupBuildSettings();
-            Debug.Log("期末保卫战 Demo 全部设置完成！（含人格测试/日程/战斗/商店）");
+            Debug.Log("期末保卫战 Demo 全部设置完成！（含人格测试/日程/对话/战斗/商店）");
         }
 
         private static void EnsureDirectories()
@@ -398,15 +398,15 @@ namespace FinalDefense.Setup
 
             var startBattleBtn = CreateUIButton(canvasGo.transform, "StartBattle", "出发战斗！", new Vector2(0, -350));
 
-            // DDL Panel
-            var ddlTitleText = CreateUIText(canvasGo.transform, "DDLTitle", "当前DDL", 18, new Vector2(350, 350));
-            var ddlListGo = new GameObject("DDLList");
-            ddlListGo.transform.SetParent(canvasGo.transform, false);
-            var ddlRt = ddlListGo.AddComponent<RectTransform>();
-            ddlRt.anchoredPosition = new Vector2(350, 200);
-            ddlRt.sizeDelta = new Vector2(300, 300);
-            var ddlVlg = ddlListGo.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
-            ddlVlg.spacing = 5;
+            // Event Panel
+            var eventTitleText = CreateUIText(canvasGo.transform, "EventTitle", "当前事件", 18, new Vector2(350, 350));
+            var eventListGo = new GameObject("EventList");
+            eventListGo.transform.SetParent(canvasGo.transform, false);
+            var eventRt = eventListGo.AddComponent<RectTransform>();
+            eventRt.anchoredPosition = new Vector2(350, 200);
+            eventRt.sizeDelta = new Vector2(300, 300);
+            var eventVlg = eventListGo.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
+            eventVlg.spacing = 5;
 
             // ScheduleManager
             var schMgrGo = new GameObject("ScheduleManager");
@@ -414,11 +414,13 @@ namespace FinalDefense.Setup
             var activities = LoadAllAssets<ActivityData>("Assets/_Game/ScriptableObjects/Activities");
             SetField(schMgr, "availableActivities", activities);
 
-            // DDLManager
-            var ddlMgrGo = new GameObject("DDLManager");
-            var ddlMgr = ddlMgrGo.AddComponent<DDLManager>();
-            var ddls = LoadAllAssets<DDLData>("Assets/_Game/ScriptableObjects/DDLs");
-            SetField(ddlMgr, "allDDLs", ddls);
+            // Event System
+            var eventSysGo = new GameObject("EventSystem_Game");
+            eventSysGo.AddComponent<FinalDefense.Event.EventSystem>();
+
+            // Dialogue Button
+            var dialogueBtn = CreateUIButton(canvasGo.transform, "DialogueBtn", "进入对话", new Vector2(350, -300));
+            dialogueBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 50);
 
             // ScheduleUI
             var schUI = canvasGo.AddComponent<ScheduleUI>();
@@ -426,11 +428,6 @@ namespace FinalDefense.Setup
             SetField(schUI, "actionPointsText", apText);
             SetField(schUI, "statsText", statsText);
             SetField(schUI, "startBattleButton", startBattleBtn.GetComponent<UnityEngine.UI.Button>());
-
-            // DDLPanel
-            var ddlPanel = canvasGo.AddComponent<DDLPanel>();
-            SetField(ddlPanel, "ddlListContainer", ddlListGo.transform);
-            SetField(ddlPanel, "ddlTitleText", ddlTitleText);
 
             CreateEventSystem(scene);
             EditorSceneManager.SaveScene(scene, "Assets/_Game/Scenes/Schedule.unity");
@@ -497,6 +494,11 @@ namespace FinalDefense.Setup
             var aiAgentGo = new GameObject("AIAgentSystem");
             aiAgentGo.AddComponent<AIAgentSystem>();
 
+            new GameObject("BattleAnalytics").AddComponent<BattleAnalytics>();
+
+            var bootstrapGo = new GameObject("BattleSceneBootstrap");
+            bootstrapGo.AddComponent<BattleSceneBootstrap>();
+
             var retryGo = new GameObject("RetrySystem");
             retryGo.AddComponent<RetrySystem>();
 
@@ -509,7 +511,7 @@ namespace FinalDefense.Setup
 
             var placementGo = new GameObject("TowerPlacement");
             var tp = placementGo.AddComponent<TowerPlacement>();
-            SetField(tp, "placeableTilemap", placeableTilemap);
+            SetField(tp, "groundTilemap", placeableTilemap);
             SetField(tp, "mainCamera", cam);
 
             var tilemapInitGo = new GameObject("TilemapInitializer");
@@ -582,6 +584,13 @@ namespace FinalDefense.Setup
                 SetField(towerBtn, "towerPlacement", tp);
             }
 
+            // Halftime Panel
+            var halftimePanelGo = new GameObject("HalftimePanel");
+            halftimePanelGo.transform.SetParent(canvasGo.transform, false);
+            halftimePanelGo.AddComponent<RectTransform>();
+            halftimePanelGo.AddComponent<HalftimePanel>();
+            halftimePanelGo.SetActive(false);
+
             CreateEventSystem(scene);
             EditorSceneManager.SaveScene(scene, "Assets/_Game/Scenes/Battle.unity");
         }
@@ -615,6 +624,97 @@ namespace FinalDefense.Setup
 
             CreateEventSystem(scene);
             EditorSceneManager.SaveScene(scene, "Assets/_Game/Scenes/Result.unity");
+        }
+
+        private static void SetupDialogueScene()
+        {
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+            CreateCamera(new Color(0.12f, 0.12f, 0.18f));
+            var canvasGo = CreateCanvas();
+
+            CreateUIText(canvasGo.transform, "Title", "对话", 36, new Vector2(0, 420));
+
+            // NPC selection panel
+            var npcPanel = new GameObject("NPCPanel");
+            npcPanel.transform.SetParent(canvasGo.transform, false);
+            var npcRt = npcPanel.AddComponent<RectTransform>();
+            npcRt.anchoredPosition = new Vector2(-250, 100);
+            npcRt.sizeDelta = new Vector2(200, 500);
+            var npcVlg = npcPanel.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
+            npcVlg.spacing = 8;
+            npcVlg.childAlignment = TextAnchor.UpperCenter;
+            npcVlg.childForceExpandWidth = true;
+            npcVlg.childForceExpandHeight = false;
+
+            string[] npcNames = { "室友", "闺蜜", "Crush", "竹马", "社团学长", "同系学弟", "专业课老师", "院长" };
+            for (int i = 0; i < npcNames.Length; i++)
+            {
+                var npcBtn = CreateUIButton(npcPanel.transform, $"NPC_{i}", npcNames[i], Vector2.zero);
+                npcBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(180, 40);
+            }
+
+            // Decision point slider
+            CreateUIText(canvasGo.transform, "PointsLabel", "决策点: 50", 18, new Vector2(100, 350));
+            var sliderGo = new GameObject("DecisionSlider");
+            sliderGo.transform.SetParent(canvasGo.transform, false);
+            var sliderRt = sliderGo.AddComponent<RectTransform>();
+            sliderRt.anchoredPosition = new Vector2(100, 310);
+            sliderRt.sizeDelta = new Vector2(400, 30);
+            sliderGo.AddComponent<UnityEngine.UI.Image>().color = new Color(0.2f, 0.2f, 0.3f);
+            var slider = sliderGo.AddComponent<UnityEngine.UI.Slider>();
+            slider.minValue = 0;
+            slider.maxValue = 100;
+            slider.value = 50;
+
+            // Chat area
+            var chatArea = new GameObject("ChatArea");
+            chatArea.transform.SetParent(canvasGo.transform, false);
+            var chatRt = chatArea.AddComponent<RectTransform>();
+            chatRt.anchoredPosition = new Vector2(100, 0);
+            chatRt.sizeDelta = new Vector2(450, 400);
+            chatArea.AddComponent<UnityEngine.UI.Image>().color = new Color(0.15f, 0.15f, 0.2f, 0.8f);
+
+            // Input field
+            var inputGo = new GameObject("InputField");
+            inputGo.transform.SetParent(canvasGo.transform, false);
+            var inputRt = inputGo.AddComponent<RectTransform>();
+            inputRt.anchoredPosition = new Vector2(50, -280);
+            inputRt.sizeDelta = new Vector2(350, 45);
+            inputGo.AddComponent<UnityEngine.UI.Image>().color = new Color(0.2f, 0.2f, 0.25f);
+            var inputField = inputGo.AddComponent<TMPro.TMP_InputField>();
+            var inputText = new GameObject("Text");
+            inputText.transform.SetParent(inputGo.transform, false);
+            var inputTextRt = inputText.AddComponent<RectTransform>();
+            inputTextRt.anchorMin = Vector2.zero;
+            inputTextRt.anchorMax = Vector2.one;
+            inputTextRt.offsetMin = new Vector2(10, 5);
+            inputTextRt.offsetMax = new Vector2(-10, -5);
+            var inputTmp = inputText.AddComponent<TMPro.TextMeshProUGUI>();
+            inputTmp.fontSize = 16;
+            inputTmp.color = Color.white;
+            inputField.textComponent = inputTmp;
+
+            // Send button
+            var sendBtn = CreateUIButton(canvasGo.transform, "SendBtn", "发送", new Vector2(270, -280));
+            sendBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(80, 45);
+
+            // End dialogue button
+            var endBtn = CreateUIButton(canvasGo.transform, "EndBtn", "结束对话", new Vector2(200, -350));
+            endBtn.GetComponent<UnityEngine.UI.Image>().color = new Color(0.7f, 0.3f, 0.3f);
+
+            // NPC stats display
+            CreateUIText(canvasGo.transform, "NPCStats", "好感度: -- | 耐心: --", 14, new Vector2(100, -370));
+
+            // DialogueManager
+            var dlgMgrGo = new GameObject("DialogueManager");
+            dlgMgrGo.AddComponent<FinalDefense.Dialogue.DialogueManager>();
+
+            // DialogueUI
+            canvasGo.AddComponent<DialogueUI>();
+
+            CreateEventSystem(scene);
+            EditorSceneManager.SaveScene(scene, "Assets/_Game/Scenes/Dialogue.unity");
         }
 
         private static void SetupShopScene()
@@ -664,6 +764,7 @@ namespace FinalDefense.Setup
                 new EditorBuildSettingsScene("Assets/_Game/Scenes/PersonalityTest.unity", true),
                 new EditorBuildSettingsScene("Assets/_Game/Scenes/MainMenu.unity", true),
                 new EditorBuildSettingsScene("Assets/_Game/Scenes/Schedule.unity", true),
+                new EditorBuildSettingsScene("Assets/_Game/Scenes/Dialogue.unity", true),
                 new EditorBuildSettingsScene("Assets/_Game/Scenes/Battle.unity", true),
                 new EditorBuildSettingsScene("Assets/_Game/Scenes/Result.unity", true),
                 new EditorBuildSettingsScene("Assets/_Game/Scenes/Shop.unity", true),

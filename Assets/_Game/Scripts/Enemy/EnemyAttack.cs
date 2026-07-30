@@ -1,6 +1,8 @@
 using UnityEngine;
 using FinalDefense.Data;
 using FinalDefense.Tower;
+using FinalDefense.Battle;
+using FinalDefense.NPC;
 
 namespace FinalDefense.Enemy
 {
@@ -13,25 +15,46 @@ namespace FinalDefense.Enemy
         private LayerMask towerLayer;
         private Enemy enemy;
         private Transform currentTarget;
+        private bool canAttackWhileMoving;
+        private float healAmount;
+        private float healRange;
+        private float healTimer;
+        private EnemyType enemyType;
 
         public void Initialize(EnemyData data)
         {
             attackDamage = data.attackDamage;
             attackSpeed = data.attackSpeed;
             attackRange = data.attackRange;
+            canAttackWhileMoving = data.canAttackWhileMoving;
+            healAmount = data.healAmount;
+            healRange = data.healRange;
+            enemyType = data.enemyType;
             towerLayer = LayerMask.GetMask("Tower");
             enemy = GetComponent<Enemy>();
+
+            if (NPCRelationshipManager.Instance != null)
+            {
+                var buffs = NPCRelationshipManager.Instance.CalculateBattleBuffs();
+                attackDamage = Mathf.RoundToInt(attackDamage * buffs.GetEnemyAttackMultiplier());
+            }
         }
 
         private void Update()
         {
-            if (attackDamage <= 0) return;
+            if (attackDamage <= 0 && enemyType != EnemyType.HealerMob) return;
+
+            if (enemyType == EnemyType.HealerMob)
+            {
+                HandleHeal();
+                return;
+            }
 
             currentTarget = FindTowerTarget();
 
             if (currentTarget != null)
             {
-                if (enemy != null) enemy.IsAttacking = true;
+                if (enemy != null && !canAttackWhileMoving) enemy.IsAttacking = true;
                 attackTimer -= Time.deltaTime;
                 if (attackTimer <= 0f)
                 {
@@ -41,7 +64,25 @@ namespace FinalDefense.Enemy
             }
             else
             {
-                if (enemy != null) enemy.IsAttacking = false;
+                if (enemy != null && !canAttackWhileMoving) enemy.IsAttacking = false;
+            }
+        }
+
+        private void HandleHeal()
+        {
+            healTimer -= Time.deltaTime;
+            if (healTimer > 0) return;
+            healTimer = 2f;
+
+            var hits = Physics2D.OverlapCircleAll(transform.position, healRange, LayerMask.GetMask("Enemy"));
+            foreach (var hit in hits)
+            {
+                if (hit.gameObject == gameObject) continue;
+                var health = hit.GetComponent<EnemyHealth>();
+                if (health != null && !health.IsDead)
+                {
+                    health.Heal(Mathf.RoundToInt(healAmount));
+                }
             }
         }
 
@@ -71,10 +112,19 @@ namespace FinalDefense.Enemy
         private void AttackTower()
         {
             if (currentTarget == null) return;
-            var health = currentTarget.GetComponent<TowerHealth>();
-            if (health != null && !health.IsDowned)
+            var tower = currentTarget.GetComponent<Tower.Tower>();
+            if (tower != null)
             {
-                health.TakeDamage(attackDamage);
+                tower.TakeDamageFromEnemy(attackDamage);
+            }
+            else
+            {
+                var health = currentTarget.GetComponent<TowerHealth>();
+                if (health != null && !health.IsDowned)
+                {
+                    int damage = DamageCalculator.Calculate(attackDamage, 0);
+                    health.TakeDamage(damage);
+                }
             }
         }
     }

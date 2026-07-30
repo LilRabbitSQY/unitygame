@@ -95,7 +95,7 @@ namespace FinalDefense.UI
                     title.alignment = TextAlignmentOptions.Center;
                 }
 
-                var ddlList = UIStyler.FindDeepChild(canvas.transform, "DDLList") as RectTransform;
+                var ddlList = UIStyler.FindDeepChild(canvas.transform, "EventList") as RectTransform;
                 if (ddlList != null)
                 {
                     ddlList.anchorMin = new Vector2(1f, 0.5f);
@@ -104,10 +104,10 @@ namespace FinalDefense.UI
                     ddlList.anchoredPosition = new Vector2(-120f, 10f);
                     ddlList.sizeDelta = new Vector2(320f, 360f);
                     UIStyler.EnsureVerticalLayout(ddlList, 10f, new RectOffset(14, 14, 18, 18));
-                    UIStyler.EnsureBackdrop(ddlList, "DDLListPanel", new Vector2(52, 60), theme.surfaceTint);
+                    UIStyler.EnsureBackdrop(ddlList, "EventListPanel", new Vector2(52, 60), theme.surfaceTint);
                 }
 
-                var ddlTitle = UIStyler.FindDeepChild(canvas.transform, "DDLTitle")?.GetComponent<TextMeshProUGUI>();
+                var ddlTitle = UIStyler.FindDeepChild(canvas.transform, "EventTitle")?.GetComponent<TextMeshProUGUI>();
                 if (ddlTitle != null)
                 {
                     ddlTitle.rectTransform.anchorMin = new Vector2(1f, 0.5f);

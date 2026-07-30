@@ -21,11 +21,16 @@ namespace FinalDefense.Core
         public int MaxActionPoints => 4 + CurrentGrade;
         public PersonalityType CurrentPersonality { get; private set; }
         public bool PersonalitySelected { get; private set; }
-        public int AcademicMisconduct { get; private set; }
-        public int MaxMisconduct => 100;
         public int CurrentDay { get; private set; } = 1;
         public int Gold { get; private set; }
         public int RetryCount { get; private set; }
+
+        public int CurrentSemester => Mathf.Clamp((CurrentDay - 1) / 3 + 1, 1, 8);
+        public int CurrentRound => ((CurrentDay - 1) % 3) + 1;
+        public int StatCap => CurrentGrade * 10 + 10;
+
+        public int BattlesWon { get; private set; }
+        public int BattlesLost { get; private set; }
 
         protected override void Awake()
         {
@@ -55,10 +60,11 @@ namespace FinalDefense.Core
                 CurrentDetermination = 5;
             }
             ActionPoints = MaxActionPoints;
-            AcademicMisconduct = 0;
             CurrentDay = 1;
             Gold = 0;
             RetryCount = 0;
+            BattlesWon = 0;
+            BattlesLost = 0;
         }
 
         public void SetPersonality(PersonalityType type)
@@ -68,10 +74,10 @@ namespace FinalDefense.Core
             if (personalityConfig != null)
             {
                 var stats = personalityConfig.GetStats(type);
-                CurrentEmotion = stats.emotion;
-                CurrentStrength = stats.strength;
-                CurrentEduPower = stats.eduPower;
-                CurrentDetermination = stats.determination;
+                CurrentEmotion = Mathf.Min(stats.emotion, StatCap);
+                CurrentStrength = Mathf.Min(stats.strength, StatCap);
+                CurrentEduPower = Mathf.Min(stats.eduPower, StatCap);
+                CurrentDetermination = Mathf.Min(stats.determination, StatCap);
             }
         }
 
@@ -91,19 +97,20 @@ namespace FinalDefense.Core
 
         public void ModifyStat(string stat, int delta)
         {
+            int cap = StatCap;
             switch (stat)
             {
                 case "emotion":
-                    CurrentEmotion = Mathf.Clamp(CurrentEmotion + delta, 0, 50);
+                    CurrentEmotion = Mathf.Clamp(CurrentEmotion + delta, 0, cap);
                     break;
                 case "strength":
-                    CurrentStrength = Mathf.Clamp(CurrentStrength + delta, 0, 50);
+                    CurrentStrength = Mathf.Clamp(CurrentStrength + delta, 0, cap);
                     break;
                 case "eduPower":
-                    CurrentEduPower = Mathf.Clamp(CurrentEduPower + delta, 0, 50);
+                    CurrentEduPower = Mathf.Clamp(CurrentEduPower + delta, 0, cap);
                     break;
                 case "determination":
-                    CurrentDetermination = Mathf.Clamp(CurrentDetermination + delta, 0, 40);
+                    CurrentDetermination = Mathf.Clamp(CurrentDetermination + delta, 0, cap);
                     break;
             }
         }
@@ -123,6 +130,16 @@ namespace FinalDefense.Core
         public void AdvanceDay()
         {
             CurrentDay++;
+            if (CurrentDay > 3 && (CurrentDay - 1) % 6 == 0)
+            {
+                GradeUp();
+            }
+        }
+
+        public void RecordBattleResult(bool won)
+        {
+            if (won) BattlesWon++;
+            else BattlesLost++;
         }
 
         public void AddGold(int amount)
@@ -135,16 +152,6 @@ namespace FinalDefense.Core
             if (Gold < amount) return false;
             Gold -= amount;
             return true;
-        }
-
-        public void AddMisconduct(int amount)
-        {
-            AcademicMisconduct = Mathf.Min(AcademicMisconduct + amount, MaxMisconduct);
-            EventBus.MisconductChanged(AcademicMisconduct);
-            if (AcademicMisconduct >= MaxMisconduct)
-            {
-                EventBus.BattleLost();
-            }
         }
 
         public void IncrementRetry()
@@ -161,5 +168,7 @@ namespace FinalDefense.Core
         public float GetDeterminationPenalty() => CurrentDetermination * 0.015f;
         public float GetEmotionDebuffReduction() => CurrentEmotion * 0.02f;
         public float GetStrengthActionBonus() => CurrentStrength * 0.01f;
+
+        public bool IsGameComplete => CurrentSemester > 8;
     }
 }

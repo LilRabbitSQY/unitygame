@@ -10,30 +10,39 @@ namespace FinalDefense.Tower
 {
     public class TowerPlacement : MonoBehaviour
     {
-        [SerializeField] private Tilemap placeableTilemap;
+        [SerializeField] private Tilemap groundTilemap;
+        [SerializeField] private Tilemap highGroundTilemap;
         [SerializeField] private Camera mainCamera;
 
         private TowerData selectedTower;
         private GameObject previewInstance;
-        private HashSet<Vector3Int> occupiedCells = new HashSet<Vector3Int>();
+        private HashSet<Vector3Int> occupiedGroundCells = new();
+        private HashSet<Vector3Int> occupiedHighCells = new();
         private bool isPlacing;
         private bool placedThisFrame;
 
         public bool IsPlacing => isPlacing;
+
+        private Tilemap placeableTilemap => selectedTower != null && selectedTower.deployPosition == DeployPosition.HighGround
+            ? (highGroundTilemap != null ? highGroundTilemap : groundTilemap)
+            : groundTilemap;
 
         private void Update()
         {
             if (!isPlacing || selectedTower == null) return;
 
             if (mainCamera == null) mainCamera = Camera.main;
-            if (mainCamera == null || placeableTilemap == null) return;
+            if (mainCamera == null) return;
+
+            var tilemap = placeableTilemap;
+            if (tilemap == null) return;
 
             if (!TryGetPointerScreenPosition(out Vector2 pointerScreenPosition)) return;
 
             Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(pointerScreenPosition);
             mouseWorld.z = 0;
-            Vector3Int cellPos = placeableTilemap.WorldToCell(mouseWorld);
-            Vector3 cellCenter = placeableTilemap.GetCellCenterWorld(cellPos);
+            Vector3Int cellPos = tilemap.WorldToCell(mouseWorld);
+            Vector3 cellCenter = tilemap.GetCellCenterWorld(cellPos);
 
             if (previewInstance != null)
             {
@@ -96,7 +105,15 @@ namespace FinalDefense.Tower
 
         private bool IsValidPlacement(Vector3Int cellPos)
         {
-            return placeableTilemap.HasTile(cellPos) && !occupiedCells.Contains(cellPos);
+            var tilemap = placeableTilemap;
+            if (!tilemap.HasTile(cellPos)) return false;
+
+            if (selectedTower.deployPosition == DeployPosition.HighGround)
+                return !occupiedHighCells.Contains(cellPos);
+            else if (selectedTower.deployPosition == DeployPosition.Both)
+                return !occupiedGroundCells.Contains(cellPos) && !occupiedHighCells.Contains(cellPos);
+            else
+                return !occupiedGroundCells.Contains(cellPos);
         }
 
         private void TryPlace(Vector3Int cellPos, Vector3 worldPos)
@@ -130,7 +147,15 @@ namespace FinalDefense.Tower
             tower.Initialize(selectedTower);
             ApplyTowerVisuals(towerGo, selectedTower);
 
-            occupiedCells.Add(cellPos);
+            if (selectedTower.deployPosition == DeployPosition.HighGround)
+                occupiedHighCells.Add(cellPos);
+            else
+                occupiedGroundCells.Add(cellPos);
+
+            var analytics = BattleAnalytics.Instance;
+            if (analytics != null)
+                analytics.RecordTowerPlaced(selectedTower);
+
             CancelPlacement();
         }
 
@@ -150,130 +175,104 @@ namespace FinalDefense.Tower
 
         private Sprite CreateTowerSprite()
         {
-            const int size = 48;
-            Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            Color[] colors = new Color[size * size];
-            Vector2 center = new Vector2((size - 1) * 0.5f, (size - 1) * 0.5f);
-            float radius = size * 0.45f;
-            float innerRadius = size * 0.32f;
-
-            for (int y = 0; y < size; y++)
+            Texture2D tex = new Texture2D(32, 32);
+            Color[] colors = new Color[32 * 32];
+            for (int i = 0; i < colors.Length; i++)
             {
-                for (int x = 0; x < size; x++)
-                {
-                    float dist = Vector2.Distance(new Vector2(x, y), center);
-                    if (dist > radius)
-                        colors[y * size + x] = Color.clear;
-                    else if (dist > innerRadius)
-                        colors[y * size + x] = new Color(1f, 1f, 1f, 0.95f);
-                    else
-                        colors[y * size + x] = Color.white;
-                }
+                float dist = Vector2.Distance(new Vector2(i % 32, i / 32), new Vector2(16, 16));
+                colors[i] = dist < 14 ? Color.white : Color.clear;
             }
-
             tex.SetPixels(colors);
             tex.Apply();
-            return Sprite.Create(tex, new Rect(0, 0, size, size), Vector2.one * 0.5f, size);
+            return Sprite.Create(tex, new Rect(0, 0, 32, 32), Vector2.one * 0.5f, 32);
         }
 
         private void ApplyTowerVisuals(GameObject towerGo, TowerData towerData)
         {
-            if (towerGo == null || towerData == null) return;
-
             var sr = towerGo.GetComponent<SpriteRenderer>();
-            if (sr == null)
-                sr = towerGo.AddComponent<SpriteRenderer>();
-
-            if (sr.sprite == null)
-                sr.sprite = towerData.icon != null ? towerData.icon : CreateTowerSprite();
-
-            sr.color = towerData.towerColor;
-            sr.sortingOrder = 12;
-
-            EnsureTowerLabel(towerGo, towerData, 13, 0.5f);
+            if (sr != null)
+            {
+                sr.color = towerData.towerColor;
+                sr.sortingOrder = 12;
+                if (towerData.icon != null) sr.sprite = towerData.icon;
+            }
+            EnsureTowerLabel(towerGo, towerData, 13, 1f);
         }
 
         private void EnsureTowerLabel(GameObject towerGo, TowerData towerData, int sortingOrder, float alpha)
         {
-            if (towerGo == null || towerData == null) return;
+            string label = GetTowerShortLabel(towerData);
+            if (string.IsNullOrEmpty(label)) return;
 
-            var labelTransform = towerGo.transform.Find("TowerTypeLabel");
-            TextMesh label;
-            if (labelTransform == null)
-            {
-                var labelGo = new GameObject("TowerTypeLabel");
-                labelGo.transform.SetParent(towerGo.transform, false);
-                labelGo.transform.localPosition = new Vector3(0f, -0.03f, -0.01f);
-                label = labelGo.AddComponent<TextMesh>();
-            }
-            else
-            {
-                label = labelTransform.GetComponent<TextMesh>();
-                if (label == null)
-                    label = labelTransform.gameObject.AddComponent<TextMesh>();
-            }
+            Transform existing = towerGo.transform.Find("Label");
+            if (existing != null) Object.Destroy(existing.gameObject);
 
-            label.text = GetTowerShortLabel(towerData);
-            label.anchor = TextAnchor.MiddleCenter;
-            label.alignment = TextAlignment.Center;
-            label.fontSize = 22;
-            label.characterSize = 0.08f;
-            label.color = new Color(1f, 1f, 1f, alpha);
+            var labelGo = new GameObject("Label");
+            labelGo.transform.SetParent(towerGo.transform);
+            labelGo.transform.localPosition = Vector3.zero;
 
-            var renderer = label.GetComponent<MeshRenderer>();
-            if (renderer != null)
-                renderer.sortingOrder = sortingOrder;
+            var tm = labelGo.AddComponent<TextMesh>();
+            tm.text = label;
+            tm.characterSize = 0.15f;
+            tm.anchor = TextAnchor.MiddleCenter;
+            tm.alignment = TextAlignment.Center;
+            tm.fontSize = 24;
+            tm.color = new Color(1, 1, 1, alpha);
+            tm.GetComponent<MeshRenderer>().sortingOrder = sortingOrder;
         }
 
         private string GetTowerShortLabel(TowerData towerData)
         {
-            if (towerData == null || string.IsNullOrEmpty(towerData.towerName))
-                return "T";
-
-            string name = towerData.towerName.ToLower();
-            if (name.Contains("notebook") || name.Contains("笔记"))
-                return "N";
-            if (name.Contains("calculator") || name.Contains("计算"))
-                return "C";
-            if (name.Contains("coffee") || name.Contains("咖啡"))
-                return "K";
-
-            return "T";
+            return towerData.towerType switch
+            {
+                TowerType.Heavy => "重",
+                TowerType.Vanguard => "先",
+                TowerType.Striker => "突",
+                TowerType.Caster => "术",
+                TowerType.Sniper => "狙",
+                TowerType.Trapper => "陷",
+                TowerType.Healer => "医",
+                TowerType.Support => "辅",
+                TowerType.Shifter => "换",
+                TowerType.Summoner => "召",
+                _ => towerData.towerName.Length > 0 ? towerData.towerName[..1] : "?"
+            };
         }
 
         private bool IsPointerOverUI()
         {
-            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            if (EventSystem.current == null) return false;
+            return EventSystem.current.IsPointerOverGameObject();
         }
 
         private bool TryGetPointerScreenPosition(out Vector2 screenPosition)
         {
+            screenPosition = Vector2.zero;
             if (Mouse.current != null)
             {
                 screenPosition = Mouse.current.position.ReadValue();
                 return true;
             }
-
-            if (Touchscreen.current != null)
+            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
             {
                 screenPosition = Touchscreen.current.primaryTouch.position.ReadValue();
                 return true;
             }
-
-            screenPosition = default;
             return false;
         }
 
         private bool WasPrimaryClickPressed()
         {
-            return Mouse.current?.leftButton.wasPressedThisFrame == true ||
-                   Touchscreen.current?.primaryTouch.press.wasPressedThisFrame == true;
+            if (Mouse.current != null) return Mouse.current.leftButton.wasPressedThisFrame;
+            if (Touchscreen.current != null) return Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
+            return false;
         }
 
         private bool WasCancelPressed()
         {
-            return Mouse.current?.rightButton.wasPressedThisFrame == true ||
-                   Keyboard.current?.escapeKey.wasPressedThisFrame == true;
+            if (Mouse.current != null) return Mouse.current.rightButton.wasPressedThisFrame;
+            if (Keyboard.current != null) return Keyboard.current.escapeKey.wasPressedThisFrame;
+            return false;
         }
     }
 }

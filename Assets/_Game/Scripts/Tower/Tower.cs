@@ -1,6 +1,8 @@
 using UnityEngine;
 using FinalDefense.Core;
 using FinalDefense.Data;
+using FinalDefense.Battle;
+using FinalDefense.NPC;
 
 namespace FinalDefense.Tower
 {
@@ -12,9 +14,13 @@ namespace FinalDefense.Tower
         private LayerMask enemyLayer;
         private TowerHealth towerHealth;
         private int currentLevel = 1;
+        private int currentDefense;
+        private float currentAttackSpeed;
+        private BattleBuffs battleBuffs;
 
         public TowerData Data => data;
         public int CurrentLevel => currentLevel;
+        public int CurrentDefense => currentDefense;
 
         public void Initialize(TowerData towerData)
         {
@@ -23,6 +29,12 @@ namespace FinalDefense.Tower
             towerHealth = GetComponent<TowerHealth>();
             if (towerHealth != null)
                 towerHealth.Initialize(towerData);
+
+            currentDefense = towerData.defense;
+            currentAttackSpeed = towerData.attackSpeed;
+
+            if (NPCRelationshipManager.Instance != null)
+                battleBuffs = NPCRelationshipManager.Instance.CalculateBattleBuffs();
         }
 
         private void Update()
@@ -30,6 +42,7 @@ namespace FinalDefense.Tower
             if (data == null) return;
             if (towerHealth != null && towerHealth.IsDowned) return;
 
+            float interval = data.attackInterval / GetEffectiveAttackSpeed();
             attackTimer -= Time.deltaTime;
 
             if (currentTarget == null || !currentTarget.gameObject.activeInHierarchy)
@@ -40,8 +53,17 @@ namespace FinalDefense.Tower
             if (currentTarget != null && attackTimer <= 0f)
             {
                 Attack();
-                attackTimer = data.attackInterval;
+                attackTimer = interval;
             }
+        }
+
+        private float GetEffectiveAttackSpeed()
+        {
+            float speed = currentAttackSpeed;
+            float levelBonus = 1f + (currentLevel - 1) * 0.1f;
+            speed *= levelBonus;
+            speed *= battleBuffs.GetAllyAttackSpeedMultiplier();
+            return Mathf.Max(0.1f, speed);
         }
 
         private Transform FindTarget()
@@ -55,7 +77,22 @@ namespace FinalDefense.Tower
             foreach (var hit in hits)
             {
                 var enemy = hit.GetComponent<Enemy.Enemy>();
-                if (enemy != null && enemy.CurrentWaypointIndex > highestIndex)
+                if (enemy == null) continue;
+
+                if (data.deployPosition == DeployPosition.Ground && enemy.MoveData == MoveType.Air)
+                    continue;
+
+                if (data.towerType == TowerType.Sniper && enemy.MoveData == MoveType.Air)
+                {
+                    if (best == null || enemy.CurrentWaypointIndex > highestIndex)
+                    {
+                        highestIndex = enemy.CurrentWaypointIndex;
+                        best = hit.transform;
+                    }
+                    continue;
+                }
+
+                if (enemy.CurrentWaypointIndex > highestIndex)
                 {
                     highestIndex = enemy.CurrentWaypointIndex;
                     best = hit.transform;
@@ -69,23 +106,32 @@ namespace FinalDefense.Tower
             if (currentTarget == null) return;
 
             int finalDamage = GetDamage();
+            var enemyHealth = currentTarget.GetComponent<Enemy.EnemyHealth>();
+            if (enemyHealth == null) return;
+
+            int enemyDef = enemyHealth.Defense;
+            int actualDamage = DamageCalculator.Calculate(finalDamage, enemyDef);
+
+            if (battleBuffs.critRate > 0 && Random.value < battleBuffs.critRate)
+                actualDamage = Mathf.RoundToInt(actualDamage * 1.5f);
 
             if (data.projectilePrefab != null)
             {
                 var go = Instantiate(data.projectilePrefab, transform.position, Quaternion.identity);
                 var proj = go.GetComponent<Projectile>();
                 if (proj != null)
-                {
-                    proj.Initialize(currentTarget, finalDamage);
-                }
+                    proj.Initialize(currentTarget, actualDamage);
             }
             else
             {
-                var health = currentTarget.GetComponent<Enemy.EnemyHealth>();
-                if (health != null)
-                {
-                    health.TakeDamage(finalDamage);
-                }
+                enemyHealth.TakeDamage(actualDamage);
+            }
+
+            if (data.towerType == TowerType.Vanguard && enemyHealth.IsDead)
+            {
+                var costSystem = Object.FindFirstObjectByType<DeployCostSystem>();
+                if (costSystem != null)
+                    costSystem.AddCost(1);
             }
         }
 
@@ -96,8 +142,11 @@ namespace FinalDefense.Tower
                 levelMult *= data.upgradeDamageMultiplier;
 
             int baseDmg = Mathf.RoundToInt(data.damage * levelMult);
+            baseDmg = Mathf.RoundToInt(baseDmg * battleBuffs.GetAllyAttackMultiplier());
+
             if (GameManager.Instance != null)
                 baseDmg = Mathf.RoundToInt(baseDmg * (1f + GameManager.Instance.GetEduPowerBonus()));
+
             return baseDmg;
         }
 
@@ -105,12 +154,20 @@ namespace FinalDefense.Tower
         {
             if (currentLevel >= data.maxLevel) return;
             currentLevel++;
+            currentDefense = Mathf.RoundToInt(data.defense * Mathf.Pow(data.upgradeDefenseMultiplier, currentLevel - 1));
             if (towerHealth != null)
             {
                 int newMaxHP = Mathf.RoundToInt(data.maxHP * Mathf.Pow(data.upgradeHPMultiplier, currentLevel - 1));
                 towerHealth.SetMaxHP(newMaxHP);
             }
             EventBus.TowerUpgraded(gameObject, currentLevel);
+        }
+
+        public void TakeDamageFromEnemy(int rawAttack)
+        {
+            int actualDamage = DamageCalculator.Calculate(rawAttack, currentDefense);
+            if (towerHealth != null)
+                towerHealth.TakeDamage(actualDamage);
         }
 
         private void OnDrawGizmosSelected()

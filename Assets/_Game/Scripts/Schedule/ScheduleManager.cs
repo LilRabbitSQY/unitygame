@@ -7,6 +7,7 @@ namespace FinalDefense.Schedule
     public class ScheduleManager : MonoBehaviour
     {
         [SerializeField] private ActivityData[] availableActivities;
+        [SerializeField] private bool skipDialogue;
 
         public ActivityData[] AvailableActivities => availableActivities;
 
@@ -27,6 +28,14 @@ namespace FinalDefense.Schedule
         public void FinishSchedule()
         {
             EventBus.ScheduleCompleted();
+            if (skipDialogue)
+                SceneLoader.LoadBattle();
+            else
+                SceneLoader.LoadDialogue();
+        }
+
+        public void GoToBattle()
+        {
             SceneLoader.LoadBattle();
         }
     }

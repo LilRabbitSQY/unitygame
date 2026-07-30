@@ -3,7 +3,6 @@ using UnityEngine;
 using FinalDefense.Core;
 using FinalDefense.Data;
 using FinalDefense.Path;
-using FinalDefense.DDL;
 
 namespace FinalDefense.Enemy
 {
@@ -14,15 +13,23 @@ namespace FinalDefense.Enemy
 
         private int currentWaveIndex;
         private int enemiesAlive;
+        private int totalEnemyCount;
         private bool spawning;
 
         public int CurrentWave => currentWaveIndex + 1;
         public int TotalWaves => waveData != null ? waveData.waves.Length : 0;
+        public int TotalEnemyCount => totalEnemyCount;
 
         private void Start()
         {
             EventBus.OnEnemyKilled += OnEnemyDied;
             EventBus.OnEnemyReachedEnd += OnEnemyDied;
+            CalculateTotalEnemies();
+
+            var battleMgr = Object.FindFirstObjectByType<Battle.BattleManager>();
+            if (battleMgr != null)
+                battleMgr.SetTotalEnemies(totalEnemyCount);
+
             StartCoroutine(SpawnAllWaves());
         }
 
@@ -30,6 +37,14 @@ namespace FinalDefense.Enemy
         {
             EventBus.OnEnemyKilled -= OnEnemyDied;
             EventBus.OnEnemyReachedEnd -= OnEnemyDied;
+        }
+
+        private void CalculateTotalEnemies()
+        {
+            totalEnemyCount = 0;
+            if (waveData == null) return;
+            foreach (var wave in waveData.waves)
+                totalEnemyCount += wave.count;
         }
 
         private void OnEnemyDied(int _)
@@ -41,18 +56,19 @@ namespace FinalDefense.Enemy
         {
             if (waveData == null || waveData.waves.Length == 0) yield break;
 
-            float ddlMultiplier = DDLManager.Instance != null ? DDLManager.Instance.WaveMultiplier : 1f;
+            float hpMultiplier = 1f;
+            if (GameManager.Instance != null)
+                hpMultiplier = 1f + GameManager.Instance.GetDeterminationPenalty();
 
             for (currentWaveIndex = 0; currentWaveIndex < waveData.waves.Length; currentWaveIndex++)
             {
                 var wave = waveData.waves[currentWaveIndex];
                 yield return new WaitForSeconds(wave.delayBeforeWave);
 
-                int adjustedCount = Mathf.RoundToInt(wave.count * ddlMultiplier);
                 spawning = true;
-                for (int i = 0; i < adjustedCount; i++)
+                for (int i = 0; i < wave.count; i++)
                 {
-                    SpawnEnemy(wave.enemyType);
+                    SpawnEnemy(wave.enemyType, hpMultiplier);
                     yield return new WaitForSeconds(wave.spawnInterval);
                 }
                 spawning = false;
@@ -68,11 +84,14 @@ namespace FinalDefense.Enemy
             EventBus.AllWavesCompleted();
         }
 
-        private void SpawnEnemy(EnemyData data)
+        private void SpawnEnemy(EnemyData data, float hpMultiplier)
         {
             if (PathManager.Instance == null || PathManager.Instance.WaypointCount == 0) return;
 
             Vector3 spawnPos = PathManager.Instance.GetWaypointPosition(0);
+            if (data.moveType == MoveType.Air)
+                spawnPos.y += 0.5f;
+
             GameObject prefab = data.prefab != null ? data.prefab : defaultEnemyPrefab;
 
             GameObject go;
@@ -82,7 +101,7 @@ namespace FinalDefense.Enemy
             }
             else
             {
-                go = CreateFallbackEnemy(spawnPos);
+                go = CreateFallbackEnemy(spawnPos, data);
             }
 
             go.layer = LayerMask.NameToLayer("Enemy");
@@ -93,23 +112,20 @@ namespace FinalDefense.Enemy
             var attack = go.GetComponent<EnemyAttack>();
             if (attack == null) attack = go.AddComponent<EnemyAttack>();
 
+            var healthComp = go.GetComponent<EnemyHealth>();
+            if (healthComp == null) healthComp = go.AddComponent<EnemyHealth>();
+
             var setup = go.GetComponent<EnemySetup>();
             if (setup == null) setup = go.AddComponent<EnemySetup>();
             setup.ApplyVisuals(data);
-
-            float hpMultiplier = 1f;
-            if (GameManager.Instance != null)
-            {
-                hpMultiplier = 1f + GameManager.Instance.GetDeterminationPenalty();
-            }
 
             enemy.Initialize(data, hpMultiplier);
             enemiesAlive++;
         }
 
-        private GameObject CreateFallbackEnemy(Vector3 position)
+        private GameObject CreateFallbackEnemy(Vector3 position, EnemyData data)
         {
-            var go = new GameObject("Enemy");
+            var go = new GameObject("Enemy_" + data.enemyName);
             go.transform.position = position;
             var sr = go.AddComponent<SpriteRenderer>();
             Texture2D tex = new Texture2D(32, 32);
@@ -118,8 +134,12 @@ namespace FinalDefense.Enemy
             tex.SetPixels(colors);
             tex.Apply();
             sr.sprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), Vector2.one * 0.5f, 32);
-            sr.color = Color.red;
+            sr.color = data.enemyColor;
             sr.sortingOrder = 10;
+
+            if (data.moveType == MoveType.Air)
+                go.transform.localScale = Vector3.one * 0.6f;
+
             go.AddComponent<CircleCollider2D>().radius = 0.4f;
             go.AddComponent<EnemyHealth>();
             go.AddComponent<EnemyAttack>();
