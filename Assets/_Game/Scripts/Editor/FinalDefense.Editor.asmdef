@@ -5,7 +5,7 @@
         "FinalDefense",
         "Unity.InputSystem",
         "Unity.TextMeshPro",
-        "Unity.Tilemaps"
+        "UnityEngine.UI"
     ],
     "includePlatforms": [
         "Editor"

@@ -435,163 +435,17 @@ namespace FinalDefense.Setup
 
         private static void SetupBattleScene()
         {
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-
-            var camGo = new GameObject("Main Camera");
-            var cam = camGo.AddComponent<Camera>();
-            cam.orthographic = true;
-            cam.orthographicSize = 6;
-            cam.backgroundColor = new Color(0.1f, 0.12f, 0.2f);
-            camGo.transform.position = new Vector3(0, 0, -10);
-            camGo.AddComponent<AudioListener>();
-            camGo.tag = "MainCamera";
-
-            // Grid + Tilemaps
-            var gridGo = new GameObject("Grid");
-            gridGo.AddComponent<Grid>();
-
-            var placeGo = new GameObject("Tilemap_Placeable");
-            placeGo.transform.SetParent(gridGo.transform);
-            var placeableTilemap = placeGo.AddComponent<Tilemap>();
-            var placeRenderer = placeGo.AddComponent<TilemapRenderer>();
-            placeRenderer.sortingOrder = 2;
-
-            // Path Points (S-shape)
-            var pathPoints = new GameObject("PathPoints");
-            var pm = pathPoints.AddComponent<PathManager>();
-            Vector3[] positions = {
-                new Vector3(-7, 3, 0), new Vector3(-3, 3, 0),
-                new Vector3(-3, 0, 0), new Vector3(3, 0, 0),
-                new Vector3(3, -3, 0), new Vector3(7, -3, 0),
-            };
-            var waypointsList = new System.Collections.Generic.List<Transform>();
-            for (int i = 0; i < positions.Length; i++)
-            {
-                var wp = new GameObject($"WP_{i}");
-                wp.transform.SetParent(pathPoints.transform);
-                wp.transform.position = positions[i];
-                waypointsList.Add(wp.transform);
-            }
-            SetField(pm, "waypoints", waypointsList);
-
-            // Path visual
-            var pathVisual = new GameObject("PathVisual");
-            var lr = pathVisual.AddComponent<LineRenderer>();
-            lr.positionCount = positions.Length;
-            lr.SetPositions(positions);
-            lr.startWidth = 0.5f;
-            lr.endWidth = 0.5f;
-            lr.material = new Material(Shader.Find("Sprites/Default"));
-            lr.startColor = new Color(0.4f, 0.4f, 0.4f);
-            lr.endColor = new Color(0.4f, 0.4f, 0.4f);
-            lr.sortingOrder = 1;
-
-            // Battle systems
-            new GameObject("BattleManager").AddComponent<BattleManager>();
-            var deployCostGo = new GameObject("DeployCostSystem");
-            deployCostGo.AddComponent<DeployCostSystem>();
-
-            var aiAgentGo = new GameObject("AIAgentSystem");
-            aiAgentGo.AddComponent<AIAgentSystem>();
-
-            new GameObject("BattleAnalytics").AddComponent<BattleAnalytics>();
-
-            var bootstrapGo = new GameObject("BattleSceneBootstrap");
-            bootstrapGo.AddComponent<BattleSceneBootstrap>();
-
-            var retryGo = new GameObject("RetrySystem");
-            retryGo.AddComponent<RetrySystem>();
-
-            var spawnerGo = new GameObject("EnemySpawner");
-            var spawner = spawnerGo.AddComponent<EnemySpawner>();
-            var waveAsset = AssetDatabase.LoadAssetAtPath<WaveData>("Assets/_Game/ScriptableObjects/Waves/DemoWave.asset");
-            SetField(spawner, "waveData", waveAsset);
-            var enemyPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Game/Prefabs/Enemies/Enemy.prefab");
-            SetField(spawner, "defaultEnemyPrefab", enemyPrefab);
-
-            var placementGo = new GameObject("TowerPlacement");
-            var tp = placementGo.AddComponent<TowerPlacement>();
-            SetField(tp, "groundTilemap", placeableTilemap);
-            SetField(tp, "mainCamera", cam);
-
-            var tilemapInitGo = new GameObject("TilemapInitializer");
-            var tmInit = tilemapInitGo.AddComponent<TilemapInitializer>();
-            SetField(tmInit, "placeableTilemap", placeableTilemap);
-
-            // Canvas
-            var canvasGo = CreateCanvas();
-
-            var costText = CreateUIText(canvasGo.transform, "CostText", "费用: 10/100", 22, new Vector2(-300, 480));
-            var gpaText = CreateUIText(canvasGo.transform, "GPAText", "GPA: 100", 22, new Vector2(0, 480));
-            var waveText = CreateUIText(canvasGo.transform, "WaveText", "波次: 1/6", 22, new Vector2(300, 480));
-
-            var hud = canvasGo.AddComponent<BattleHUD>();
-            SetField(hud, "costText", costText);
-            SetField(hud, "gpaText", gpaText);
-            SetField(hud, "waveText", waveText);
-
-            // AI Agent button
-            var aiBtn = CreateUIButton(canvasGo.transform, "AIAgentBtn", "AI代写\n(扣GPA)", new Vector2(400, -300));
-            aiBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 60);
-            var aiBtnComp = aiBtn.GetComponent<UnityEngine.UI.Button>();
-            // Wire up AI agent on click via MonoBehaviour at runtime
-
-            // Tower buttons
-            var towerPanel = new GameObject("TowerPanel");
-            towerPanel.transform.SetParent(canvasGo.transform, false);
-            var tpRt = towerPanel.AddComponent<RectTransform>();
-            tpRt.anchoredPosition = new Vector2(0, -450);
-            tpRt.sizeDelta = new Vector2(600, 100);
-            var hlg = towerPanel.AddComponent<UnityEngine.UI.HorizontalLayoutGroup>();
-            hlg.spacing = 20;
-            hlg.childAlignment = TextAnchor.MiddleCenter;
-
-            var towerNames = new string[] { "笔记本\n5费", "计算器\n8费", "咖啡杯\n12费" };
-            var towerColors = new Color[] {
-                new Color(0.2f, 0.8f, 0.2f),
-                new Color(0.2f, 0.4f, 0.9f),
-                new Color(0.9f, 0.6f, 0.1f)
-            };
-            var towerAssetNames = new string[] { "Notebook", "Calculator", "Coffee" };
-
-            for (int i = 0; i < towerNames.Length; i++)
-            {
-                var btnGo = new GameObject($"TowerBtn_{i}");
-                btnGo.transform.SetParent(towerPanel.transform, false);
-                var btnRt = btnGo.AddComponent<RectTransform>();
-                btnRt.sizeDelta = new Vector2(150, 80);
-                var btnImg = btnGo.AddComponent<UnityEngine.UI.Image>();
-                btnImg.color = towerColors[i];
-                var btn = btnGo.AddComponent<UnityEngine.UI.Button>();
-                btn.targetGraphic = btnImg;
-
-                var txtGo = new GameObject("Text");
-                txtGo.transform.SetParent(btnGo.transform, false);
-                var txtRt = txtGo.AddComponent<RectTransform>();
-                txtRt.anchorMin = Vector2.zero;
-                txtRt.anchorMax = Vector2.one;
-                txtRt.offsetMin = Vector2.zero;
-                txtRt.offsetMax = Vector2.zero;
-                var tmp = txtGo.AddComponent<TMPro.TextMeshProUGUI>();
-                tmp.text = towerNames[i];
-                tmp.fontSize = 18;
-                tmp.alignment = TMPro.TextAlignmentOptions.Center;
-                tmp.color = Color.white;
-
-                var towerBtn = btnGo.AddComponent<TowerButton>();
-                var towerAsset = AssetDatabase.LoadAssetAtPath<TowerData>($"Assets/_Game/ScriptableObjects/Towers/{towerAssetNames[i]}.asset");
-                SetField(towerBtn, "towerData", towerAsset);
-                SetField(towerBtn, "towerPlacement", tp);
-            }
-
-            // Halftime Panel
-            var halftimePanelGo = new GameObject("HalftimePanel");
-            halftimePanelGo.transform.SetParent(canvasGo.transform, false);
-            halftimePanelGo.AddComponent<RectTransform>();
-            halftimePanelGo.AddComponent<HalftimePanel>();
-            halftimePanelGo.SetActive(false);
-
-            CreateEventSystem(scene);
+            // Battle has an authored Camera/Grid/Canvas/HUD/card hierarchy. Preserve it
+            // when generating demo assets; the bootstrap only adapts its data bindings.
+            const string path = "Assets/_Game/Scenes/Battle.unity";
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
+                throw new System.InvalidOperationException("Restore the authored Battle.unity before running DemoSetup.");
+            var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+            var canvas = Object.FindFirstObjectByType<Canvas>();
+            var bootstrap = canvas.GetComponent<BattleSceneBootstrap>();
+            if (bootstrap == null) bootstrap = canvas.gameObject.AddComponent<BattleSceneBootstrap>();
+            SetField(bootstrap, "chineseFont", AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(
+                "Assets/_Game/Fonts/HiraginoSansGB SDF.asset"));
             EditorSceneManager.SaveScene(scene, "Assets/_Game/Scenes/Battle.unity");
         }
 

@@ -51,7 +51,8 @@ namespace FinalDefense.UI
 
         private void DisplayCurrentQuestion()
         {
-            if (testManager == null || testManager.IsComplete)
+            if (testManager == null) return;
+            if (testManager.IsComplete)
             {
                 ShowResult();
                 return;
@@ -262,6 +263,7 @@ namespace FinalDefense.UI
 
         private void OnOptionSelected(int index)
         {
+            if (testManager == null || testManager.IsComplete) return;
             testManager.AnswerQuestion(index);
             if (testManager.IsComplete)
                 ShowResult();
@@ -274,7 +276,16 @@ namespace FinalDefense.UI
             var resultType = testManager.GetResult();
             GameManager.Instance?.SetPersonality(resultType);
 
-            if (resultPanel != null) resultPanel.SetActive(true);
+            if (resultPanel != null) { resultPanel.SetActive(true); resultPanel.transform.SetAsLastSibling(); }
+            if (progressText != null) progressText.gameObject.SetActive(false);
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                var questionCard = canvas.transform.Find("PersonalityQuestionCard");
+                if (questionCard != null) questionCard.gameObject.SetActive(false);
+                var progressBackdrop = canvas.transform.Find("ProgressText_Backdrop");
+                if (progressBackdrop != null) progressBackdrop.gameObject.SetActive(false);
+            }
             foreach (var btn in optionButtons)
                 if (btn != null) btn.gameObject.SetActive(false);
             if (questionText != null) questionText.gameObject.SetActive(false);

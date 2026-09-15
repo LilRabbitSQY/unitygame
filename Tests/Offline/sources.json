@@ -1,0 +1,9 @@
+[
+  "Assets/_Game/Scripts/Combat/CombatMath.cs",
+  "Assets/_Game/Scripts/Combat/CombatModel.cs",
+  "Assets/_Game/Scripts/Combat/BattleFactory.cs",
+  "Assets/_Game/Scripts/Combat/BattleSimulation.cs",
+  "Assets/_Game/Scripts/Combat/TowerSkills.cs",
+  "Assets/_Game/Scripts/Combat/EnemySkills.cs",
+  "Assets/_Game/Scripts/Combat/BattleItems.cs"
+]

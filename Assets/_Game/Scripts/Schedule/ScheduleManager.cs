@@ -9,12 +9,13 @@ namespace FinalDefense.Schedule
         [SerializeField] private ActivityData[] availableActivities;
         [SerializeField] private bool skipDialogue;
 
-        public ActivityData[] AvailableActivities => availableActivities;
+        public ActivityData[] AvailableActivities => availableActivities ?? System.Array.Empty<ActivityData>();
+        private bool leaving;
 
         public bool ExecuteActivity(ActivityData activity)
         {
             var gm = GameManager.Instance;
-            if (gm == null) return false;
+            if (gm == null || activity == null || leaving || gm.IsGameComplete) return false;
             if (!gm.SpendActionPoint(activity.actPointCost)) return false;
 
             if (activity.emotionDelta != 0) gm.ModifyStat("emotion", activity.emotionDelta);
@@ -27,8 +28,10 @@ namespace FinalDefense.Schedule
 
         public void FinishSchedule()
         {
+            if (leaving || GameManager.Instance == null || !GameManager.Instance.BeginBattle()) return;
+            leaving = true;
             EventBus.ScheduleCompleted();
-            if (skipDialogue)
+            if (skipDialogue || !Application.CanStreamedLevelBeLoaded(SceneLoader.DialogueScene))
                 SceneLoader.LoadBattle();
             else
                 SceneLoader.LoadDialogue();

@@ -1882,7 +1882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: FinalDefense::FinalDefense.Core.GameManager
   playerStats: {fileID: 11400000, guid: 9e21549961ab24a64af7b029e1c74f61, type: 2}
-  personalityConfig: {fileID: 0}
+  personalityConfig: {fileID: 11400000, guid: e967a6a07a4f94a4390f4a2249fb0432, type: 2}
 --- !u!4 &1279770851
 Transform:
   m_ObjectHideFlags: 0

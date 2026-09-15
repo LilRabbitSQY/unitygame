@@ -1,0 +1,1370 @@
+{
+  "version": 1,
+  "imagePolicy": "Original supplied PNG/JPEG bytes copied without conversion, retouching or pixel cropping. Runtime sprite rectangles only affect framing.",
+  "alphaBoundsConvention": "[left, top, rightExclusive, bottomExclusive] in original pixels, origin top-left",
+  "rectConvention": "[x, y, width, height] in original pixels, origin bottom-left (Unity Sprite.Create); scale by imported texture dimensions if platform resizes",
+  "assets": [
+    {
+      "category": "Towers",
+      "key": "direct_crit",
+      "name": "卷王驾到",
+      "resourcePath": "GameArt/Towers/direct_crit",
+      "assetPath": "Assets/Resources/GameArt/Towers/direct_crit.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/卷王驾到.png",
+      "sha256": "00b4803b70b7d10cb8538fcc4523ba7a79995a1167416ccbf68d07ffd3648871",
+      "bytes": 444421,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1448,
+      "height": 1086,
+      "hasTransparency": true,
+      "alphaBounds": [
+        120,
+        122,
+        739,
+        931
+      ],
+      "rect": [
+        120,
+        155,
+        619,
+        809
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "direct_speed",
+      "name": "开源学霸",
+      "resourcePath": "GameArt/Towers/direct_speed",
+      "assetPath": "Assets/Resources/GameArt/Towers/direct_speed.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/开源学霸.png",
+      "sha256": "ff8c1b5659abed51e89dbd9731777b53de641be4be9fc8faddb06b9aa5df02d1",
+      "bytes": 756097,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 2732,
+      "height": 2048,
+      "hasTransparency": true,
+      "alphaBounds": [
+        98,
+        162,
+        1632,
+        1232
+      ],
+      "rect": [
+        98,
+        816,
+        1534,
+        1070
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "burn_stack",
+      "name": "历年真题",
+      "resourcePath": "GameArt/Towers/burn_stack",
+      "assetPath": "Assets/Resources/GameArt/Towers/burn_stack.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/历年真题.png",
+      "sha256": "63d49bb9fe4c9a385a348552ac5d259212a230a2d579984c7f4efb9e4390bb79",
+      "bytes": 921275,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        202,
+        303,
+        1866,
+        2075
+      ],
+      "rect": [
+        202,
+        405,
+        1664,
+        1772
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "burn_burst",
+      "name": "通宵王者",
+      "resourcePath": "GameArt/Towers/burn_burst",
+      "assetPath": "Assets/Resources/GameArt/Towers/burn_burst.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/通宵王者.png",
+      "sha256": "73e6a87121893442afecbbad2d9380a304e5641dc0bdf9e8c81c812dcff402bc",
+      "bytes": 130860,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1448,
+      "height": 1086,
+      "hasTransparency": true,
+      "alphaBounds": [
+        108,
+        228,
+        612,
+        744
+      ],
+      "rect": [
+        108,
+        342,
+        504,
+        516
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "poison_spread",
+      "name": "千手观音",
+      "resourcePath": "GameArt/Towers/poison_spread",
+      "assetPath": "Assets/Resources/GameArt/Towers/poison_spread.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/千手观音.png",
+      "sha256": "1b5f278a7c9faaf07bc650db9cde276e9c0999ed792551019244f7cb695a1428",
+      "bytes": 876069,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        207,
+        658,
+        1855,
+        1823
+      ],
+      "rect": [
+        207,
+        657,
+        1648,
+        1165
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "poison_amp",
+      "name": "蕉绿贩卖机",
+      "resourcePath": "GameArt/Towers/poison_amp",
+      "assetPath": "Assets/Resources/GameArt/Towers/poison_amp.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/蕉绿贩卖机.png",
+      "sha256": "d6fa459f15f2b45d6e59d6c71b10d22d7e40d97f65f4d741415fc37ce5b68470",
+      "bytes": 883026,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        274,
+        373,
+        1656,
+        1945
+      ],
+      "rect": [
+        274,
+        535,
+        1382,
+        1572
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "weaken_def",
+      "name": "菜菜捞捞",
+      "resourcePath": "GameArt/Towers/weaken_def",
+      "assetPath": "Assets/Resources/GameArt/Towers/weaken_def.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/菜菜捞捞.png",
+      "sha256": "9e70ed57b04facb7e8e374afa34d1677254915eed9626c5ee2e6d1fe22f1e390",
+      "bytes": 803118,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        190,
+        636,
+        1712,
+        1964
+      ],
+      "rect": [
+        190,
+        516,
+        1522,
+        1328
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "weaken_slow",
+      "name": "美式加茶",
+      "resourcePath": "GameArt/Towers/weaken_slow",
+      "assetPath": "Assets/Resources/GameArt/Towers/weaken_slow.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/美式加茶.png",
+      "sha256": "9030fbd18f0fd0eb8465c0198114cf431f04ac22ae72c240ea290c7a7f6057fd",
+      "bytes": 676041,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        134,
+        465,
+        1342,
+        1913
+      ],
+      "rect": [
+        134,
+        567,
+        1208,
+        1448
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "control_retreat",
+      "name": "退课申请",
+      "resourcePath": "GameArt/Towers/control_retreat",
+      "assetPath": "Assets/Resources/GameArt/Towers/control_retreat.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/退课申请.png",
+      "sha256": "a55563895a13cf8aa150de1eb39cdeddbf748a4d24db661ab2088dc2d478b152",
+      "bytes": 1453359,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        149,
+        251,
+        2243,
+        2061
+      ],
+      "rect": [
+        149,
+        419,
+        2094,
+        1810
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "control_frozen",
+      "name": "季老心态",
+      "resourcePath": "GameArt/Towers/control_frozen",
+      "assetPath": "Assets/Resources/GameArt/Towers/control_frozen.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/季老心态.png",
+      "sha256": "fb1afc074a52668e3e00a554efe9cb90ee39c2bb647b06eb3a097738b5dd863e",
+      "bytes": 906830,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        227,
+        580,
+        1606,
+        1900
+      ],
+      "rect": [
+        227,
+        580,
+        1379,
+        1320
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "counter_shield",
+      "name": "摸摸咸鱼",
+      "resourcePath": "GameArt/Towers/counter_shield",
+      "assetPath": "Assets/Resources/GameArt/Towers/counter_shield.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/摸摸咸鱼.png",
+      "sha256": "c276716d33cf7059dfed3e541cd784eb65b7b3f1fe4f59b8f7cfd22ff06be551",
+      "bytes": 1322361,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        100,
+        569,
+        1982,
+        2042
+      ],
+      "rect": [
+        100,
+        438,
+        1882,
+        1473
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "counter_store",
+      "name": "热带风味",
+      "resourcePath": "GameArt/Towers/counter_store",
+      "assetPath": "Assets/Resources/GameArt/Towers/counter_store.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/热带风味.PNG",
+      "sha256": "a302c588758723116d12f0c3cc155e8f37ace05325b8024b4c801545e895cbfe",
+      "bytes": 102302,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        539,
+        89,
+        1359,
+        969
+      ],
+      "rect": [
+        539,
+        111,
+        820,
+        880
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "pursuit_strike",
+      "name": "高考战魂",
+      "resourcePath": "GameArt/Towers/pursuit_strike",
+      "assetPath": "Assets/Resources/GameArt/Towers/pursuit_strike.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/高考战魂.PNG",
+      "sha256": "1d73711d9ded2d803a659d287a8a94264fe04627afcc0b0c60431eca1c9fafa9",
+      "bytes": 98061,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        471,
+        132,
+        1426,
+        786
+      ],
+      "rect": [
+        471,
+        294,
+        955,
+        654
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "pursuit_support",
+      "name": "赛博外援",
+      "resourcePath": "GameArt/Towers/pursuit_support",
+      "assetPath": "Assets/Resources/GameArt/Towers/pursuit_support.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/赛博外援.PNG",
+      "sha256": "c31dd85c545d890a2083614ef58be928785232164acbc0511d37ad683ffd21a9",
+      "bytes": 92071,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        333,
+        46,
+        1371,
+        909
+      ],
+      "rect": [
+        333,
+        171,
+        1038,
+        863
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "heal_aura",
+      "name": "宝藏网课",
+      "resourcePath": "GameArt/Towers/heal_aura",
+      "assetPath": "Assets/Resources/GameArt/Towers/heal_aura.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/宝藏网课.png",
+      "sha256": "c2e744cc8d8db9dce61cbbb972cd9cf76ca6c161394eaa8c1fff1cf03ba0e017",
+      "bytes": 1431050,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 3508,
+      "height": 2480,
+      "hasTransparency": true,
+      "alphaBounds": [
+        76,
+        536,
+        2064,
+        2168
+      ],
+      "rect": [
+        76,
+        312,
+        1988,
+        1632
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Towers",
+      "key": "heal_support",
+      "name": "红榜讲师",
+      "resourcePath": "GameArt/Towers/heal_support",
+      "assetPath": "Assets/Resources/GameArt/Towers/heal_support.png",
+      "sourceArchive": "02-我方棋子.rar",
+      "sourceMember": "02-我方棋子/红榜讲师.PNG",
+      "sha256": "763cea49a601aad741a9bba214f27085a2625c4484f8a1e97f6d65c0fe8a4768",
+      "bytes": 90894,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        507,
+        181,
+        1403,
+        1012
+      ],
+      "rect": [
+        507,
+        68,
+        896,
+        831
+      ],
+      "notes": [
+        "Use rect for centered framing; original canvas has transparent margins."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "wan_sirui",
+      "name": "万思瑞",
+      "resourcePath": "GameArt/Portraits/wan_sirui",
+      "assetPath": "Assets/Resources/GameArt/Portraits/wan_sirui.png",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-万思瑞.png",
+      "sha256": "efd6be1376840b9f5ef27c05ad9fc1ae0c06c8a3c4438841261fff549dfafe65",
+      "bytes": 522214,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "ren_fei",
+      "name": "任飞",
+      "resourcePath": "GameArt/Portraits/ren_fei",
+      "assetPath": "Assets/Resources/GameArt/Portraits/ren_fei.png",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-任飞.png",
+      "sha256": "ad33c4efbe05d89b2d8272a50394d6f6d0005525feab9e282e45cb534cc906b9",
+      "bytes": 403364,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "liu_ruoshui",
+      "name": "刘若水",
+      "resourcePath": "GameArt/Portraits/liu_ruoshui",
+      "assetPath": "Assets/Resources/GameArt/Portraits/liu_ruoshui.png",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-刘若水.png",
+      "sha256": "e5903aeb11bd7ee1364fb1c22db12be2e9906f187bdf3cade5d82549f9351bad",
+      "bytes": 468549,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "ning_qishan",
+      "name": "宁栖山",
+      "resourcePath": "GameArt/Portraits/ning_qishan",
+      "assetPath": "Assets/Resources/GameArt/Portraits/ning_qishan.jpeg",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-宁栖山.jpeg",
+      "sha256": "4552517b69a8100f3f692a79814169b557f7f0e8d6236d3bf78e04870ff46692",
+      "bytes": 401102,
+      "format": "JPEG",
+      "colorMode": "RGB",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square.",
+        "Original includes a visible lower-right 豆包AI生成 mark, preserved unchanged."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "ming_shan",
+      "name": "明杉",
+      "resourcePath": "GameArt/Portraits/ming_shan",
+      "assetPath": "Assets/Resources/GameArt/Portraits/ming_shan.jpeg",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-明杉.jpeg",
+      "sha256": "ad81823d56a9cf7d5e0a1bff2117fee65cf3ddbe23d7c29af69a770e4ac0415e",
+      "bytes": 434823,
+      "format": "JPEG",
+      "colorMode": "RGB",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square.",
+        "Original includes a visible lower-right 豆包AI生成 mark, preserved unchanged."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "wang_yijun",
+      "name": "王毅君",
+      "resourcePath": "GameArt/Portraits/wang_yijun",
+      "assetPath": "Assets/Resources/GameArt/Portraits/wang_yijun.png",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-王毅君.png",
+      "sha256": "7b99fd7a6c4deec3aab2a0dc8fc7f3ca9b8b427559e1ce29cdcd6449c4a1cb1b",
+      "bytes": 331183,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "system",
+      "name": "系统",
+      "resourcePath": "GameArt/Portraits/system",
+      "assetPath": "Assets/Resources/GameArt/Portraits/system.jpeg",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-系统.jpeg",
+      "sha256": "f805d99e687fa3bcf4d5e144defc615b890a413ef0a86754534dde09cb197fe4",
+      "bytes": 338808,
+      "format": "JPEG",
+      "colorMode": "RGB",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square.",
+        "Original includes a visible lower-right 豆包AI生成 mark, preserved unchanged."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "xiang_zhen",
+      "name": "项臻",
+      "resourcePath": "GameArt/Portraits/xiang_zhen",
+      "assetPath": "Assets/Resources/GameArt/Portraits/xiang_zhen.png",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-项臻.png",
+      "sha256": "2e2a6d438bc6bf4a10331e305ea3d10e2be005a909dde7d2cd3bfcf21945274d",
+      "bytes": 371398,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "luo_yang",
+      "name": "骆洋",
+      "resourcePath": "GameArt/Portraits/luo_yang",
+      "assetPath": "Assets/Resources/GameArt/Portraits/luo_yang.png",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/NPC-骆洋.png",
+      "sha256": "67dcc05b7e92f4295b27feac6e772e85173ea77d0d3c9d0097b144571587a3d6",
+      "bytes": 461801,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square."
+      ]
+    },
+    {
+      "category": "Portraits",
+      "key": "protagonist",
+      "name": "主角立绘",
+      "resourcePath": "GameArt/Portraits/protagonist",
+      "assetPath": "Assets/Resources/GameArt/Portraits/protagonist.png",
+      "sourceArchive": "01-角色立绘（初稿）.rar",
+      "sourceMember": "01-角色立绘（初稿）/主角立绘.png",
+      "sha256": "e42978d563bc8b2a4062bc77571cb8690a2ae1392be1f7e2dcd6d7e819525de2",
+      "bytes": 529120,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1080,
+      "height": 1080,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "rect": [
+        0,
+        0,
+        1080,
+        1080
+      ],
+      "notes": [
+        "Opaque white-background portrait; preserve whole square."
+      ]
+    },
+    {
+      "category": "Items",
+      "key": "balulu_figure",
+      "name": "balulu盲盒手办",
+      "resourcePath": "GameArt/Items/balulu_figure",
+      "assetPath": "Assets/Resources/GameArt/Items/balulu_figure.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-balulu盲盒手办.PNG",
+      "sha256": "7319a598d3af42f4579bfece35ab1cd0fa5eb0923e3b4a3503ae80bbb5b14720",
+      "bytes": 157286,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        585,
+        128,
+        1052,
+        846
+      ],
+      "rect": [
+        585,
+        234,
+        467,
+        718
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "balulu_secret",
+      "name": "balulu隐藏款",
+      "resourcePath": "GameArt/Items/balulu_secret",
+      "assetPath": "Assets/Resources/GameArt/Items/balulu_secret.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-balulu隐藏款.png",
+      "sha256": "0e2a2c8cf514f5325833632b7eac4486c8b666acd8cf4d4d019c411dca0bdcbe",
+      "bytes": 326635,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        709,
+        217,
+        1211,
+        863
+      ],
+      "rect": [
+        709,
+        217,
+        502,
+        646
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "theater_ticket",
+      "name": "剧票",
+      "resourcePath": "GameArt/Items/theater_ticket",
+      "assetPath": "Assets/Resources/GameArt/Items/theater_ticket.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-剧票.png",
+      "sha256": "fbedcbe53a49e1aacfacfec028941fc05b5cc96df657ca6f2ab2981e10ba1791",
+      "bytes": 212465,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        646,
+        374,
+        1274,
+        706
+      ],
+      "rect": [
+        646,
+        374,
+        628,
+        332
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "fan_comic",
+      "name": "同人漫画",
+      "resourcePath": "GameArt/Items/fan_comic",
+      "assetPath": "Assets/Resources/GameArt/Items/fan_comic.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-同人漫画.png",
+      "sha256": "e07ee2006543288fc04d727d1a2f55912b426eda182ebec201c19bf7a8e16f2d",
+      "bytes": 637966,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        653,
+        195,
+        1267,
+        885
+      ],
+      "rect": [
+        653,
+        195,
+        614,
+        690
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "signed_fan_art",
+      "name": "同人签名版",
+      "resourcePath": "GameArt/Items/signed_fan_art",
+      "assetPath": "Assets/Resources/GameArt/Items/signed_fan_art.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-同人签名版.PNG",
+      "sha256": "d4b019b947f07bac3204b43b1897bfaa93dc7806ea19aec3660bf002fd6e879f",
+      "bytes": 305444,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        346,
+        135,
+        1420,
+        833
+      ],
+      "rect": [
+        346,
+        247,
+        1074,
+        698
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "custom_keyboard",
+      "name": "客制化键盘",
+      "resourcePath": "GameArt/Items/custom_keyboard",
+      "assetPath": "Assets/Resources/GameArt/Items/custom_keyboard.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-客制化键盘.png",
+      "sha256": "c0eaf70300e1a2f9cee5f544931bf6c9f574bc90251750ffc6d939dd247e84aa",
+      "bytes": 569783,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1672,
+      "height": 941,
+      "hasTransparency": true,
+      "alphaBounds": [
+        41,
+        82,
+        1457,
+        917
+      ],
+      "rect": [
+        41,
+        24,
+        1416,
+        835
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "heart_card",
+      "name": "心意卡",
+      "resourcePath": "GameArt/Items/heart_card",
+      "assetPath": "Assets/Resources/GameArt/Items/heart_card.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-心意卡.png",
+      "sha256": "7f3623d30e8d8203649bac5daf7d9665902e94c419a6a5e808a16d2fc04102d1",
+      "bytes": 333817,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        593,
+        288,
+        1327,
+        792
+      ],
+      "rect": [
+        593,
+        288,
+        734,
+        504
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "coffee_coupon",
+      "name": "手冲咖啡券",
+      "resourcePath": "GameArt/Items/coffee_coupon",
+      "assetPath": "Assets/Resources/GameArt/Items/coffee_coupon.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-手冲咖啡券.png",
+      "sha256": "6e07d90c26168cf1354a39a4ce884cf1dc7f54d5313a719ebe0c1d460e7e789e",
+      "bytes": 576721,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1672,
+      "height": 941,
+      "hasTransparency": true,
+      "alphaBounds": [
+        234,
+        131,
+        1472,
+        915
+      ],
+      "rect": [
+        234,
+        26,
+        1238,
+        784
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "lipstick",
+      "name": "新品口红",
+      "resourcePath": "GameArt/Items/lipstick",
+      "assetPath": "Assets/Resources/GameArt/Items/lipstick.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-新品口红.png",
+      "sha256": "c68acca2224cf9e8868831f43b3f331e7d3e8c701ca68dda63901dff18864a50",
+      "bytes": 268857,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        673,
+        293,
+        1247,
+        787
+      ],
+      "rect": [
+        673,
+        293,
+        574,
+        494
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "sparkling_focus",
+      "name": "气泡聪明水",
+      "resourcePath": "GameArt/Items/sparkling_focus",
+      "assetPath": "Assets/Resources/GameArt/Items/sparkling_focus.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-气泡聪明水.png",
+      "sha256": "10970cd79f9cfbd4bf8f3231eb8fa1c6955a6c650646c6e38ac67ab5e9db8d43",
+      "bytes": 1329459,
+      "format": "PNG",
+      "colorMode": "RGB",
+      "width": 1672,
+      "height": 941,
+      "hasTransparency": false,
+      "alphaBounds": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "rect": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "notes": [
+        "Opaque RGB image with baked checkerboard background; not a transparent cutout."
+      ]
+    },
+    {
+      "category": "Items",
+      "key": "espresso_focus",
+      "name": "浓缩聪明水",
+      "resourcePath": "GameArt/Items/espresso_focus",
+      "assetPath": "Assets/Resources/GameArt/Items/espresso_focus.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-浓缩聪明水.png",
+      "sha256": "7d7d0628028b0e9da464f5a5859d6e19e0e9e556c5b3cd306d94888c7eaa58c3",
+      "bytes": 424240,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1672,
+      "height": 940,
+      "hasTransparency": true,
+      "alphaBounds": [
+        437,
+        92,
+        1360,
+        885
+      ],
+      "rect": [
+        437,
+        55,
+        923,
+        793
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "gentle_focus",
+      "name": "温和聪明水",
+      "resourcePath": "GameArt/Items/gentle_focus",
+      "assetPath": "Assets/Resources/GameArt/Items/gentle_focus.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-温和聪明水.png",
+      "sha256": "6bce0370c7bf6e634d63fae919607f93284fa123f174f696ae7fa7e4e0315f4b",
+      "bytes": 348609,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        712,
+        194,
+        1207,
+        886
+      ],
+      "rect": [
+        712,
+        194,
+        495,
+        692
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "competition_manual",
+      "name": "竞赛手册",
+      "resourcePath": "GameArt/Items/competition_manual",
+      "assetPath": "Assets/Resources/GameArt/Items/competition_manual.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-竞赛手册.PNG",
+      "sha256": "f67d6d2bec459107a64c679857424f124952406d6eea5caac595c3e03388e8a2",
+      "bytes": 143706,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        433,
+        51,
+        1111,
+        840
+      ],
+      "rect": [
+        433,
+        240,
+        678,
+        789
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "coffee_beans",
+      "name": "精品咖啡豆",
+      "resourcePath": "GameArt/Items/coffee_beans",
+      "assetPath": "Assets/Resources/GameArt/Items/coffee_beans.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-精品咖啡豆.png",
+      "sha256": "0e8248690ab6558df637a619e2edce183ff4d1c01dc3188c7e050ab702129c47",
+      "bytes": 485100,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        567,
+        165,
+        1353,
+        916
+      ],
+      "rect": [
+        567,
+        164,
+        786,
+        751
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "endurance_focus",
+      "name": "续航聪明水",
+      "resourcePath": "GameArt/Items/endurance_focus",
+      "assetPath": "Assets/Resources/GameArt/Items/endurance_focus.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-续航聪明水.png",
+      "sha256": "681c88e025a276585b85c777b83aab08c396058c5d580e3a1dffb41da1ae0a2f",
+      "bytes": 487141,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        569,
+        150,
+        1351,
+        930
+      ],
+      "rect": [
+        569,
+        150,
+        782,
+        780
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "makeup_sample",
+      "name": "美妆小样",
+      "resourcePath": "GameArt/Items/makeup_sample",
+      "assetPath": "Assets/Resources/GameArt/Items/makeup_sample.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-美妆小样.PNG",
+      "sha256": "98d19a5efdf21d1f5153f3991e695ec93030294232af86eb59896b2191738241",
+      "bytes": 148696,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        388,
+        209,
+        1110,
+        780
+      ],
+      "rect": [
+        388,
+        300,
+        722,
+        571
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "leave_note",
+      "name": "请假条",
+      "resourcePath": "GameArt/Items/leave_note",
+      "assetPath": "Assets/Resources/GameArt/Items/leave_note.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-请假条.png",
+      "sha256": "f8efd34aa3ee6d295008ebb2e9c04f5c6707a39ab3d0b19d2fd1f144a9d2037f",
+      "bytes": 669037,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        477,
+        201,
+        1443,
+        878
+      ],
+      "rect": [
+        477,
+        202,
+        966,
+        677
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "sport_wristband",
+      "name": "运动护腕",
+      "resourcePath": "GameArt/Items/sport_wristband",
+      "assetPath": "Assets/Resources/GameArt/Items/sport_wristband.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-运动护腕.png",
+      "sha256": "646a51b8b974bc9103dae6c6ad5dd41d791d08f7a35b78bc37389c7a808dfc68",
+      "bytes": 436705,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1920,
+      "height": 1080,
+      "hasTransparency": true,
+      "alphaBounds": [
+        600,
+        197,
+        1320,
+        883
+      ],
+      "rect": [
+        600,
+        197,
+        720,
+        686
+      ],
+      "notes": []
+    },
+    {
+      "category": "Items",
+      "key": "recommendation_letter",
+      "name": "院长推荐信",
+      "resourcePath": "GameArt/Items/recommendation_letter",
+      "assetPath": "Assets/Resources/GameArt/Items/recommendation_letter.png",
+      "sourceArchive": "01-道具图标.rar",
+      "sourceMember": "01-道具图标/道具-院长推荐信.png",
+      "sha256": "09d11960509c5a89967260e6e3a959dfbc12a6c3ee67c1c00a227314cff3aa00",
+      "bytes": 641510,
+      "format": "PNG",
+      "colorMode": "RGBA",
+      "width": 1671,
+      "height": 941,
+      "hasTransparency": true,
+      "alphaBounds": [
+        365,
+        120,
+        1360,
+        915
+      ],
+      "rect": [
+        365,
+        26,
+        995,
+        795
+      ],
+      "notes": []
+    }
+  ]
+}

@@ -16,6 +16,7 @@ namespace FinalDefense.UI
         [SerializeField] private Button startBattleButton;
 
         private ScheduleManager scheduleManager;
+        private readonly System.Collections.Generic.Dictionary<Button, ActivityData> activityButtons = new System.Collections.Generic.Dictionary<Button, ActivityData>();
 
         private void Awake()
         {
@@ -28,15 +29,31 @@ namespace FinalDefense.UI
             if (startBattleButton != null)
                 startBattleButton.onClick.AddListener(OnStartBattle);
 
-            GameManager.Instance?.ResetActionPoints();
             BuildActivityList();
             UpdateDisplay();
             ApplyThemeStyling();
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                var menu = UIBootstrap.CreateButton("ScheduleMenu", canvas.transform, "保存并返回主菜单", false);
+                UIStyler.SetCenteredRect(menu.GetComponent<RectTransform>(), new Vector2(300, -455), new Vector2(240, 58));
+                menu.onClick.AddListener(() => { GameManager.Instance?.SaveProgress(); SceneLoader.LoadMainMenu(); });
+            }
         }
 
         private void BuildActivityList()
         {
             if (scheduleManager == null || activityContainer == null) return;
+
+            float rowHeight = 60f;
+            var listRect = activityContainer as RectTransform;
+            var layout = activityContainer.GetComponent<VerticalLayoutGroup>();
+            int activityCount = scheduleManager.AvailableActivities.Length;
+            if (listRect != null && layout != null && activityCount > 0)
+            {
+                // Keep all activities inside the original list instead of enlarging the page.
+                rowHeight = Mathf.Min(rowHeight, (listRect.rect.height - layout.padding.vertical - layout.spacing * (activityCount - 1)) / activityCount);
+            }
 
             foreach (var activity in scheduleManager.AvailableActivities)
             {
@@ -47,7 +64,7 @@ namespace FinalDefense.UI
                 {
                     btnGo = new GameObject(activity.activityName);
                     btnGo.transform.SetParent(activityContainer, false);
-                    btnGo.AddComponent<RectTransform>();
+                    btnGo.AddComponent<RectTransform>().sizeDelta = new Vector2(0, rowHeight);
                     var img = btnGo.AddComponent<Image>();
                     img.color = new Color(0.2f, 0.4f, 0.6f, 1f);
                     var btn = btnGo.AddComponent<Button>();
@@ -64,13 +81,15 @@ namespace FinalDefense.UI
                     tmp.alignment = TextAlignmentOptions.Center;
 
                     var le = btnGo.AddComponent<UnityEngine.UI.LayoutElement>();
-                    le.minHeight = 60;
-                    le.preferredHeight = 60;
+                    le.minHeight = rowHeight;
+                    le.preferredHeight = rowHeight;
                 }
 
                 var button = btnGo.GetComponent<Button>();
                 if (button != null)
                 {
+                    button.gameObject.name = activity.activityName;
+                    activityButtons[button] = activity;
                     var act = activity;
                     button.onClick.AddListener(() => OnActivityClicked(act));
                     ApplyActivityButtonStyle(button);
@@ -192,13 +211,14 @@ namespace FinalDefense.UI
             if (actionPointsText != null)
                 actionPointsText.text = $"行动点: {gm.ActionPoints}/{gm.MaxActionPoints}";
 
+            foreach (var entry in activityButtons) entry.Key.interactable = gm.ActionPoints >= entry.Value.actPointCost && gm.Phase == CampaignPhase.Schedule;
             if (statsText != null)
                 statsText.text = $"心情: {gm.CurrentEmotion}  体力: {gm.CurrentStrength}\n学习力: {gm.CurrentEduPower}  决心: {gm.CurrentDetermination}";
         }
 
         private void OnStartBattle()
         {
-            scheduleManager?.FinishSchedule();
+            if (scheduleManager != null) scheduleManager.FinishSchedule();
         }
     }
 }

@@ -398,11 +398,16 @@ namespace FinalDefense.UI
         {
             if (target == null) return;
 
-            var image = target.GetComponent<Image>();
-            if (image == null)
+            var textGraphic = target.GetComponent<TextMeshProUGUI>();
+            if (textGraphic != null)
             {
-                image = target.AddComponent<Image>();
+                EnsureBackdrop(textGraphic.rectTransform, target.name + "TagBackground", new Vector2(24, 12), backgroundColor, true);
+                textGraphic.color = textColor; textGraphic.fontSize = Theme.smallFontSize;
+                textGraphic.alignment = TextAlignmentOptions.Center;
+                return;
             }
+            var image = target.GetComponent<Image>();
+            if (image == null) image = target.AddComponent<Image>();
             if (image == null) return;
 
             image.color = backgroundColor;

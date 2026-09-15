@@ -22,7 +22,7 @@ namespace FinalDefense.UI
             if (DDLManager.Instance == null) return;
 
             if (ddlTitleText != null)
-                ddlTitleText.text = $"当前DDL (难度倍率: x{DDLManager.Instance.WaveMultiplier:F1})";
+                ddlTitleText.text = "当前DDL";
 
             if (ddlListContainer == null) return;
             foreach (Transform child in ddlListContainer)
@@ -33,7 +33,7 @@ namespace FinalDefense.UI
                 if (ddl.completed) continue;
                 var go = new GameObject("DDLItem");
                 go.transform.SetParent(ddlListContainer, false);
-                go.AddComponent<RectTransform>();
+                go.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 44);
                 var image = go.AddComponent<Image>();
                 var le = go.AddComponent<UnityEngine.UI.LayoutElement>();
                 le.minHeight = 44;
@@ -52,6 +52,7 @@ namespace FinalDefense.UI
                 textRect.offsetMax = new Vector2(-14, -6);
                 var tmp = textGo.AddComponent<TextMeshProUGUI>();
                 tmp.fontSize = 14;
+                tmp.raycastTarget = false;
                 tmp.fontStyle = FontStyles.Bold;
                 tmp.color = ddl.remainingDays <= 1 ? UITheme.Instance.stateError : UITheme.Instance.foreground;
                 tmp.alignment = TextAlignmentOptions.MidlineLeft;

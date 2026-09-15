@@ -23,6 +23,16 @@ namespace FinalDefense.UI
         {
             if (startButton != null)
                 startButton.onClick.AddListener(OnStartClicked);
+            var gm = GameManager.Instance;
+            if (gm != null && !gm.PersonalitySelected && gm.HasSavedGame) gm.LoadProgress();
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                var newGame = UIBootstrap.CreateButton("NewGame", canvas.transform, "新游戏", false);
+                UIStyler.SetCenteredRect(newGame.GetComponent<RectTransform>(), new Vector2(0, -215), new Vector2(260, 58));
+                newGame.onClick.AddListener(OnNewGame);
+                newGame.gameObject.SetActive(gm != null && (gm.PersonalitySelected || gm.IsGameComplete));
+            }
             UpdateDisplay();
         }
 
@@ -80,8 +90,14 @@ namespace FinalDefense.UI
             var gm = GameManager.Instance;
             if (gm == null) return;
 
-            if (gpaText != null) gpaText.text = $"{gm.CurrentGPA}";
-            if (gradeText != null) gradeText.text = $"{gm.CurrentGrade}年级  第{gm.CurrentDay}天";
+            if (gpaText != null) gpaText.text = $"{gm.CurrentGPA:0.##}";
+            if (gradeText != null) gradeText.text = gm.IsGameComplete ? "游戏结束" : $"{gm.CurrentGrade}年级  第{gm.CurrentDay}/{GameManager.TotalDays}天";
+            if (startButton != null)
+            {
+                var label = startButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (label != null) label.text = gm.IsGameComplete ? "查看总结" : gm.PersonalitySelected ? "继续游戏" : "开始游戏";
+            }
+            if (personalityText != null && !gm.PersonalitySelected) personalityText.text = "尚未选择人格";
             if (personalityText != null && gm.PersonalitySelected)
             {
                 var config = gm.PersonalityConfigData;
@@ -93,17 +109,25 @@ namespace FinalDefense.UI
             }
         }
 
+        private void OnNewGame()
+        {
+            GameManager.Instance?.BeginNewGame();
+            BattleSceneBootstrap.NextBattle = null;
+            SceneLoader.LoadPersonalityTest();
+        }
+
         private void OnStartClicked()
         {
             var gm = GameManager.Instance;
-            if (gm != null && !gm.PersonalitySelected)
+            if (gm == null || !gm.PersonalitySelected) { SceneLoader.LoadPersonalityTest(); return; }
+            if (gm.IsGameComplete || gm.Phase == CampaignPhase.Result) { SceneLoader.LoadResult(); return; }
+            if (gm.Phase == CampaignPhase.Shop) { SceneLoader.LoadShop(); return; }
+            if (gm.Phase == CampaignPhase.Battle)
             {
-                SceneLoader.LoadPersonalityTest();
+                BattleSceneBootstrap.NextBattle = gm.CurrentBattleConfiguration;
+                SceneLoader.LoadBattle(); return;
             }
-            else
-            {
-                SceneLoader.LoadSchedule();
-            }
+            SceneLoader.LoadSchedule();
         }
     }
 }

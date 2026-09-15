@@ -74,7 +74,7 @@ namespace FinalDefense.UI
             {
                 var esGo = new GameObject("EventSystem");
                 esGo.AddComponent<EventSystem>();
-                esGo.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+                esGo.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>().AssignDefaultActions();
             }
         }
 
@@ -266,6 +266,7 @@ namespace FinalDefense.UI
             var go = CreateUIObject(name, parent);
             var image = go.AddComponent<Image>();
             var button = go.AddComponent<Button>();
+            button.targetGraphic = image;
 
             var textGo = CreateTextObject("Text", go.transform, text, 15, Color.white, FontStyles.Bold);
             var textRT = textGo.GetComponent<RectTransform>();

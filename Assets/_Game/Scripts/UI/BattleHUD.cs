@@ -4,6 +4,7 @@ using TMPro;
 using FinalDefense.Core;
 using FinalDefense.Enemy;
 using FinalDefense.Battle;
+using FinalDefense.Combat;
 
 namespace FinalDefense.UI
 {
@@ -22,6 +23,32 @@ namespace FinalDefense.UI
 
         private bool doubleSpeed;
         private EnemySpawner spawner;
+        private BattleSimulation simulation;
+
+        public void Bind(BattleSimulation value, TMP_FontAsset font)
+        {
+            simulation = value;
+            // Reuse the three authored stat fields and their existing integrated cards.
+            // The fourth slot already reserved by this HUD now shows the enemy count.
+            if (goldText == null && waveText != null)
+            {
+                goldText = Instantiate(waveText, waveText.transform.parent);
+                goldText.gameObject.name = "GoldText";
+            }
+            foreach (var text in new[] { costText, gpaText, waveText, goldText })
+                if (text != null && font != null) text.font = font;
+            if (styleExistingUI) ApplyThemeStyling();
+            RefreshSimulation();
+        }
+
+        public void RefreshSimulation()
+        {
+            if (simulation == null) return;
+            if (costText != null) costText.text = $"COST\n{Mathf.FloorToInt(simulation.Cost)}/{simulation.Config.maxCost}";
+            if (gpaText != null) gpaText.text = $"GPA {GameManager.Instance?.CurrentGPA:0.#}\n保护 {simulation.Protection}/{simulation.Config.protection}";
+            if (waveText != null) waveText.text = $"波次\n{simulation.CurrentWave}/{simulation.TotalWaves}";
+            if (goldText != null) goldText.text = $"击败\n{simulation.Report.killed}/{simulation.TotalEnemies}";
+        }
 
         private void Awake()
         {
@@ -33,6 +60,7 @@ namespace FinalDefense.UI
 
         private void Start()
         {
+            if (simulation != null) { RefreshSimulation(); return; }
             spawner = FindFirstObjectByType<EnemySpawner>();
             EventBus.OnCostChanged += UpdateCost;
             EventBus.OnEnemyReachedEnd += OnEnemyReached;

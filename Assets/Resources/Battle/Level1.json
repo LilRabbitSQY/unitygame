@@ -1,0 +1,729 @@
+{
+  "title": "期末保卫战 · 关卡 1",
+  "source": "用户附件出怪时间轴 + 飞书 260823 游戏设计文档",
+  "notes": "四波起点/数量以附件为准；组内间隔从时间轴读数。32格S形地图、初始20COST、上限99、10保护值、10部署上限及小兵/快跑/盾兵基础数值为可调试玩默认，在线设计尚未定稿。精英HP/ATK/DEF×1.5、漏怪扣2依飞书敌方棋子第24行。",
+  "protection": 10,
+  "initialCost": 20,
+  "maxCost": 99,
+  "costPerSecond": 1,
+  "maxDeployed": 10,
+  "redeploySeconds": 15,
+  "path": [
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 1,
+      "y": 7
+    },
+    {
+      "x": 2,
+      "y": 7
+    },
+    {
+      "x": 3,
+      "y": 7
+    },
+    {
+      "x": 4,
+      "y": 7
+    },
+    {
+      "x": 5,
+      "y": 7
+    },
+    {
+      "x": 6,
+      "y": 7
+    },
+    {
+      "x": 7,
+      "y": 7
+    },
+    {
+      "x": 8,
+      "y": 7
+    },
+    {
+      "x": 9,
+      "y": 7
+    },
+    {
+      "x": 10,
+      "y": 7
+    },
+    {
+      "x": 10,
+      "y": 6
+    },
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 4
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 4
+    },
+    {
+      "x": 7,
+      "y": 4
+    },
+    {
+      "x": 6,
+      "y": 4
+    },
+    {
+      "x": 5,
+      "y": 4
+    },
+    {
+      "x": 4,
+      "y": 4
+    },
+    {
+      "x": 3,
+      "y": 4
+    },
+    {
+      "x": 2,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 4
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 2
+    },
+    {
+      "x": 0,
+      "y": 1
+    },
+    {
+      "x": 1,
+      "y": 1
+    },
+    {
+      "x": 2,
+      "y": 1
+    },
+    {
+      "x": 3,
+      "y": 1
+    },
+    {
+      "x": 4,
+      "y": 1
+    },
+    {
+      "x": 5,
+      "y": 1
+    },
+    {
+      "x": 6,
+      "y": 1
+    }
+  ],
+  "ground": [
+    {
+      "x": 0,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 1
+    },
+    {
+      "x": 0,
+      "y": 2
+    },
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 0,
+      "y": 5
+    },
+    {
+      "x": 0,
+      "y": 6
+    },
+    {
+      "x": 0,
+      "y": 7
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 1,
+      "y": 0
+    },
+    {
+      "x": 1,
+      "y": 1
+    },
+    {
+      "x": 1,
+      "y": 2
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 5
+    },
+    {
+      "x": 1,
+      "y": 6
+    },
+    {
+      "x": 1,
+      "y": 7
+    },
+    {
+      "x": 1,
+      "y": 8
+    },
+    {
+      "x": 2,
+      "y": 0
+    },
+    {
+      "x": 2,
+      "y": 1
+    },
+    {
+      "x": 2,
+      "y": 4
+    },
+    {
+      "x": 2,
+      "y": 7
+    },
+    {
+      "x": 2,
+      "y": 8
+    },
+    {
+      "x": 3,
+      "y": 0
+    },
+    {
+      "x": 3,
+      "y": 1
+    },
+    {
+      "x": 3,
+      "y": 2
+    },
+    {
+      "x": 3,
+      "y": 3
+    },
+    {
+      "x": 3,
+      "y": 4
+    },
+    {
+      "x": 3,
+      "y": 5
+    },
+    {
+      "x": 3,
+      "y": 6
+    },
+    {
+      "x": 3,
+      "y": 7
+    },
+    {
+      "x": 3,
+      "y": 8
+    },
+    {
+      "x": 4,
+      "y": 0
+    },
+    {
+      "x": 4,
+      "y": 1
+    },
+    {
+      "x": 4,
+      "y": 4
+    },
+    {
+      "x": 4,
+      "y": 7
+    },
+    {
+      "x": 4,
+      "y": 8
+    },
+    {
+      "x": 5,
+      "y": 0
+    },
+    {
+      "x": 5,
+      "y": 1
+    },
+    {
+      "x": 5,
+      "y": 2
+    },
+    {
+      "x": 5,
+      "y": 3
+    },
+    {
+      "x": 5,
+      "y": 4
+    },
+    {
+      "x": 5,
+      "y": 5
+    },
+    {
+      "x": 5,
+      "y": 6
+    },
+    {
+      "x": 5,
+      "y": 7
+    },
+    {
+      "x": 5,
+      "y": 8
+    },
+    {
+      "x": 6,
+      "y": 0
+    },
+    {
+      "x": 6,
+      "y": 1
+    },
+    {
+      "x": 6,
+      "y": 4
+    },
+    {
+      "x": 6,
+      "y": 7
+    },
+    {
+      "x": 6,
+      "y": 8
+    },
+    {
+      "x": 7,
+      "y": 0
+    },
+    {
+      "x": 7,
+      "y": 1
+    },
+    {
+      "x": 7,
+      "y": 2
+    },
+    {
+      "x": 7,
+      "y": 3
+    },
+    {
+      "x": 7,
+      "y": 4
+    },
+    {
+      "x": 7,
+      "y": 5
+    },
+    {
+      "x": 7,
+      "y": 6
+    },
+    {
+      "x": 7,
+      "y": 7
+    },
+    {
+      "x": 7,
+      "y": 8
+    },
+    {
+      "x": 8,
+      "y": 0
+    },
+    {
+      "x": 8,
+      "y": 1
+    },
+    {
+      "x": 8,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 7
+    },
+    {
+      "x": 8,
+      "y": 8
+    },
+    {
+      "x": 9,
+      "y": 0
+    },
+    {
+      "x": 9,
+      "y": 1
+    },
+    {
+      "x": 9,
+      "y": 2
+    },
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 9,
+      "y": 5
+    },
+    {
+      "x": 9,
+      "y": 6
+    },
+    {
+      "x": 9,
+      "y": 7
+    },
+    {
+      "x": 9,
+      "y": 8
+    },
+    {
+      "x": 10,
+      "y": 0
+    },
+    {
+      "x": 10,
+      "y": 1
+    },
+    {
+      "x": 10,
+      "y": 2
+    },
+    {
+      "x": 10,
+      "y": 3
+    },
+    {
+      "x": 10,
+      "y": 4
+    },
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 6
+    },
+    {
+      "x": 10,
+      "y": 7
+    },
+    {
+      "x": 10,
+      "y": 8
+    }
+  ],
+  "highGround": [
+    {
+      "x": 2,
+      "y": 2
+    },
+    {
+      "x": 4,
+      "y": 2
+    },
+    {
+      "x": 6,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 2,
+      "y": 3
+    },
+    {
+      "x": 4,
+      "y": 3
+    },
+    {
+      "x": 6,
+      "y": 3
+    },
+    {
+      "x": 8,
+      "y": 3
+    },
+    {
+      "x": 2,
+      "y": 5
+    },
+    {
+      "x": 4,
+      "y": 5
+    },
+    {
+      "x": 6,
+      "y": 5
+    },
+    {
+      "x": 8,
+      "y": 5
+    },
+    {
+      "x": 2,
+      "y": 6
+    },
+    {
+      "x": 4,
+      "y": 6
+    },
+    {
+      "x": 6,
+      "y": 6
+    },
+    {
+      "x": 8,
+      "y": 6
+    }
+  ],
+  "groups": [
+    {
+      "wave": 1,
+      "waveStart": 0,
+      "enemyId": "stage_small",
+      "count": 6,
+      "delay": 2,
+      "interval": 2,
+      "statMultiplier": 1,
+      "goalDamage": 1
+    },
+    {
+      "wave": 2,
+      "waveStart": 40,
+      "enemyId": "stage_small",
+      "count": 6,
+      "delay": 0,
+      "interval": 2,
+      "statMultiplier": 1,
+      "goalDamage": 1
+    },
+    {
+      "wave": 2,
+      "waveStart": 40,
+      "enemyId": "stage_shield",
+      "count": 2,
+      "delay": 12,
+      "interval": 6,
+      "statMultiplier": 1,
+      "goalDamage": 1
+    },
+    {
+      "wave": 3,
+      "waveStart": 85,
+      "enemyId": "stage_runner",
+      "count": 8,
+      "delay": 0,
+      "interval": 1.2,
+      "statMultiplier": 1,
+      "goalDamage": 1
+    },
+    {
+      "wave": 3,
+      "waveStart": 85,
+      "enemyId": "stage_small",
+      "count": 6,
+      "delay": 4,
+      "interval": 2,
+      "statMultiplier": 1,
+      "goalDamage": 1
+    },
+    {
+      "wave": 4,
+      "waveStart": 135,
+      "enemyId": "stage_shield",
+      "count": 4,
+      "delay": 0,
+      "interval": 5,
+      "statMultiplier": 1,
+      "goalDamage": 1
+    },
+    {
+      "wave": 4,
+      "waveStart": 135,
+      "enemyId": "stage_runner",
+      "count": 8,
+      "delay": 6,
+      "interval": 1.5,
+      "statMultiplier": 1,
+      "goalDamage": 1
+    },
+    {
+      "wave": 4,
+      "waveStart": 135,
+      "enemyId": "stage_elite",
+      "count": 1,
+      "delay": 20,
+      "interval": 1,
+      "statMultiplier": 1.5,
+      "goalDamage": 2
+    }
+  ],
+  "enemies": [
+    {
+      "id": "stage_small",
+      "name": "E_小兵",
+      "description": "关卡1时间轴原型敌人，可在Level1.json调整",
+      "tag": "原型",
+      "hp": [
+        3000
+      ],
+      "attack": [
+        500
+      ],
+      "defense": [
+        300
+      ],
+      "moveSpeed": 1,
+      "targets": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "attackWhenBlocked": true,
+      "goalDamage": 1,
+      "costReward": 2,
+      "goldReward": 5,
+      "skill": null
+    },
+    {
+      "id": "stage_runner",
+      "name": "E_快跑",
+      "description": "关卡1时间轴原型敌人，可在Level1.json调整",
+      "tag": "原型",
+      "hp": [
+        1200
+      ],
+      "attack": [
+        240
+      ],
+      "defense": [
+        100
+      ],
+      "moveSpeed": 1.7,
+      "targets": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "attackWhenBlocked": true,
+      "goalDamage": 1,
+      "costReward": 2,
+      "goldReward": 5,
+      "skill": null
+    },
+    {
+      "id": "stage_shield",
+      "name": "E_盾兵",
+      "description": "关卡1时间轴原型敌人，可在Level1.json调整",
+      "tag": "原型",
+      "hp": [
+        5000
+      ],
+      "attack": [
+        200
+      ],
+      "defense": [
+        600
+      ],
+      "moveSpeed": 0.6,
+      "targets": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "attackWhenBlocked": true,
+      "goalDamage": 1,
+      "costReward": 2,
+      "goldReward": 5,
+      "skill": null
+    },
+    {
+      "id": "stage_elite",
+      "name": "E_精英",
+      "description": "关卡1时间轴原型敌人，可在Level1.json调整",
+      "tag": "原型",
+      "hp": [
+        3000
+      ],
+      "attack": [
+        500
+      ],
+      "defense": [
+        300
+      ],
+      "moveSpeed": 0.9,
+      "targets": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "attackWhenBlocked": true,
+      "goalDamage": 2,
+      "costReward": 2,
+      "goldReward": 5,
+      "skill": null
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "unityVersion": "6000.5.1f1",
+  "mode": "all",
+  "results": [
+    {
+      "assembly": "FinalDefense",
+      "sourceCount": 75,
+      "passed": true,
+      "errors": 0,
+      "warnings": 39,
+      "scope": "production assembly compiled"
+    },
+    {
+      "assembly": "FinalDefense.Editor",
+      "sourceCount": 4,
+      "passed": true,
+      "errors": 0,
+      "warnings": 3,
+      "scope": "production assembly compiled"
+    },
+    {
+      "assembly": "FinalDefense.Tests.EditMode",
+      "sourceCount": 5,
+      "passed": true,
+      "errors": 0,
+      "warnings": 0,
+      "scope": "test assembly compiled only; not executed"
+    },
+    {
+      "assembly": "FinalDefense.Tests.PlayMode",
+      "sourceCount": 6,
+      "passed": true,
+      "errors": 0,
+      "warnings": 10,
+      "scope": "test assembly compiled only; not executed"
+    },
+    {
+      "testSuite": "BattleLogicTests",
+      "passed": true,
+      "scenariosPassed": 166,
+      "scenariosTotal": 166,
+      "assertions": 2724,
+      "scenariosFailed": 0
+    }
+  ],
+  "limitations": "Offline compilation and managed rules only; Unity asset import and Play Mode were not run."
+}

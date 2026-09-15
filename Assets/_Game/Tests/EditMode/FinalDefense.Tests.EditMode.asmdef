@@ -1,0 +1,15 @@
+{
+    "name": "FinalDefense.Tests.EditMode",
+    "rootNamespace": "FinalDefense.Tests",
+    "references": ["FinalDefense"],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": ["nunit.framework.dll"],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "optionalUnityReferences": ["TestAssemblies"],
+    "noEngineReferences": false
+}

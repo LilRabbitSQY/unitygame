@@ -1,0 +1,676 @@
+{
+  "units": [
+    {
+      "id": "direct_crit",
+      "name": "卷王驾到",
+      "description": "永远占第一排、笔记密到起雾的卷王，但似乎因为熬夜熬空了身体。",
+      "tag": "直伤",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        3000
+      ],
+      "attack": [
+        500
+      ],
+      "defense": [
+        300
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "direct_crit",
+        "name": "内卷光环",
+        "description": "对阻挡自身的我方单位造成攻击力180%的伤害",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "direct_speed",
+      "name": "开源学霸",
+      "description": "把复习资料塞满共享文档、考前无私开源的学霸，期末时总能收获一群义子。",
+      "tag": "直伤",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        4500
+      ],
+      "attack": [
+        450
+      ],
+      "defense": [
+        350
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "direct_speed",
+        "name": "资料发你",
+        "description": "对阻挡自身的我方单位造成攻击力150%的伤害，同时回复自身100生命值",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "burn_stack",
+      "name": "历年真题",
+      "description": "既然ppt是去年的，那么万一考试题也是去年的呢……？",
+      "tag": "灼烧",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": true,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 45,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        5600
+      ],
+      "attack": [
+        250
+      ],
+      "defense": [
+        300
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "burn_stack",
+        "name": "题海战术",
+        "description": "对阻挡自身的我方单位施加2层灼烧，持续10秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "burn_burst",
+      "name": "通宵王者",
+      "description": "夜深人静时分打着手电筒在被窝里翻书的室友，书似乎是崭新的。",
+      "tag": "灼烧",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": true,
+      "radial": true,
+      "attackWhenBlocked": false,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 45,
+      "rangeWidth": 3,
+      "rangeDepth": 3,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        6000
+      ],
+      "attack": [
+        220
+      ],
+      "defense": [
+        320
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "burn_burst",
+        "name": "熬夜修仙",
+        "description": "对自身周围3*3格的我方单位施加1层灼烧，持续10秒；\n立即结算1次自身周围3*3格的我方单位的灼烧伤害",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "poison_spread",
+      "name": "千手观音",
+      "description": "我可以左手翻课本、右手刷题库、平板挂着网课、嘴里念叨知识点……",
+      "tag": "中毒",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        5500
+      ],
+      "attack": [
+        300
+      ],
+      "defense": [
+        300
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "poison_spread",
+        "name": "极限多开",
+        "description": "对阻挡自身的我方单位施加中毒，持续5秒；\n使阻挡自身的我方单位防御力降低10%，持续5秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "poison_amp",
+      "name": "蕉绿贩卖机",
+      "description": "小〇书上的优绩主义帖，看完后焦虑和碳水一起发酵。",
+      "tag": "中毒",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": true,
+      "radial": true,
+      "attackWhenBlocked": false,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 45,
+      "rangeWidth": 3,
+      "rangeDepth": 3,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        8000
+      ],
+      "attack": [
+        360
+      ],
+      "defense": [
+        320
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "poison_amp",
+        "name": "焦虑扩散",
+        "description": "对自身周围3*3格的我方单位施加中毒，持续5秒；\n使自身周围3*3格的我方单位防御-50，持续5秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "weaken_def",
+      "name": "菜菜捞捞",
+      "description": "经典的小鲨鱼表情包，平时分真是个伟大的发明……",
+      "tag": "削弱",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": true,
+      "attackWhenBlocked": false,
+      "targets": 0,
+      "block": 1,
+      "attackFrames": 0,
+      "rangeWidth": 3,
+      "rangeDepth": 3,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        6000
+      ],
+      "attack": [
+        0
+      ],
+      "defense": [
+        350
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "weaken_def",
+        "name": "加平时分",
+        "description": "使自身周围3*3格的我方单位防御力-25%，攻击力-10%，受到治疗效果-50%，持续3秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 4.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "weaken_slow",
+      "name": "美式加茶",
+      "description": "期末周学生独创的黑暗料理，只要睡眠时间少了，复习时间就长了，考试时间也相对延迟了……",
+      "tag": "削弱",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": true,
+      "attackWhenBlocked": false,
+      "targets": 0,
+      "block": 1,
+      "attackFrames": 0,
+      "rangeWidth": 3,
+      "rangeDepth": 3,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        5000
+      ],
+      "attack": [
+        0
+      ],
+      "defense": [
+        300
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "weaken_slow",
+        "name": "强制清醒",
+        "description": "对自身周围3*3格的我方单位施加冰冻，持续1秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 4.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "control_retreat",
+      "name": "退课申请",
+      "description": "强忍狂喜的一张申请表。发现不是专业课，退课后挂科风险down down down~",
+      "tag": "控制",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        8000
+      ],
+      "attack": [
+        600
+      ],
+      "defense": [
+        280
+      ],
+      "moveSpeed": 1.5,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "control_retreat",
+        "name": "溜了溜了",
+        "description": "对阻挡自身的我方单位施加1层击退效果，持续2秒；\n自身当次攻击的攻击力+80%",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 4.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "control_frozen",
+      "name": "季老心态",
+      "description": "收藏的季羡林日记本：学期的成绩就全仗这两天挣，现在更感到考试无用与无聊。",
+      "tag": "控制",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 30,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        6500
+      ],
+      "attack": [
+        550
+      ],
+      "defense": [
+        400
+      ],
+      "moveSpeed": 1.5,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "control_frozen",
+        "name": "看开一切",
+        "description": "对自身周围3*3格的我方单位施加1层击退，持续2秒；\n使自身周围3*3格处于击退状态的我方单位易伤+20%，持续2秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 4.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "counter_shield",
+      "name": "摸摸咸鱼",
+      "description": "同学水课上摸的鱼凝结而成的咸鱼，不知为何总抱着一个win键和一个←键。",
+      "tag": "盾反",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 60,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        10000
+      ],
+      "attack": [
+        150
+      ],
+      "defense": [
+        900
+      ],
+      "moveSpeed": 0.5,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "counter_shield",
+        "name": "咸鱼翻身",
+        "description": "回复300生命值，获得等同于当前最大生命值10%的护盾；\n护盾存在期间，每次受到我方单位攻击时，对其造成当前防御力100%的伤害",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 10.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "counter_store",
+      "name": "热带风味",
+      "description": "学校便利店最畅销的冰红茶，每到期末周那个男人都会解冻。",
+      "tag": "盾反",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 60,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        9500
+      ],
+      "attack": [
+        120
+      ],
+      "defense": [
+        1000
+      ],
+      "moveSpeed": 0.5,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "counter_store",
+        "name": "续命一口",
+        "description": "自身停止攻击，停止移动，防御力+20%，回复1000生命值；\n记录自身在3秒内受到的所有伤害；\n3秒后，将记录的伤害*60%施加给自身周围3*3格的所有我方单位",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 12.0,
+        "duration": 3
+      }
+    },
+    {
+      "id": "pursuit_strike",
+      "name": "高考战魂",
+      "description": "一学期告诉你我怎么上大学的，一周告诉你我怎么考上大学的！",
+      "tag": "追击",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": true,
+      "radial": false,
+      "attackWhenBlocked": false,
+      "targets": 2,
+      "block": 1,
+      "attackFrames": 30,
+      "rangeWidth": 3,
+      "rangeDepth": 2,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        5500
+      ],
+      "attack": [
+        660
+      ],
+      "defense": [
+        460
+      ],
+      "moveSpeed": 2.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "pursuit_strike",
+        "name": "啃老本",
+        "description": "立即追加1次攻击，造成攻击力150%的伤害；\n该追加攻击有10%概率给我方单位施加1层灼烧或冰冻，持续2秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "pursuit_support",
+      "name": "赛博外援",
+      "description": "〇鱼上0.1元买下的爱因斯坦的大脑，据说拍下后自动安装到身体上了。",
+      "tag": "追击",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": true,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 2,
+      "block": 1,
+      "attackFrames": 45,
+      "rangeWidth": 3,
+      "rangeDepth": 2,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        6000
+      ],
+      "attack": [
+        700
+      ],
+      "defense": [
+        400
+      ],
+      "moveSpeed": 2.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "pursuit_support",
+        "name": "心理作用",
+        "description": "立即追加1次攻击，造成攻击力120%的伤害；\n回复该次伤害20%的生命值",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 3.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "heal_aura",
+      "name": "宝藏网课",
+      "description": "5小时就能学完一学期的知识吗，太好了我们的通修课有救了！",
+      "tag": "治疗",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": false,
+      "radial": true,
+      "attackWhenBlocked": false,
+      "targets": 0,
+      "block": 1,
+      "attackFrames": 0,
+      "rangeWidth": 3,
+      "rangeDepth": 3,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        7500
+      ],
+      "attack": [
+        360
+      ],
+      "defense": [
+        220
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "heal_aura",
+        "name": "临时抱佛脚",
+        "description": "回复自身周围3*3格的敌方单位自身攻击力150%的生命值",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 2.0,
+        "duration": 0
+      }
+    },
+    {
+      "id": "heal_support",
+      "name": "红榜讲师",
+      "description": "虽然同学们平时上课没有认真听讲，但最后一节课老师依旧给了详细的考试范围，必须红榜！",
+      "tag": "治疗",
+      "highGround": false,
+      "healing": false,
+      "healAll": false,
+      "projectile": true,
+      "radial": false,
+      "attackWhenBlocked": true,
+      "targets": 1,
+      "block": 1,
+      "attackFrames": 60,
+      "rangeWidth": 1,
+      "rangeDepth": 1,
+      "deployCost": 0,
+      "upgradeCost": [],
+      "hp": [
+        7000
+      ],
+      "attack": [
+        390
+      ],
+      "defense": [
+        260
+      ],
+      "moveSpeed": 1.0,
+      "projectileSpeed": 8,
+      "goalDamage": 1,
+      "costReward": 1,
+      "goldReward": 1,
+      "skill": {
+        "id": "heal_support",
+        "name": "划重点",
+        "description": "回复自身周围3*3格的敌方单位自身攻击力80%的生命值；\n使自身周围3*3格的敌方单位攻击力+10%，攻击速度+10%，庇护+5%，持续5秒",
+        "initialSp": 0,
+        "spCost": 0,
+        "interval": 6.0,
+        "duration": 0
+      }
+    }
+  ]
+}
