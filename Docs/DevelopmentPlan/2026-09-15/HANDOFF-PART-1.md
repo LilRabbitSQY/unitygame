@@ -115,3 +115,7 @@ D09客串及掉落概率为−1（未定），不运行概率事件；提供确�
 已核实 `campaign-ui-results.xml`：2/2通过（一天链路与音效）。真实EventSystem点击菜单→三次预约/对话→16棋互斥选棋→Prepare→部署/暂停/弃局→唯一结算→购买→day2读档，空draft问题修复后不再阻断。摘要及原XML/动作日志哈希见 `Part1Evidence/graphical-day-summary.json`。
 
 这证明页面绑定与业务状态链路；规则使用显式测试配置、聊天使用AI替身，因此仍不满足A03真实AI及A08完整真实内容闭环，不能将其标为正式M1验收或自然28天通关。
+
+## Part2经济证据边界
+
+已核查Part2 `content-results.json` 共168场、覆盖28天自然胜利，文件SHA256 `7be4a7605a4472ec5dc7fbc2f53047336efd8d36da64490928ea748438d4d0dc`。该证据证明关卡可胜；Part1另有7000起步、胜200/连胜额外200、对手反向50、每日购买扣10后的28天成功测试。两者互补，但未在同一连续Campaign/Session中直接传递生产BattleOutcome，不能称为自然28天综合通关。结果JSON缺少run/battle/attempt/NPC身份，不得重新包装成胜利DTO冒充生产战果。组合验收需真实DraftService→PrepareBattle→BattleSession→CommitBattleOutcome连续28天，真实AI仍另待服务交付。
