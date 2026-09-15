@@ -1,5 +1,5 @@
 {
-  "version": "proposal-2026-09-15.1",
+  "version": "provisional-2026-09-15.2",
   "approved": false,
   "tiedFirstWins": true,
   "giftsShareDailyCap": true,
@@ -14,10 +14,13 @@
   "mediumTurns": 6,
   "highTurns": 10,
   "matchCycleLength": 7,
-  "allowLegacyRestartDayMigration": false,
-  "retriesAllowed": false,
-  "retryPrice": 0,
-  "cameoChancePerTenThousand": -1,
-  "topicDropChancePerTenThousand": -1,
-  "probabilitySource": "D09 pending"
+  "allowLegacyRestartDayMigration": true,
+  "retriesAllowed": true,
+  "retryPrice": 100,
+  "cameoChancePerTenThousand": 1500,
+  "topicDropChancePerTenThousand": 3500,
+  "probabilitySource": "User authorized provisional implementation; RULE-DECISIONS-PART-1.md",
+  "battleFavorChancePerTenThousand": 2000,
+  "npcNewsChancePerTenThousand": 2500,
+  "npcNewsFavorThreshold": 30
 }

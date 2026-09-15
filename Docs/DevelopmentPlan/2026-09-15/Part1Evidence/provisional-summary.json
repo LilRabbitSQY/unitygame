@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "scenarios": 19,
+  "assertions": 4281,
+  "unityVersion": "6000.5.1f1",
+  "scope": "Offline managed campaign tests; fake AI and supplied test outcomes, not a natural Unity playthrough",
+  "sourceHashes": {
+    "Assets/_Game/Scripts/Contracts/CampaignContracts.cs": "7e9bfbefd6cffdfe38472251ce0506183bebea9c54dad0255749ed42c62a36d9",
+    "Assets/_Game/Scripts/Campaign/CampaignContent.cs": "2a4c9ba140aacab6fc4b71065f094e987733349ef997a4e4ca00a0a729afdc8f",
+    "Assets/_Game/Scripts/Campaign/CampaignService.cs": "dd411a83b4afc9bcecebf2db6a4a43e62f354b65f2daa912c6396d5477d38a78",
+    "Assets/_Game/Scripts/Persistence/AtomicCampaignStore.cs": "dec11d7eafd6f9b4629cdc927a71cb97b10faf2740ef74dbccbe1387f80ea8ef",
+    "Assets/_Game/Scripts/Persistence/CampaignSnapshotCompatibility.cs": "58009d24be587c7c79c72e8dd3f3ee767e93f6d8366ed335d9852cc28f102a07",
+    "Assets/_Game/Scripts/Persistence/LegacyCampaignMigration.cs": "3e64463c327e1936ee6d2b71e0005b369cd54390eba51b75ac7d09caf4938c55",
+    "Assets/_Game/Scripts/Shop/BattleItemDefs.cs": "1a05444278f45319b6ad7a219c23cd927d1306daf30ce6feb58fe7663d2457f9",
+    "Assets/_Game/Scripts/Dialogue/CampaignDialogueCoordinator.cs": "0b3881702872c22577a83c876bde1cdddb10b9231720046988b5ab94e4af5b11",
+    "Assets/_Game/Scripts/Dialogue/HttpDialogueGateway.cs": "ae0151a1271763d4f62f77bbb2138643b15950f442ae967b4b2d65471b66aee5",
+    "Tests/Offline/Campaign/CampaignTests.cs": "189fa597a23225f1279d6222419a77247089f644fdf5f1311c9090e40762f2b2"
+  }
+}

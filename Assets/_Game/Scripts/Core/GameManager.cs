@@ -113,7 +113,6 @@ namespace FinalDefense.Core
         public OperationResult StartCampaign(string saveId, bool overwrite = false)
         {
             EnsureServices();
-            if (!rules.approved) return LastOperation = OperationResult.Fail(OperationError.RulesPending, "规则配置尚待确认，不能开启正式新游戏");
             if (!overwrite && store.List().Any(s => s.saveId == saveId)) return LastOperation = OperationResult.Fail(OperationError.Conflict, "存档ID已存在，请选择新档");
             try
             {
@@ -200,7 +199,7 @@ namespace FinalDefense.Core
         public OperationResult MigrateLegacyCampaign(string newSaveId)
         {
             EnsureServices();
-            if (!rules.approved || !rules.allowLegacyRestartDayMigration) return OperationResult.Fail(OperationError.RulesPending, "D15迁移策略尚未批准");
+            if (!rules.allowLegacyRestartDayMigration) return OperationResult.Fail(OperationError.RulesPending, "当前规则未开放旧档迁移");
             if (store.List().Any(s => s.saveId == newSaveId)) return OperationResult.Fail(OperationError.Conflict, "目标槽已有存档");
             try
             {

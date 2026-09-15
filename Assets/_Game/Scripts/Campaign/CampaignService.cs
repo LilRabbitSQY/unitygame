@@ -226,12 +226,13 @@ namespace FinalDefense.Campaign
                 if (s.phase != CampaignStage.Battle || s.battle == null || outcome.runId != s.runId || outcome.battleId != s.battle.battleId || outcome.attemptId != s.battle.attemptId)
                     return Error(OperationError.Conflict, "战果不属于当前战斗");
                 if (!Enum.IsDefined(typeof(BattleEndReason), outcome.reason) || outcome.protectionLost < 0 || (outcome.report?.Length ?? 0) > 2000) return Error(OperationError.InvalidInput, "战果无效");
-                bool won = outcome.reason == BattleEndReason.Victory; int before = s.gpa;
+                bool won = outcome.reason == BattleEndReason.Victory; int before = s.gpa, favorDelta = 0;
                 if (!s.daySettled)
                 {
                     s.streak = won ? s.streak + 1 : 0;
                     s.gpa = Math.Min(rules.playerMaxGpa, s.gpa + (won ? 200 + (s.streak >= rules.streakBonusFrom ? 200 : 0) + (s.battle.battleItems.Contains("recommendation_letter") ? 100 : 0) : -300));
                     var opponent = s.npcs.First(n => n.npcId == s.draft.opponentId); opponent.gpa = Math.Max(rules.npcMinGpa, Math.Min(rules.npcMaxGpa, opponent.gpa + (won ? -50 : 50)));
+                    if (won && Roll(s.seed, s.day * 7919) < rules.battleFavorChancePerTenThousand) favorDelta = Favor(s, opponent, 1, true);
                     if (won) s.wins++; else s.losses++;
                     s.matchHistory = s.matchHistory.Concat(new[] { opponent.npcId }).ToArray(); s.daySettled = true;
                     s.trends = s.trends.Concat(new[] { new DailyRecord { day = s.day, gpa = s.gpa, streak = s.streak, ranking = Rank(s), opponentId = opponent.npcId, reason = outcome.reason.ToString() } }).ToArray();
@@ -239,7 +240,7 @@ namespace FinalDefense.Campaign
                 s.outcome = Copy(outcome); s.lastBattleSummary = "第" + s.day + "天，" + (won ? "胜利" : "失败") + "，GPA " + (s.gpa / 100m).ToString("0.00");
                 s.phase = CampaignStage.Result;
                 if (s.gpa < 0 || s.day == 28) End(s);
-                return new OperationResult { gpaDelta = s.gpa - before, message = "战果已结算" };
+                return new OperationResult { gpaDelta = s.gpa - before, favorDelta = favorDelta, message = favorDelta > 0 ? "战果已结算，对手好感 +1" : "战果已结算" };
             });
         }
         public OperationResult RetryBattle(string actionId) => Apply(actionId, new Payload { op = "retry" }, s =>
@@ -274,7 +275,7 @@ namespace FinalDefense.Campaign
         public OperationResult NextDay(string actionId) => Apply(actionId, new Payload { op = "next" }, s =>
         {
             if (s.phase != CampaignStage.Shop || !s.daySettled || s.day >= 28) return Error(OperationError.WrongPhase, "当前不能进入下一天");
-            s.day++; s.dailyNewsIds = SelectNews(content, s.seed, s.day); s.phase = CampaignStage.Booking; s.slot = 0; s.appointments = new Appointment[3]; s.dialogue = null;
+            s.day++; s.dailyNewsIds = SelectNews(content, s.seed, s.day, s.npcs, rules); s.phase = CampaignStage.Booking; s.slot = 0; s.appointments = new Appointment[3]; s.dialogue = null;
             s.draftRequest = null; s.draft = null; s.battle = null; s.outcome = null; s.daySettled = false;
             foreach (var n in s.npcs) n.dailyGain = 0; return Ok();
         });
@@ -291,12 +292,18 @@ namespace FinalDefense.Campaign
             s.companionId = first ? s.npcs.OrderByDescending(n => n.favor).ThenBy(n => n.reachedSequence).ThenBy(n => n.npcId, StringComparer.Ordinal).First().npcId : null;
             s.endingId = first ? "success_" + s.companionId : s.gpa < 0 ? "failure_gpa" : "failure_rank"; s.phase = CampaignStage.Ending;
         }
-        internal static string[] SelectNews(CampaignContent content, int seed, int day)
+        internal static string[] SelectNews(CampaignContent content, int seed, int day, NpcSnapshot[] npcs = null, CampaignRules rules = null)
         {
-            // General authored news is available to everyone. NPC unlock conditions remain a content decision.
             var candidates = content.news.Where(n => string.IsNullOrEmpty(n.npcId) && day >= n.firstDay && day <= n.lastDay).ToArray();
-            return candidates.OrderBy(n => Roll(seed, day * 541 + Array.IndexOf(candidates, n) * 3571)).ThenBy(n => n.id, StringComparer.Ordinal)
+            var selected = candidates.OrderBy(n => Roll(seed, day * 541 + Array.IndexOf(candidates, n) * 3571)).ThenBy(n => n.id, StringComparer.Ordinal)
                 .Take(1 + Roll(seed, day * 73) % 3).Select(n => n.id).ToArray();
+            if (rules != null && npcs != null && Roll(seed, day * 6151) < rules.npcNewsChancePerTenThousand)
+            {
+                var eligible = content.news.Where(n => npcs.Any(npc => npc.npcId == n.npcId && npc.favor >= rules.npcNewsFavorThreshold)
+                    && day >= n.firstDay && day <= n.lastDay).OrderBy(n => n.id, StringComparer.Ordinal).ToArray();
+                if (eligible.Length > 0 && selected.Length > 0) selected[selected.Length - 1] = eligible[Roll(seed, day * 8191) % eligible.Length].id;
+            }
+            return selected;
         }
         public NewsDefinition[] News { get { var ids = Snapshot.dailyNewsIds; return content.news.Where(n => ids.Contains(n.id)).Select(Copy).ToArray(); } }
         public OperationResult ReadNews(string actionId, string newsId) => Apply(actionId, new Payload { op = "news", a = newsId }, s =>

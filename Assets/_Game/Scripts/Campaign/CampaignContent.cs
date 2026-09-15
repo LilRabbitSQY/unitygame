@@ -27,22 +27,25 @@ namespace FinalDefense.Campaign
     // These choices are explicitly versioned proposals until the design owner confirms them.
     [Serializable] public sealed class CampaignRules
     {
-        public string version = "proposal-2026-09-15.1"; public bool approved;
+        public string version = "provisional-2026-09-15.2"; public bool approved;
         public bool tiedFirstWins = true, giftsShareDailyCap = true, thresholdAfterTurn = true, repeatCompanion = true;
         public int streakBonusFrom = 2, playerMaxGpa = 10000, npcMinGpa = 6000, npcMaxGpa = 10000;
         public int favorSixtyBand = 1, lowTurns = 3, mediumTurns = 6, highTurns = 10;
         public int matchCycleLength = 7;
-        public bool allowLegacyRestartDayMigration;
-        public bool retriesAllowed; public int retryPrice;
+        public bool allowLegacyRestartDayMigration = true;
+        public bool retriesAllowed = true; public int retryPrice = 100;
         // -1 means unresolved, not a zero-percent claim. No random rewards run until configured.
-        public int cameoChancePerTenThousand = -1, topicDropChancePerTenThousand = -1;
-        public string probabilitySource = "D09 pending";
+        public int cameoChancePerTenThousand = 1500, topicDropChancePerTenThousand = 3500;
+        public int battleFavorChancePerTenThousand = 2000, npcNewsChancePerTenThousand = 2500, npcNewsFavorThreshold = 30;
+        public string probabilitySource = "User authorized provisional implementation; RULE-DECISIONS-PART-1.md";
         public void Validate()
         {
             if (string.IsNullOrWhiteSpace(version) || streakBonusFrom < 2 || playerMaxGpa < 7000 || npcMinGpa > npcMaxGpa
                 || lowTurns < 1 || mediumTurns < lowTurns || highTurns < mediumTurns || highTurns > 10
                 || favorSixtyBand < 0 || favorSixtyBand > 2 || matchCycleLength < 1 || retryPrice < 0
                 || cameoChancePerTenThousand < -1 || cameoChancePerTenThousand > 10000
+                || battleFavorChancePerTenThousand < 0 || battleFavorChancePerTenThousand > 10000
+                || npcNewsChancePerTenThousand < 0 || npcNewsChancePerTenThousand > 10000 || npcNewsFavorThreshold < 0 || npcNewsFavorThreshold > 100
                 || topicDropChancePerTenThousand < -1 || topicDropChancePerTenThousand > 10000) throw new ArgumentException("Invalid campaign rules");
         }
     }
