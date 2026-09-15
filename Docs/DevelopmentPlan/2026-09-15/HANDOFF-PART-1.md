@@ -127,3 +127,7 @@ D09客串及掉落概率为−1（未定），不运行概率事件；提供确�
 暂定规则实现验证：`python3 Tools/verify_campaign.py --output /tmp/unitygame-campaign-provisional-verification-2`，19场景4281断言通过；运行时/Editor离线编译通过。新增覆盖读取实际Rules.json、重试收费去重、战斗彩蛋去重、NPC新闻解锁。此次新游戏入口取消approved检查，原生UI复测交Part3。
 
 DeepSeek直连协议回归：20场景4288断言通过，运行时/Editor离线编译通过。证据`Part1Evidence/direct-ai-summary.json`；未使用真实密钥、未发起付费请求。
+
+## 生产战果直接接桥补充
+
+已核查Part2 `Tests/Integration/Part2CampaignBridge.cs`及`2026-09-15-part2-bridge/bridge-results.json`（SHA256 7e9a6e8719f5a36e8a1d5feec2af5ade3b1e6eb513c6e7812de3bb0d50683666）：28场生产Session自然结束后，原样Outcome进入Campaign唯一结算，并进行每日前27天0.10 GPA购买和次日恢复。该证据补上之前“战斗与经济未直接接桥”的缺口。运行使用UI当时Campaign与Part2候选战斗源，尚未覆盖最新`.2`暂定规则和直连适配器；需整合分支重跑。AI仍为明示测试替身，非真实AI或图形成品自然28天体验。
