@@ -9,7 +9,7 @@
     "warnings": 3
   },
   "hashes": {
-    "Assets/_Game/Scripts/Core/GameManager.cs": "e4714ee44c6876d511ccbcdf3b307f91834a7ae150171f6bce5f714bbcc1ef71",
+    "Assets/_Game/Scripts/Core/GameManager.cs": "e50d1e1a0a12c5e652de4d2d291827163fec3267bb59a6049e7fddb3f3fe179b",
     "Assets/_Game/Scripts/NPC/NPCRelationshipManager.cs": "6d01b09ad49b3d47fe294dd8b430a81b3d3f625cb5ea44b1591ef444cb28c693",
     "Assets/_Game/Scripts/Editor/GameDataGenerator.cs": "3af356424de7d0883cb5418786ac4f3fa3ff066af9b2c0514be0558fb9af50d2",
     "Assets/Resources/Campaign/Content.json": "512f2f7125779d1575402688134e779837e73868805b951999fede953b42da1f",

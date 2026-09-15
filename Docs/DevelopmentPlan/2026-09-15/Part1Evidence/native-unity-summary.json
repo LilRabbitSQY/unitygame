@@ -1,0 +1,21 @@
+{
+  "source": "/Users/bytedance/unitygame-ui/Docs/FullGameVerification/2026-09-15/final-editmode-results.xml",
+  "sha256": "182eb493e78363c41d4f84595a9ee9258c365d25c9246849f0cfa50aafd2d3dc",
+  "runner": "Part 3 serial Unity EditMode",
+  "result": {
+    "id": "2",
+    "testcasecount": "12",
+    "result": "Passed",
+    "total": "12",
+    "passed": "12",
+    "failed": "0",
+    "inconclusive": "0",
+    "skipped": "0",
+    "asserts": "0",
+    "engine-version": "3.5.0.0",
+    "clr-version": "4.0.30319.42000",
+    "start-time": "2026-09-15 08:29:34Z",
+    "end-time": "2026-09-15 08:29:34Z",
+    "duration": "0.4841949"
+  }
+}

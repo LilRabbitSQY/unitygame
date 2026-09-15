@@ -14,4 +14,5 @@ PASS malformed saves, slot archive and unknown version
 PASS tied highest favor uses event sequence
 PASS v1/v2 migration preserves GPA and rejects unsafe checkpoints
 PASS separate process save continuation
-16 scenarios passed; 4227 assertions; 0 failed.
+PASS Unity empty inline checkpoint normalization
+17 scenarios passed; 4230 assertions; 0 failed.
