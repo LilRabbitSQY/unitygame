@@ -28,7 +28,7 @@ namespace FinalDefense.Contracts
     [Serializable] public sealed class DailyRecord { public int day, gpa, streak; public RankingEntry[] ranking; public string opponentId, reason; }
     [Serializable] public sealed class DraftRequest
     {
-        public string runId, battleId, rulesVersion; public int day, seed, cycleLength;
+        public string runId, battleId, rulesVersion; public int day, seed, cycleLength, playerGpa;
         public NpcSnapshot[] candidates; public string[] history;
     }
     [Serializable] public sealed class DraftSnapshot

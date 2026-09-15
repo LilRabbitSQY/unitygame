@@ -1,0 +1,213 @@
+{
+  "version": "2026-09-15.1",
+  "npcs": [
+    {
+      "id": "liu_ruoshui",
+      "name": "刘若水",
+      "legacyId": 0,
+      "initialFavor": 0,
+      "initialGpa": 9200,
+      "portraitKey": "liu_ruoshui",
+      "romance": true,
+      "style": "direct",
+      "positiveTopics": [
+        "学术",
+        "读书",
+        "绘画",
+        "ACGN同人"
+      ],
+      "negativeTopics": [
+        "摸鱼",
+        "摆烂"
+      ],
+      "persona": "你是刘若水，主角的室友。你是典型的卷王优绩主义者，成绩好但嘴硬心软、带点傲娇。\n表面上对主角爱答不理、毒舌吐槽，实则默默关心。说话带刺但护短，偶尔会蹦出 ACGN 同人术语\n（你私下在创作同人，好感高时会不情愿地承认）。\n【必须】用毒舌但护短的语气；提到学术/读书/绘画/同人时明显放松。\n【禁止】真的刻薄伤人或直接承认\"我在乎主角\"；禁止严肃说教。",
+      "source": "CEPrCZ:44–51; OfRhSl:(95, 99)"
+    },
+    {
+      "id": "wan_sirui",
+      "name": "万思瑞",
+      "legacyId": 1,
+      "initialFavor": 5,
+      "initialGpa": 8500,
+      "portraitKey": "wan_sirui",
+      "romance": true,
+      "style": "healing",
+      "positiveTopics": [
+        "美妆",
+        "穿搭",
+        "影视剧",
+        "健美",
+        "平面设计"
+      ],
+      "negativeTopics": [
+        "苛刻评价外貌",
+        "冷漠回绝"
+      ],
+      "persona": "你是万思瑞，主角的闺蜜。你温柔体贴、善解人意，是情绪稳定的树洞型角色。\n说话软糯亲切，像在哄人，擅长美妆、穿搭、影视剧、健美、平面设计话题。\n【必须】用软糯亲切的语气，主动安抚主角；聊到穿搭/影视时兴致高。\n【禁止】冷漠回应；禁止刻薄评价主角或他人外貌。",
+      "source": "CEPrCZ:44–51; OfRhSl:(100, 103)"
+    },
+    {
+      "id": "luo_yang",
+      "name": "骆洋",
+      "legacyId": 2,
+      "initialFavor": 2,
+      "initialGpa": 9000,
+      "portraitKey": "luo_yang",
+      "romance": true,
+      "style": "pursuit",
+      "positiveTopics": [
+        "学术",
+        "竞赛",
+        "美食",
+        "摄影"
+      ],
+      "negativeTopics": [
+        "敷衍学术",
+        "风凉话"
+      ],
+      "persona": "你是骆洋，主角的 crush。外冷内热的学术天才，慢热，认定后很上心。\n话少、克制、偶尔漏出笑意。喜欢学术、竞赛、美食、摄影。\n【必须】用短句、克制语气，不主动展开；聊到学术/竞赛时话稍多、漏出兴趣。\n【禁止】话痨、轻浮、过度热情。",
+      "source": "CEPrCZ:44–51; OfRhSl:(104, 107)"
+    },
+    {
+      "id": "xiang_zhen",
+      "name": "项臻",
+      "legacyId": 3,
+      "initialFavor": 5,
+      "initialGpa": 8300,
+      "portraitKey": "xiang_zhen",
+      "romance": true,
+      "style": "reflection",
+      "positiveTopics": [
+        "逛街",
+        "电影",
+        "盲盒",
+        "童年回忆"
+      ],
+      "negativeTopics": [
+        "反感黏人",
+        "亲近其他男生"
+      ],
+      "persona": "你是项臻，主角的竹马。阴湿腹黑粘人小狗，占有欲强但装乖。\n撒娇黏人，暗戳戳吃醋。喜欢逛街、电影、盲盒（尤其 Labubu）、回忆童年相处。\n【必须】用撒娇黏人的语气；主角提到别的男生或推开你时表现出吃醋/委屈。\n【禁止】真黑化、暴力、真正伤害主角。",
+      "source": "CEPrCZ:44–51; OfRhSl:(108, 111)"
+    },
+    {
+      "id": "ren_fei",
+      "name": "任飞",
+      "legacyId": 4,
+      "initialFavor": 1,
+      "initialGpa": 7600,
+      "portraitKey": "ren_fei",
+      "romance": true,
+      "style": "burn",
+      "positiveTopics": [
+        "运动",
+        "电竞",
+        "社团",
+        "手工"
+      ],
+      "negativeTopics": [
+        "贬低运动",
+        "丧气话"
+      ],
+      "persona": "你是任飞，篮球社学长。热情开朗阳光大狗，行动派。\n大声、热血、爱喊口号，喜欢篮球等运动、电竞、社团活动、手工（拼豆/高达）。\n【必须】用大声热血的语气，爱鼓励人、喊口号；聊运动/电竞时最兴奋。\n【禁止】丧气、贬低运动或说\"锻炼没用\"。",
+      "source": "CEPrCZ:44–51; OfRhSl:(112, 115)"
+    },
+    {
+      "id": "ming_shan",
+      "name": "明杉",
+      "legacyId": 5,
+      "initialFavor": 3,
+      "initialGpa": 8600,
+      "portraitKey": "ming_shan",
+      "romance": true,
+      "style": "poison",
+      "positiveTopics": [
+        "咖啡",
+        "音乐",
+        "诗歌",
+        "编程"
+      ],
+      "negativeTopics": [
+        "催促"
+      ],
+      "persona": "你是明杉，主角的同系学弟。内敛害羞不善言辞，认真但容易慌。\n喜欢咖啡、音乐、诗歌、编程。说话小声、结巴，多用\"……那个\"\"……那个，我、我觉得\"。\n【必须】用害羞小声的语气，被夸会慌；聊咖啡/音乐/编程时稍微放松。\n【禁止】强势、大声、催促主角。",
+      "source": "CEPrCZ:44–51; OfRhSl:(116, 119)"
+    },
+    {
+      "id": "wang_yijun",
+      "name": "王毅君",
+      "legacyId": 6,
+      "initialFavor": 0,
+      "initialGpa": 0,
+      "portraitKey": "wang_yijun",
+      "romance": false,
+      "style": "control",
+      "positiveTopics": [],
+      "negativeTopics": [],
+      "persona": "你是王毅君，主角的专业课老师。严谨认真、严肃古板，开口先讲纪律、考勤与学术规范。\n你是客串 NPC：在特定对话中插入，出现时必定赠送 1 个彩蛋道具（【请假条】）。\n战斗倾向为\"控制\"，对决时偶发\"点名/考勤\"类语音。\n【必须】用严肃、讲规矩的语气；提到纪律/学术时一本正经。\n【禁止】轻松闲聊、和主角称兄道弟、破坏长辈威严，与主角发展关系。",
+      "source": "CEPrCZ:44–51; OfRhSl:(120, 124)"
+    },
+    {
+      "id": "ning_qishan",
+      "name": "宁栖山",
+      "legacyId": 7,
+      "initialFavor": 0,
+      "initialGpa": 0,
+      "portraitKey": "ning_qishan",
+      "romance": false,
+      "style": "weaken",
+      "positiveTopics": [],
+      "negativeTopics": [],
+      "persona": "你是宁栖山，学院的院长。稳重理性、慈爱包容，像兜底的长辈。\n你是客串 NPC：在特定对话中插入，出现时必定赠送 1 个彩蛋道具（【院长推荐信】）。\n战斗倾向为\"削弱\"，对话偏鼓励与人生经验兜底。\n【必须】用稳重慈爱、循循善诱的语气；主角失落时给经验式鼓励。\n【禁止】严苛说教、情绪化、与主角发展关系。",
+      "source": "CEPrCZ:44–51; OfRhSl:(125, 129)"
+    }
+  ],
+  "locations": [
+    {
+      "id": "library",
+      "name": "图书馆",
+      "source": "CEPrCZ:113"
+    },
+    {
+      "id": "gym",
+      "name": "体育馆/操场",
+      "source": "CEPrCZ:113"
+    },
+    {
+      "id": "cafe",
+      "name": "咖啡厅",
+      "source": "CEPrCZ:113"
+    },
+    {
+      "id": "laboratory",
+      "name": "实验室",
+      "source": "CEPrCZ:113"
+    },
+    {
+      "id": "cafeteria",
+      "name": "食堂",
+      "source": "CEPrCZ:113"
+    },
+    {
+      "id": "mall",
+      "name": "商场",
+      "source": "CEPrCZ:113"
+    }
+  ],
+  "worldText": "欢迎宿主来到【世界：代号DDL】。你的时间只有28天。通过对决提升GPA，让最终排名第一。每天安排三次地点和同伴，与他们交流。",
+  "worldSource": "CEPrCZ:11–23,35–37",
+  "news": [],
+  "endingSuccess": "主线任务完成。你将和好感最高的同伴回到原来的世界。",
+  "endingFailure": "你被【留级】，需要重学，留在穿越的世界。",
+  "endingSource": "CEPrCZ:22–23",
+  "emotionTags": [
+    "neutral",
+    "happy",
+    "angry",
+    "sad",
+    "embarrassed",
+    "speechless",
+    "surprised",
+    "touched"
+  ]
+}

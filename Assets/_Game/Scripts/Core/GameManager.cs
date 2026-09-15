@@ -1,422 +1,198 @@
+using System;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using FinalDefense.Data;
 using FinalDefense.Combat;
 using FinalDefense.Shop;
-using System.Collections.Generic;
-using System.Linq;
+using FinalDefense.Campaign;
+using FinalDefense.Contracts;
+using FinalDefense.Persistence;
+using FinalDefense.Dialogue;
 
 namespace FinalDefense.Core
 {
+    // Compatibility projection for existing scenes. New pages consume Campaign.Snapshot.phase.
     public enum CampaignPhase { Personality, Schedule, Battle, Result, Shop, Complete }
-
+    public sealed class UnityCampaignCodec : IDataCodec
+    { public string Encode<T>(T value) => JsonUtility.ToJson(value); public T Decode<T>(string value) => JsonUtility.FromJson<T>(value); }
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField] private PlayerStats playerStats;
         [SerializeField] private PersonalityConfig personalityConfig;
-
         public PlayerStats Stats => playerStats;
         public PersonalityConfig PersonalityConfigData => personalityConfig;
-
-        private int gpaHundredths;
-        public float CurrentGPA => gpaHundredths / 100f;
-        public int CurrentGPAHundredths => gpaHundredths;
-        public int CurrentGrade { get; private set; }
-        public int CurrentEmotion { get; private set; }
-        public int CurrentStrength { get; private set; }
-        public int CurrentEduPower { get; private set; }
-        public int CurrentDetermination { get; private set; }
-        public int ActionPoints { get; private set; }
-        public int MaxActionPoints => 4 + CurrentGrade;
-        public PersonalityType CurrentPersonality { get; private set; }
-        public bool PersonalitySelected { get; private set; }
-        public int CurrentDay { get; private set; } = 1;
-        public int Gold { get; private set; }
-        public int RetryCount { get; private set; }
-
+        public CampaignService Campaign { get; private set; }
+        public CampaignDialogueCoordinator DialogueSession { get; private set; }
+        public OperationResult LastOperation { get; private set; }
+        public string PersistenceWarning { get; private set; }
+        private AtomicCampaignStore store; private UnityCampaignCodec codec; private CampaignContent content; private CampaignRules rules;
+        private IDialogueService dialogueService;
         public const int TotalDays = 28;
-        private const string SaveKey = "FinalDefense.Campaign.v1";
-        public CampaignPhase Phase { get; private set; } = CampaignPhase.Personality;
-        public BattleReport LastBattleReport { get; private set; }
+        private const string LegacySaveKey = "FinalDefense.Campaign.v1";
+        private CampaignSnapshot S => Campaign?.Snapshot;
+        public float CurrentGPA => CurrentGPAHundredths / 100f;
+        public int CurrentGPAHundredths => S?.gpa ?? 7000;
+        public int CurrentDay => S?.day ?? 1;
+        public int BattlesWon => S?.wins ?? 0;
+        public int BattlesLost => S?.losses ?? 0;
+        public int RetryCount => S?.battle?.attemptId?.Contains(":retry:") == true ? 1 : 0;
+        public bool IsGameComplete => S?.phase == CampaignStage.Ending;
+        public bool HasSavedGame => ListCampaignSaves().Any(s => s.error == null);
+        public bool HasLegacySave => PlayerPrefs.HasKey(LegacySaveKey);
+        public int CurrentGrade => 1;
+        public int CurrentEmotion => 0; public int CurrentStrength => 0; public int CurrentEduPower => 0; public int CurrentDetermination => 0;
+        public int Gold => 0; public int StatCap => 20; public int MaxActionPoints => 3;
+        public int ActionPoints => S == null ? 3 : Math.Max(0, 3 - S.slot);
+        public int CurrentSemester => Math.Min(8, (CurrentDay - 1) / 3 + 1);
+        public int CurrentRound => (CurrentDay - 1) % 3 + 1;
+        public PersonalityType CurrentPersonality { get; private set; } = PersonalityType.NORM;
+        public bool PersonalitySelected => S != null && S.phase != CampaignStage.Introduction;
         public BattleConfiguration CurrentBattleConfiguration { get; private set; }
-        public bool HasSavedGame => PlayerPrefs.HasKey(SaveKey);
-        private bool dayWon;
-        private bool initialized;
-        private readonly Dictionary<string, int> battleInventory = new Dictionary<string, int>();
-        private readonly Dictionary<string, int> purchasedItems = new Dictionary<string, int>();
-        private bool battleItemsPrepared;
-        private string[] equippedBattleItems = System.Array.Empty<string>();
-        public string LastBattleDrop { get; private set; }
-        public IReadOnlyList<string> NextBattleItems => battleItemsPrepared ? equippedBattleItems : BattleItemDefs.All.Where(item => BattleItemCount(item.key) > 0).Select(item => item.key).ToArray();
-
-        public int CurrentSemester => Mathf.Clamp((CurrentDay - 1) / 3 + 1, 1, 8);
-        public int CurrentRound => ((CurrentDay - 1) % 3) + 1;
-        public int StatCap => CurrentGrade * 10 + 10;
-
-        public int BattlesWon { get; private set; }
-        public int BattlesLost { get; private set; }
-
+        public BattleReport LastBattleReport { get; private set; }
+        public string LastBattleDrop => null;
+        public System.Collections.Generic.IReadOnlyList<string> NextBattleItems => S?.battle?.battleItems ?? Array.Empty<string>();
+        public CampaignPhase Phase => S == null ? CampaignPhase.Personality : S.phase switch
+        {
+            CampaignStage.Introduction => CampaignPhase.Personality,
+            CampaignStage.Battle => CampaignPhase.Battle,
+            CampaignStage.Result => CampaignPhase.Result,
+            CampaignStage.Shop => CampaignPhase.Shop,
+            CampaignStage.Ending => CampaignPhase.Complete,
+            _ => CampaignPhase.Schedule
+        };
         protected override void Awake()
         {
-            base.Awake();
-            if (Instance != this) return;
+            base.Awake(); if (Instance != this) return;
             if (personalityConfig == null) personalityConfig = ScriptableObject.CreateInstance<PersonalityConfig>();
-            if (!initialized) InitializeStats();
+            EnsureServices();
         }
-
-        public void InitializeStats()
+        private void EnsureServices()
         {
-            if (playerStats != null)
+            if (store != null) return;
+            codec = new UnityCampaignCodec();
+            content = codec.Decode<CampaignContent>(Resources.Load<TextAsset>("Campaign/Content").text);
+            var ruleAsset = Resources.Load<TextAsset>("Campaign/Rules"); rules = ruleAsset == null ? new CampaignRules() : codec.Decode<CampaignRules>(ruleAsset.text);
+            store = new AtomicCampaignStore(System.IO.Path.Combine(Application.persistentDataPath, "CampaignV3"), codec);
+            // Optional HTTPS game gateway. Provider secrets never enter Resources or PlayerPrefs.
+            string endpoint = Environment.GetEnvironmentVariable("FINALDEFENSE_DIALOGUE_GATEWAY");
+            if (!string.IsNullOrEmpty(endpoint) && Uri.TryCreate(endpoint, UriKind.Absolute, out var uri) && uri.Scheme == "https")
+                dialogueService = new HttpDialogueGateway(uri, codec, () => Environment.GetEnvironmentVariable("FINALDEFENSE_GATEWAY_SESSION"));
+        }
+        public void ConfigureDialogueService(IDialogueService service)
+        {
+            DialogueSession?.Dispose(); if (dialogueService is IDisposable old) old.Dispose();
+            dialogueService = service; if (Campaign != null) DialogueSession = new CampaignDialogueCoordinator(Campaign, service);
+        }
+        private void Attach(CampaignSnapshot state)
+        {
+            DialogueSession?.Dispose();
+            Campaign = new CampaignService(content, rules, store, codec, state);
+            DialogueSession = new CampaignDialogueCoordinator(Campaign, dialogueService);
+            Campaign.Changed += snapshot =>
             {
-                gpaHundredths = playerStats.initialGPA * 100;
-                CurrentGrade = playerStats.initialGrade;
-                CurrentEmotion = playerStats.initialEmotion;
-                CurrentStrength = playerStats.initialStrength;
-                CurrentEduPower = playerStats.initialEduPower;
-                CurrentDetermination = playerStats.initialDetermination;
-            }
-            else
-            {
-                gpaHundredths = 10000;
-                CurrentGrade = 1;
-                CurrentEmotion = 10;
-                CurrentStrength = 10;
-                CurrentEduPower = 10;
-                CurrentDetermination = 5;
-            }
-            ActionPoints = MaxActionPoints;
-            CurrentDay = 1;
-            Gold = 0;
-            RetryCount = 0;
-            BattlesWon = 0;
-            BattlesLost = 0;
-            CurrentPersonality = PersonalityType.NORM;
-            PersonalitySelected = false;
-            Phase = CampaignPhase.Personality;
-            LastBattleReport = null;
+                if (snapshot.phase == CampaignStage.Ending)
+                    try { store.RecordUnlock(snapshot.endingId); PersistenceWarning = null; }
+                    catch { PersistenceWarning = "结局已保存在本局；全局解锁写入失败，下次继续时重试"; }
+            };
             CurrentBattleConfiguration = null;
-            dayWon = false;
-            battleInventory.Clear(); purchasedItems.Clear();
-            battleItemsPrepared = false; equippedBattleItems = System.Array.Empty<string>(); LastBattleDrop = null;
-            initialized = true;
+            LastBattleReport = state.outcome == null ? null : new BattleReport { won = state.outcome.reason == BattleEndReason.Victory, protectionLost = state.outcome.protectionLost };
+            if (state.phase == CampaignStage.Ending) try { store.RecordUnlock(state.endingId); } catch { PersistenceWarning = "全局解锁保存失败"; }
         }
-
-        public void BeginNewGame()
+        public SaveMetadata[] ListCampaignSaves() { EnsureServices(); return store.List(); }
+        public OperationResult StartCampaign(string saveId)
         {
-            InitializeStats();
-            PlayerPrefs.DeleteKey(SaveKey);
-            SaveProgress();
-        }
-
-        public void SetPersonality(PersonalityType type)
-        {
-            CurrentPersonality = type;
-            PersonalitySelected = true;
-            if (personalityConfig != null)
-            {
-                var stats = personalityConfig.GetStats(type);
-                CurrentEmotion = Mathf.Min(stats.emotion, StatCap);
-                CurrentStrength = Mathf.Min(stats.strength, StatCap);
-                CurrentEduPower = Mathf.Min(stats.eduPower, StatCap);
-                CurrentDetermination = Mathf.Min(stats.determination, StatCap);
-            }
-            Phase = CampaignPhase.Schedule;
-            SaveProgress();
-        }
-
-        public void TakeGPADamage(int amount)
-        {
-            gpaHundredths = Mathf.Max(0, gpaHundredths - Mathf.Max(0, amount) * 100);
-            if (CurrentGPA <= 0)
-            {
-                Phase = CampaignPhase.Complete;
-                EventBus.BattleLost();
-            }
-            SaveProgress();
-        }
-
-        public void AddGPA(int amount)
-        {
-            gpaHundredths = Mathf.Clamp(gpaHundredths + amount * 100, 0, 10000);
-            SaveProgress();
-        }
-
-        public void ModifyStat(string stat, int delta)
-        {
-            int cap = StatCap;
-            switch (stat)
-            {
-                case "emotion":
-                    CurrentEmotion = Mathf.Clamp(CurrentEmotion + delta, 0, cap);
-                    break;
-                case "strength":
-                    CurrentStrength = Mathf.Clamp(CurrentStrength + delta, 0, cap);
-                    break;
-                case "eduPower":
-                    CurrentEduPower = Mathf.Clamp(CurrentEduPower + delta, 0, cap);
-                    break;
-                case "determination":
-                    CurrentDetermination = Mathf.Clamp(CurrentDetermination + delta, 0, cap);
-                    break;
-            }
-            SaveProgress();
-        }
-
-        public bool SpendActionPoint(int cost = 1)
-        {
-            if (cost < 0 || Phase != CampaignPhase.Schedule || ActionPoints < cost) return false;
-            ActionPoints -= cost;
-            SaveProgress();
-            return true;
-        }
-
-        public void ResetActionPoints()
-        {
-            ActionPoints = MaxActionPoints;
-            SaveProgress();
-        }
-
-        public void AdvanceDay()
-        {
-            if (IsGameComplete || Phase != CampaignPhase.Shop) return;
-            if (CurrentDay >= TotalDays || CurrentGPA <= 0)
-            {
-                Phase = CampaignPhase.Complete;
-                SaveProgress();
-                return;
-            }
-            CurrentDay++;
-            if (CurrentDay > 3 && (CurrentDay - 1) % 6 == 0) GradeUp();
-            RetryCount = 0;
-            dayWon = false;
-            LastBattleReport = null;
-            CurrentBattleConfiguration = null;
-            battleItemsPrepared = false; equippedBattleItems = System.Array.Empty<string>(); LastBattleDrop = null;
-            ActionPoints = MaxActionPoints;
-            Phase = CampaignPhase.Schedule;
-            SaveProgress();
-        }
-
-        public bool BeginBattle(BattleConfiguration configuration = null)
-        {
-            if (IsGameComplete || dayWon || Phase == CampaignPhase.Result || Phase == CampaignPhase.Shop) return false;
-            // A new day's Schedule has no resumable battle, even if old JSON created an empty object for null.
-            if (Phase == CampaignPhase.Schedule || Phase == CampaignPhase.Personality)
-                CurrentBattleConfiguration = null;
-            if (configuration != null) CurrentBattleConfiguration = configuration;
-            LastBattleReport = null;
-            Phase = CampaignPhase.Battle;
-            SaveProgress();
-            return true;
-        }
-
-        public bool CompleteBattle(BattleReport report)
-        {
-            if (report == null || IsGameComplete || dayWon || Phase != CampaignPhase.Battle) return false;
-            LastBattleReport = report;
-            // Current campaign uses one protection point lost = one integer GPA point.
-            gpaHundredths = Mathf.Max(0, gpaHundredths - Mathf.Max(0, report.protectionLost) * 100);
-            if (gpaHundredths > 0 && report.won)
-                gpaHundredths = Mathf.Min(10000, gpaHundredths + (5 + Mathf.Max(0, report.bonusGpa)) * 100);
-            LastBattleDrop = null;
-            if (report.won)
-            {
-                BattlesWon++;
-                dayWon = true;
-                if (gpaHundredths > 0)
-                {
-                    Gold += Mathf.Max(0, report.goldEarned);
-                    // Authored drop rates are not provided. Use a documented, reproducible daily rotation.
-                    string drop = BattleItemDefs.All[(CurrentDay - 1) % 8].key;
-                    if (BattleItemCount(drop) < 99)
-                    { battleInventory[drop] = BattleItemCount(drop) + 1; LastBattleDrop = drop; }
-                }
-            }
-            else BattlesLost++;
-            Phase = CurrentGPA <= 0 ? CampaignPhase.Complete : CampaignPhase.Result;
-            SaveProgress();
-            return true;
-        }
-
-        public void RecordBattleResult(bool won) => CompleteBattle(new BattleReport { won = won });
-
-        public bool TryRetryBattle()
-        {
-            if (IsGameComplete || Phase != CampaignPhase.Result || dayWon || LastBattleReport == null || LastBattleReport.won) return false;
-            int price = RetryCount == 0 ? 0 : 5;
-            if (CurrentGPA <= price) return false;
-            gpaHundredths -= price * 100;
-            RetryCount++;
-            Phase = CampaignPhase.Battle;
-            return BeginBattle();
-        }
-
-        public bool EnterShop()
-        {
-            if (IsGameComplete || LastBattleReport == null || (Phase != CampaignPhase.Result && Phase != CampaignPhase.Shop)) return false;
-            Phase = CampaignPhase.Shop;
-            SaveProgress();
-            return true;
-        }
-
-        public bool FinishShopping()
-        {
-            if (Phase != CampaignPhase.Shop) return false;
-            AdvanceDay();
-            return true;
-        }
-
-        public int BattleItemCount(string key) => key != null && battleInventory.TryGetValue(key, out int count) ? count : 0;
-        public int ShopStock(string key) => BattleItemDefs.Find(key)?.priceHundredths > 0 ? Mathf.Max(0, 99 - (purchasedItems.TryGetValue(key, out int count) ? count : 0)) : 0;
-        public bool GrantBattleItem(string key, int count = 1)
-        {
-            if (BattleItemDefs.Find(key) == null || count <= 0 || BattleItemCount(key) >= 99) return false;
-            battleInventory[key] = BattleItemCount(key) + Mathf.Min(99 - BattleItemCount(key), count);
-            SaveProgress(); return true;
-        }
-        public bool BuyBattleItem(string key)
-        {
-            var item = BattleItemDefs.Find(key);
-            if (Phase != CampaignPhase.Shop || IsGameComplete || item == null || item.priceHundredths <= 0
-                || gpaHundredths < item.priceHundredths || ShopStock(key) <= 0 || BattleItemCount(key) >= 99) return false;
-            gpaHundredths -= item.priceHundredths;
-            battleInventory[key] = BattleItemCount(key) + 1;
-            purchasedItems[key] = (purchasedItems.TryGetValue(key, out int purchased) ? purchased : 0) + 1;
-            if (gpaHundredths <= 0) Phase = CampaignPhase.Complete;
-            SaveProgress(); return true;
-        }
-        public void PrepareBattleItems(BattleConfiguration configuration)
-        {
-            if (configuration == null || Phase != CampaignPhase.Battle) return;
-            if (!battleItemsPrepared)
-            {
-                equippedBattleItems = BattleItemDefs.All.Where(item => BattleItemCount(item.key) > 0).Select(item => item.key).ToArray();
-                foreach (string key in equippedBattleItems) battleInventory[key]--;
-                battleItemsPrepared = true;
-            }
-            configuration.battleItems = (string[])equippedBattleItems.Clone();
-            CurrentBattleConfiguration = configuration;
-            SaveProgress();
-        }
-
-        public void AddGold(int amount)
-        {
-            Gold = Mathf.Max(0, Gold + amount);
-            SaveProgress();
-        }
-
-        public bool SpendGold(int amount)
-        {
-            if (amount < 0 || Gold < amount) return false;
-            Gold -= amount;
-            SaveProgress();
-            return true;
-        }
-
-        public void IncrementRetry()
-        {
-            RetryCount++;
-            SaveProgress();
-        }
-
-        public void GradeUp()
-        {
-            if (CurrentGrade < 4) CurrentGrade++;
-        }
-
-        public float GetEduPowerBonus() => CurrentEduPower * 0.01f;
-        public float GetDeterminationPenalty() => CurrentDetermination * 0.015f;
-        public float GetEmotionDebuffReduction() => CurrentEmotion * 0.02f;
-        public float GetStrengthActionBonus() => CurrentStrength * 0.01f;
-
-        public bool IsGameComplete => Phase == CampaignPhase.Complete || CurrentDay > TotalDays || CurrentGPA <= 0;
-
-        public static bool IsUsableBattleConfiguration(BattleConfiguration configuration)
-        {
-            if (configuration == null || configuration.path == null || configuration.path.Any(cell => cell == null)
-                || configuration.ground == null || configuration.ground.Any(cell => cell == null)
-                || configuration.highGround == null || configuration.highGround.Any(cell => cell == null)
-                || configuration.towers == null || configuration.towers.Length == 0 || configuration.towers.Any(unit => unit == null)
-                || configuration.enemies == null || configuration.enemies.Length == 0 || configuration.enemies.Any(unit => unit == null)
-                || configuration.groups == null || configuration.groups.Length == 0 || configuration.groups.Any(group => group == null))
-                return false;
+            EnsureServices();
+            if (!rules.approved) return LastOperation = OperationResult.Fail(OperationError.RulesPending, "规则配置尚待确认，不能开启正式新游戏");
+            if (store.List().Any(s => s.saveId == saveId)) return LastOperation = OperationResult.Fail(OperationError.Conflict, "存档ID已存在，请选择新档");
             try
             {
-                BattleSimulation.ValidateConfiguration(configuration);
-                return true;
+                var state = CampaignService.NewState(saveId, content, rules, Guid.NewGuid().GetHashCode());
+                var service = new CampaignService(content, rules, store, codec, state); store.Write(state); Attach(state);
+                return LastOperation = new OperationResult { message = "新游戏已保存" };
             }
-            catch (System.ArgumentException) { return false; }
+            catch { return LastOperation = OperationResult.Fail(OperationError.PersistenceFailed, "无法创建存档"); }
         }
-
-        [System.Serializable]
-        private sealed class ProgressData
+        public OperationResult ContinueCampaign(string saveId)
         {
-            public int version = 2, gpa, gpaHundredths, grade, emotion, strength, eduPower, determination, actionPoints, day, gold, retries, won, lost;
-            public bool personalitySelected, dayWon, hasReport, reportWon;
-            public PersonalityType personality;
-            public CampaignPhase phase;
-            public int spawned, killed, leaked, protectionLost, bonusGpa, costSpent, costEarned, goldEarned, upgrades, deployed;
-            public float duration, damage, healing;
-            public BattleConfiguration battle;
-            public string lastBattleDrop;
-            public bool itemsPrepared;
-            public string[] equippedItems;
-            public ItemSave[] inventory;
+            EnsureServices();
+            try { var state = store.Read(saveId); Attach(state); return LastOperation = new OperationResult { message = state.phase == CampaignStage.Battle ? "从战斗检查点继续；阵容、种子和补给不变" : "存档已读取" }; }
+            catch (NotSupportedException) { return LastOperation = OperationResult.Fail(OperationError.UnsupportedVersion, "存档版本不支持，原文件已保留"); }
+            catch { return LastOperation = OperationResult.Fail(OperationError.CorruptSave, "存档损坏或配置版本不匹配，可尝试备份"); }
         }
-        [System.Serializable] private sealed class ItemSave { public string key; public int count, purchased; }
-
-        public void SaveProgress()
+        public OperationResult RecoverCampaignBackup(string saveId)
         {
-            if (!initialized) return;
-            var r = LastBattleReport;
-            var save = new ProgressData { gpa = Mathf.RoundToInt(CurrentGPA), gpaHundredths = gpaHundredths, grade = CurrentGrade, emotion = CurrentEmotion,
-                strength = CurrentStrength, eduPower = CurrentEduPower, determination = CurrentDetermination,
-                actionPoints = ActionPoints, day = CurrentDay, gold = Gold, retries = RetryCount,
-                won = BattlesWon, lost = BattlesLost, personalitySelected = PersonalitySelected,
-                personality = CurrentPersonality, phase = Phase, dayWon = dayWon, battle = CurrentBattleConfiguration,
-                hasReport = r != null, reportWon = r != null && r.won,
-                itemsPrepared = battleItemsPrepared, equippedItems = equippedBattleItems, lastBattleDrop = LastBattleDrop,
-                inventory = BattleItemDefs.All.Select(item => new ItemSave { key = item.key, count = BattleItemCount(item.key), purchased = purchasedItems.TryGetValue(item.key, out int purchased) ? purchased : 0 }).ToArray(),
-                spawned = r?.spawned ?? 0, killed = r?.killed ?? 0, leaked = r?.leaked ?? 0, protectionLost = r?.protectionLost ?? 0, bonusGpa = r?.bonusGpa ?? 0,
-                costSpent = r?.costSpent ?? 0, costEarned = r?.costEarned ?? 0, goldEarned = r?.goldEarned ?? 0,
-                upgrades = r?.upgrades ?? 0, deployed = r?.deployed ?? 0, duration = r?.duration ?? 0,
-                damage = r?.damage ?? 0, healing = r?.healing ?? 0 };
-            PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(save));
-            PlayerPrefs.Save();
+            EnsureServices();
+            try { var backup = store.ReadBackup(saveId); var check = new CampaignService(content, rules, store, codec, backup); Attach(backup); return LastOperation = new OperationResult { message = "备份已读取，下一次操作将写入恢复后的进度" }; }
+            catch { return LastOperation = OperationResult.Fail(OperationError.CorruptSave, "备份不可用，原文件未改变"); }
         }
-
-        public bool LoadProgress()
+        public GameSettings LoadSettings() { EnsureServices(); return store.LoadSettings(); }
+        public OperationResult SaveSettings(GameSettings settings)
+        { EnsureServices(); try { store.SaveSettings(settings); return new OperationResult { message = "设置已保存" }; } catch { return OperationResult.Fail(OperationError.PersistenceFailed, "设置保存失败"); } }
+        public UnlockData LoadUnlocks() { EnsureServices(); return store.LoadUnlocks(); }
+        public void BeginNewGame() => StartCampaign("save_" + Guid.NewGuid().ToString("N"));
+        public bool LoadProgress() { var latest = ListCampaignSaves().LastOrDefault(s => s.error == null); return latest != null && ContinueCampaign(latest.saveId).Success; }
+        public void SaveProgress() { if (Campaign != null) { try { store.Write(S); } catch { LastOperation = OperationResult.Fail(OperationError.PersistenceFailed, "保存失败"); } } }
+        public void InitializeStats() { DialogueSession?.Cancel(); Campaign = null; CurrentBattleConfiguration = null; LastBattleReport = null; }
+        private string Action(string name) => name + ":" + Guid.NewGuid().ToString("N");
+        public void SetPersonality(PersonalityType type) { CurrentPersonality = type; if (Campaign != null) LastOperation = Campaign.CompleteIntroduction(Action("intro")); }
+        public bool BeginBattle(BattleConfiguration configuration = null)
         {
-            if (!HasSavedGame) return false;
-            ProgressData saved;
-            try { saved = JsonUtility.FromJson<ProgressData>(PlayerPrefs.GetString(SaveKey)); }
-            catch (System.ArgumentException) { return false; }
-            if (saved == null || (saved.version != 1 && saved.version != 2) || saved.day < 1 || saved.day > TotalDays || saved.grade < 1 || saved.grade > 4
-                || !System.Enum.IsDefined(typeof(CampaignPhase), saved.phase)
-                || ((saved.phase == CampaignPhase.Result || saved.phase == CampaignPhase.Shop) && !saved.hasReport)) return false;
-            gpaHundredths = Mathf.Clamp(saved.version == 1 ? saved.gpa * 100 : saved.gpaHundredths, 0, 10000); CurrentGrade = saved.grade;
-            CurrentEmotion = Mathf.Clamp(saved.emotion, 0, StatCap); CurrentStrength = Mathf.Clamp(saved.strength, 0, StatCap);
-            CurrentEduPower = Mathf.Clamp(saved.eduPower, 0, StatCap); CurrentDetermination = Mathf.Clamp(saved.determination, 0, StatCap);
-            ActionPoints = Mathf.Clamp(saved.actionPoints, 0, MaxActionPoints); CurrentDay = saved.day;
-            Gold = Mathf.Max(0, saved.gold); RetryCount = Mathf.Max(0, saved.retries);
-            BattlesWon = Mathf.Max(0, saved.won); BattlesLost = Mathf.Max(0, saved.lost);
-            PersonalitySelected = saved.personalitySelected; CurrentPersonality = saved.personality;
-            Phase = saved.phase; dayWon = saved.dayWon;
-            // JsonUtility serializes inline managed classes by value: a null field can return as
-            // a non-null empty BattleConfiguration. Nullness alone is not a valid resume marker.
-            bool resumablePhase = Phase == CampaignPhase.Battle || Phase == CampaignPhase.Result || Phase == CampaignPhase.Shop;
-            CurrentBattleConfiguration = resumablePhase && IsUsableBattleConfiguration(saved.battle) ? saved.battle : null;
-            battleItemsPrepared = saved.itemsPrepared;
-            equippedBattleItems = (saved.equippedItems ?? System.Array.Empty<string>()).Where(key => BattleItemDefs.Find(key) != null).Distinct().ToArray();
-            LastBattleDrop = saved.lastBattleDrop;
-            battleInventory.Clear(); purchasedItems.Clear();
-            foreach (var item in saved.inventory ?? System.Array.Empty<ItemSave>())
-                if (item != null && BattleItemDefs.Find(item.key) != null)
-                { battleInventory[item.key] = Mathf.Clamp(item.count, 0, 99); purchasedItems[item.key] = Mathf.Clamp(item.purchased, 0, 99); }
-            LastBattleReport = saved.hasReport ? new BattleReport { won = saved.reportWon, spawned = saved.spawned,
-                killed = saved.killed, leaked = saved.leaked, protectionLost = saved.protectionLost, bonusGpa = saved.bonusGpa, costSpent = saved.costSpent, costEarned = saved.costEarned,
-                goldEarned = saved.goldEarned, upgrades = saved.upgrades, deployed = saved.deployed,
-                duration = saved.duration, damage = saved.damage, healing = saved.healing } : null;
+            if (S?.phase != CampaignStage.Battle || S.battle == null) return false;
+            // Preparation, roster selection and inventory consumption must already be committed by the real services.
+            if (configuration != null) { if (!IsUsableBattleConfiguration(configuration)) return false; CurrentBattleConfiguration = configuration; }
             return true;
         }
+        public bool CompleteBattle(BattleReport report)
+        {
+            if (report == null || S?.battle == null) return false;
+            var s = S; var result = Campaign.CommitBattleOutcome(new BattleOutcome { runId = s.runId, battleId = s.battle.battleId, attemptId = s.battle.attemptId,
+                reason = report.won ? BattleEndReason.Victory : BattleEndReason.Defeat, protectionLost = report.protectionLost });
+            LastOperation = result; if (result.Success) LastBattleReport = report; return result.Success;
+        }
+        public void RecordBattleResult(bool won) { LastOperation = OperationResult.Fail(OperationError.InvalidInput, "请由战斗服务提交真实战果"); }
+        public bool TryRetryBattle() => Campaign != null && (LastOperation = Campaign.RetryBattle(Action("retry"))).Success;
+        public bool EnterShop() => Campaign != null && (LastOperation = Campaign.EnterShop(Action("shop"))).Success;
+        public bool FinishShopping() => Campaign != null && (LastOperation = Campaign.NextDay(Action("next"))).Success;
+        public void AdvanceDay() => FinishShopping();
+        public int BattleItemCount(string key) => S?.inventory.FirstOrDefault(i => i.itemId == key)?.count ?? 0;
+        public int ShopStock(string key) { var def = BattleItemDefs.Find(key); return def == null ? 0 : Math.Max(0, def.saleLimit - (S?.inventory.FirstOrDefault(i => i.itemId == key)?.purchased ?? 0)); }
+        public bool BuyBattleItem(string key) => Campaign != null && (LastOperation = Campaign.Buy(Action("buy"), key)).Success;
+        public void PrepareBattleItems(BattleConfiguration configuration)
+        { if (configuration != null && S?.phase == CampaignStage.Battle) { configuration.battleItems = (string[])S.battle.battleItems.Clone(); CurrentBattleConfiguration = configuration; } }
+        // Retired mutations remain source-compatible but cannot alter the campaign ledger.
+        public bool GrantBattleItem(string key, int count = 1) => false;
+        public void TakeGPADamage(int amount) { }
+        public void AddGPA(int amount) { }
+        public void ModifyStat(string stat, int delta) { }
+        public bool SpendActionPoint(int cost = 1) => false;
+        public void ResetActionPoints() { }
+        public void AddGold(int amount) { }
+        public bool SpendGold(int amount) => false;
+        public void IncrementRetry() { }
+        public void GradeUp() { }
+        public float GetEduPowerBonus() => 0;
+        public float GetDeterminationPenalty() => 0;
+        public float GetEmotionDebuffReduction() => 0;
+        public float GetStrengthActionBonus() => 0;
+        public static bool IsUsableBattleConfiguration(BattleConfiguration configuration)
+        {
+            if (configuration == null) return false;
+            try { BattleSimulation.ValidateConfiguration(configuration); return true; } catch (Exception) { return false; }
+        }
+        public OperationResult InspectLegacySave()
+        {
+            EnsureServices(); if (!HasLegacySave) return OperationResult.Fail(OperationError.NotFound, "未找到旧存档");
+            try
+            {
+                string raw = PlayerPrefs.GetString(LegacySaveKey); store.PreserveLegacy(raw);
+                var legacy = codec.Decode<LegacyProgress>(raw);
+                if (legacy == null || (legacy.version != 1 && legacy.version != 2)) return OperationResult.Fail(OperationError.UnsupportedVersion, "旧存档版本不支持，已备份原文");
+                return new OperationResult { message = "旧存档已保留，GPA=" + ((legacy.version == 1 ? legacy.gpa * 100 : legacy.gpaHundredths) / 100m) + "。旧档缺少NPC、预约和对手历史；D15迁移策略未定，不伪造续玩状态，请保留旧档或另开新局。" };
+            }
+            catch { return OperationResult.Fail(OperationError.CorruptSave, "旧存档读取失败，未修改原存档"); }
+        }
+        [Serializable] private sealed class LegacyProgress { public int version, gpa, gpaHundredths, day; }
+        private void OnDestroy() { DialogueSession?.Dispose(); if (dialogueService is IDisposable disposable) disposable.Dispose(); }
     }
 }

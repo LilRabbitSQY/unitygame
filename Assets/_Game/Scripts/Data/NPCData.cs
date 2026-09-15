@@ -56,6 +56,8 @@ namespace FinalDefense.Data
         public int patience;
         public int academicPower;
 
+        public NPCRelationship() { }
+
         public NPCRelationship(NPCData data)
         {
             npcId = data.npcId;

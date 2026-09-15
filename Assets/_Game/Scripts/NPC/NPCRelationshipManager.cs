@@ -37,7 +37,14 @@ namespace FinalDefense.NPC
 
         public NPCRelationship GetRelationship(NPCId id)
         {
-            return relationships.TryGetValue(id, out var rel) ? rel : null;
+            var snapshot = GameManager.Instance?.Campaign?.Snapshot;
+            if (snapshot == null) return null;
+            var def = GameManager.Instance.Campaign.Content.npcs;
+            foreach (var npc in def)
+                if (npc.legacyId == (int)id && npc.romance)
+                    foreach (var n in snapshot.npcs)
+                        if (n.npcId == npc.id) return new NPCRelationship { npcId = id, favorability = n.favor, meritScore = n.gpa / 100 };
+            return null;
         }
 
         public NPCData GetNPCData(NPCId id)
@@ -52,57 +59,20 @@ namespace FinalDefense.NPC
 
         public BattleBuffs CalculateBattleBuffs()
         {
-            var buffs = new BattleBuffs();
-
-            foreach (var kvp in relationships)
-            {
-                var data = GetNPCData(kvp.Key);
-                if (data == null) continue;
-
-                float influence = (kvp.Value.favorability - 50f) / 100f;
-
-                switch (data.battleInfluence)
-                {
-                    case NPCBattleInfluence.AllyAttack:
-                        buffs.allyAttackMult += influence * 0.3f;
-                        break;
-                    case NPCBattleInfluence.AllyDefense:
-                        buffs.allyDefenseMult += influence * 0.3f;
-                        break;
-                    case NPCBattleInfluence.AllyAttackSpeed:
-                        buffs.allyAttackSpeedMult += influence * 0.3f;
-                        break;
-                    case NPCBattleInfluence.AllyCostRegen:
-                        buffs.costRegenMult += influence * 0.3f;
-                        break;
-                    case NPCBattleInfluence.EnemyAttack:
-                        buffs.enemyAttackMult -= influence * 0.2f;
-                        break;
-                    case NPCBattleInfluence.EnemyDefense:
-                        buffs.enemyDefenseMult -= influence * 0.2f;
-                        break;
-                    case NPCBattleInfluence.TowerVariety:
-                        buffs.towerVarietyBonus += Mathf.RoundToInt(influence * 2f);
-                        break;
-                    case NPCBattleInfluence.AllyCritRate:
-                        buffs.critRate += influence * 0.15f;
-                        break;
-                }
-            }
-
-            return buffs;
+            return new BattleBuffs();
         }
 
         public NPCId GetHighestFavorabilityNPC()
         {
             NPCId best = NPCId.Roommate;
             int bestVal = -1;
-            foreach (var kvp in relationships)
+            foreach (NPCId id in System.Enum.GetValues(typeof(NPCId)))
             {
-                if (kvp.Value.favorability > bestVal)
+                var rel = GetRelationship(id);
+                if (rel != null && rel.favorability > bestVal)
                 {
-                    bestVal = kvp.Value.favorability;
-                    best = kvp.Key;
+                    bestVal = rel.favorability;
+                    best = id;
                 }
             }
             return best;
@@ -110,11 +80,7 @@ namespace FinalDefense.NPC
 
         public void OnBattleResult(bool victory)
         {
-            int delta = victory ? 3 : -2;
-            foreach (var kvp in relationships)
-            {
-                kvp.Value.ModifyFavorability(delta);
-            }
+            // Campaign settlement owns all relationship effects.
         }
     }
 

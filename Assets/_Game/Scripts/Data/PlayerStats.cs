@@ -6,7 +6,7 @@ namespace FinalDefense.Data
     public class PlayerStats : ScriptableObject
     {
         [Header("GPA")]
-        public int initialGPA = 100;
+        public int initialGPA = 70;
 
         [Header("等级")]
         public int initialGrade = 1;

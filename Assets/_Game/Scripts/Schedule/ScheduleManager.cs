@@ -16,14 +16,8 @@ namespace FinalDefense.Schedule
         {
             var gm = GameManager.Instance;
             if (gm == null || activity == null || leaving || gm.IsGameComplete) return false;
-            if (!gm.SpendActionPoint(activity.actPointCost)) return false;
-
-            if (activity.emotionDelta != 0) gm.ModifyStat("emotion", activity.emotionDelta);
-            if (activity.strengthDelta != 0) gm.ModifyStat("strength", activity.strengthDelta);
-            if (activity.eduPowerDelta != 0) gm.ModifyStat("eduPower", activity.eduPowerDelta);
-            if (activity.determinationDelta != 0) gm.ModifyStat("determination", activity.determinationDelta);
-
-            return true;
+            // Legacy activity clicks cannot spend or skip the three booked conversations.
+            return false;
         }
 
         public void FinishSchedule()

@@ -6,12 +6,12 @@ namespace FinalDefense.Editor
 {
     public static class GameDataGenerator
     {
-        [MenuItem("FinalDefense/生成全部塔台数据")]
+        [MenuItem("FinalDefense/Legacy Demo/生成塔台数据")]
         public static void GenerateTowerData()
         {
-            string path = "Assets/_Game/ScriptableObjects/Towers/";
+            string path = "Assets/_Game/ScriptableObjects/LegacyTowers/";
             if (!AssetDatabase.IsValidFolder(path.TrimEnd('/')))
-                AssetDatabase.CreateFolder("Assets/_Game/ScriptableObjects", "Towers");
+                AssetDatabase.CreateFolder("Assets/_Game/ScriptableObjects", "LegacyTowers");
 
             CreateTower(path, "重装型-铁壁", TowerType.Heavy, DeployPosition.Ground,
                 maxHP: 500, damage: 15, defense: 20, attackRange: 1.5f, attackInterval: 2f, deployCost: 8, blockCount: 3,
@@ -58,12 +58,12 @@ namespace FinalDefense.Editor
             Debug.Log("已生成10种塔台数据");
         }
 
-        [MenuItem("FinalDefense/生成全部怪物数据")]
+        [MenuItem("FinalDefense/Legacy Demo/生成怪物数据")]
         public static void GenerateEnemyData()
         {
-            string path = "Assets/_Game/ScriptableObjects/Enemies/";
+            string path = "Assets/_Game/ScriptableObjects/LegacyEnemies/";
             if (!AssetDatabase.IsValidFolder(path.TrimEnd('/')))
-                AssetDatabase.CreateFolder("Assets/_Game/ScriptableObjects", "Enemies");
+                AssetDatabase.CreateFolder("Assets/_Game/ScriptableObjects", "LegacyEnemies");
 
             CreateEnemy(path, "行走型-选择题怪", EnemyType.Walker, MoveType.Ground,
                 maxHP: 30, defense: 2, moveSpeed: 2f, attackDamage: 5, gpaDamage: 2, costReward: 2,
@@ -125,22 +125,10 @@ namespace FinalDefense.Editor
             if (!AssetDatabase.IsValidFolder("Assets/_Game/ScriptableObjects/NPCs"))
                 AssetDatabase.CreateFolder("Assets/_Game/ScriptableObjects", "NPCs");
 
-            CreateNPC(path, NPCId.Roommate, "室友", "女", "卷王优绩主义",
-                NPCBattleInfluence.AllyAttack, "防御高", 50, 80, 60, 70);
-            CreateNPC(path, NPCId.Bestie, "闺蜜", "女", "温柔体贴善解人意",
-                NPCBattleInfluence.AllyDefense, "攻击高", 60, 50, 80, 50);
-            CreateNPC(path, NPCId.Crush, "Crush", "男", "外冷内热学术天才",
-                NPCBattleInfluence.AllyAttackSpeed, "移速快攻击偏低", 30, 70, 40, 80);
-            CreateNPC(path, NPCId.ChildhoodFriend, "竹马", "男", "阴湿腹黑粘人小狗",
-                NPCBattleInfluence.AllyCostRegen, "出怪量多", 70, 40, 80, 30);
-            CreateNPC(path, NPCId.ClubSenior, "社团学长", "男", "热情开朗阳光大狗",
-                NPCBattleInfluence.EnemyAttack, "攻速快血量低", 50, 50, 70, 70);
-            CreateNPC(path, NPCId.Junior, "同系学弟", "男", "内敛害羞不善言辞",
-                NPCBattleInfluence.EnemyDefense, "移速慢血量高", 70, 40, 40, 40);
-            CreateNPC(path, NPCId.Professor, "专业课老师", "男", "严谨认真严肃古板",
-                NPCBattleInfluence.TowerVariety, "移速快攻击高出怪量少", 20, 90, 20, 90);
-            CreateNPC(path, NPCId.Dean, "院长", "女", "稳重理性慈爱包容",
-                NPCBattleInfluence.AllyCritRate, "血量高抗暴率高", 50, 60, 70, 75);
+            var content = JsonUtility.FromJson<FinalDefense.Campaign.CampaignContent>(Resources.Load<TextAsset>("Campaign/Content").text);
+            foreach (var npc in content.npcs)
+                CreateNPC(path, (NPCId)npc.legacyId, npc.name, npc.legacyId < 2 || npc.legacyId == 7 ? "女" : "男", npc.persona,
+                    (NPCBattleInfluence)npc.legacyId, npc.style, npc.initialFavor, npc.initialGpa / 100, 0, 0);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -208,7 +196,10 @@ namespace FinalDefense.Editor
         private static void CreateNPC(string path, NPCId id, string name, string gender, string keywords,
             NPCBattleInfluence influence, string battleStyle, int favor, int merit, int patience, int academic)
         {
-            var data = ScriptableObject.CreateInstance<NPCData>();
+            string assetPath = path + id + ".asset";
+            var data = AssetDatabase.LoadAssetAtPath<NPCData>(assetPath);
+            bool create = data == null;
+            if (create) data = ScriptableObject.CreateInstance<NPCData>();
             data.npcId = id;
             data.npcName = name;
             data.gender = gender;
@@ -220,7 +211,7 @@ namespace FinalDefense.Editor
             data.initialPatience = patience;
             data.initialAcademicPower = academic;
 
-            AssetDatabase.CreateAsset(data, path + name + ".asset");
+            if (create) AssetDatabase.CreateAsset(data, assetPath); else EditorUtility.SetDirty(data);
         }
     }
 }
