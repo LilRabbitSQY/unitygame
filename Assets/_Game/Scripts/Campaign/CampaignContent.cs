@@ -32,6 +32,7 @@ namespace FinalDefense.Campaign
         public int streakBonusFrom = 2, playerMaxGpa = 10000, npcMinGpa = 6000, npcMaxGpa = 10000;
         public int favorSixtyBand = 1, lowTurns = 3, mediumTurns = 6, highTurns = 10;
         public int matchCycleLength = 7;
+        public bool allowLegacyRestartDayMigration;
         public bool retriesAllowed; public int retryPrice;
         // -1 means unresolved, not a zero-percent claim. No random rewards run until configured.
         public int cameoChancePerTenThousand = -1, topicDropChancePerTenThousand = -1;

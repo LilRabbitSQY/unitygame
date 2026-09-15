@@ -9,6 +9,7 @@ using FinalDefense.Campaign;
 using FinalDefense.Contracts;
 using FinalDefense.Persistence;
 using FinalDefense.Dialogue;
+using BattleEndReason = FinalDefense.Contracts.BattleEndReason;
 
 namespace FinalDefense.Core
 {
@@ -185,6 +186,28 @@ namespace FinalDefense.Core
         {
             if (configuration == null) return false;
             try { BattleSimulation.ValidateConfiguration(configuration); return true; } catch (Exception) { return false; }
+        }
+        public LegacyMigrationPreview PreviewLegacyMigration(string newSaveId)
+        {
+            EnsureServices();
+            if (!HasLegacySave) throw new InvalidOperationException("未找到旧存档");
+            return LegacyCampaignMigration.Preview(PlayerPrefs.GetString(LegacySaveKey), newSaveId, content, rules, codec, Guid.NewGuid().GetHashCode());
+        }
+        public OperationResult MigrateLegacyCampaign(string newSaveId)
+        {
+            EnsureServices();
+            if (!rules.approved || !rules.allowLegacyRestartDayMigration) return OperationResult.Fail(OperationError.RulesPending, "D15迁移策略尚未批准");
+            if (store.List().Any(s => s.saveId == newSaveId)) return OperationResult.Fail(OperationError.Conflict, "目标槽已有存档");
+            try
+            {
+                var preview = PreviewLegacyMigration(newSaveId);
+                if (!preview.canMigrate) return OperationResult.Fail(OperationError.Conflict, preview.explanation);
+                store.PreserveLegacy(PlayerPrefs.GetString(LegacySaveKey));
+                var check = new CampaignService(content, rules, store, codec, preview.proposed);
+                store.Write(preview.proposed); Attach(preview.proposed);
+                return new OperationResult { message = preview.explanation };
+            }
+            catch { return OperationResult.Fail(OperationError.CorruptSave, "迁移未完成，原存档未修改"); }
         }
         public OperationResult InspectLegacySave()
         {

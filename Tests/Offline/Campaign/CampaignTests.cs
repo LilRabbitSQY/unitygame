@@ -111,6 +111,14 @@ internal static class CampaignTests
                 foreach(var n in state.npcs){n.favor=10;n.reachedSequence=++state.sequence;}state.npcs[5].reachedSequence=1;
                 var c=Create(rules:r,state:state);await Three(c);Prepare(c);Good(c.CommitBattleOutcome(Outcome(c,true)));Check(c.Snapshot.companionId=="ming_shan","earliest attained tie");
             });
+            await Run("v1/v2 migration preserves GPA and rejects unsafe checkpoints",()=> {
+                var r=new CampaignRules();
+                var v1=LegacyCampaignMigration.Preview("{\"version\":1,\"day\":4,\"gpa\":100,\"phase\":1}","m1",content,r,codec,1);
+                Check(v1.canMigrate && v1.proposed.gpa==10000 && v1.proposed.day==4,"v1 GPA preserved");Check(!string.IsNullOrEmpty(v1.proposed.migrationNotice),"missing history disclosed");
+                var v2=LegacyCampaignMigration.Preview("{\"version\":2,\"day\":2,\"gpaHundredths\":9970,\"phase\":1,\"inventory\":[{\"key\":\"espresso_focus\",\"count\":2,\"purchased\":2}]}","m2",content,r,codec,1);
+                Check(v2.canMigrate && v2.proposed.gpa==9970 && v2.proposed.inventory.First(i=>i.itemId=="espresso_focus").count==2,"v2 precise inventory");
+                Check(!LegacyCampaignMigration.Preview("{\"version\":2,\"day\":2,\"gpaHundredths\":9000,\"phase\":2}","unsafe",content,r,codec,1).canMigrate,"battle cannot fabricate opponent");return Task.CompletedTask;
+            });
             Console.WriteLine($"{cases} scenarios passed; {checks} assertions; 0 failed.");return 0;
         }
         catch(Exception ex){Console.Error.WriteLine(ex);return 1;}

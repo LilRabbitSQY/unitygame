@@ -49,7 +49,7 @@ namespace FinalDefense.Contracts
     }
     [Serializable] public sealed class CampaignSnapshot
     {
-        public int version = 3; public string saveId, runId, rulesVersion, contentVersion;
+        public int version = 3; public string saveId, runId, rulesVersion, contentVersion, migrationNotice;
         public int day = 1, gpa = 7000, streak, seed, slot, wins, losses; public long sequence;
         public CampaignStage phase; public Appointment[] appointments = new Appointment[3];
         public NpcSnapshot[] npcs; public InventoryEntry[] inventory;
