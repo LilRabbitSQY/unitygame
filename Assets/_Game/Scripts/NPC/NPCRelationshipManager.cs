@@ -9,7 +9,6 @@ namespace FinalDefense.NPC
     {
         [SerializeField] private NPCData[] npcDataList;
 
-        private Dictionary<NPCId, NPCRelationship> relationships = new();
 
         public static NPCRelationshipManager Instance { get; private set; }
 
@@ -22,17 +21,6 @@ namespace FinalDefense.NPC
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InitializeRelationships();
-        }
-
-        private void InitializeRelationships()
-        {
-            relationships.Clear();
-            if (npcDataList == null) return;
-            foreach (var data in npcDataList)
-            {
-                relationships[data.npcId] = new NPCRelationship(data);
-            }
         }
 
         public NPCRelationship GetRelationship(NPCId id)
@@ -64,18 +52,13 @@ namespace FinalDefense.NPC
 
         public NPCId GetHighestFavorabilityNPC()
         {
-            NPCId best = NPCId.Roommate;
-            int bestVal = -1;
-            foreach (NPCId id in System.Enum.GetValues(typeof(NPCId)))
-            {
-                var rel = GetRelationship(id);
-                if (rel != null && rel.favorability > bestVal)
-                {
-                    bestVal = rel.favorability;
-                    best = id;
-                }
-            }
-            return best;
+            var campaign = GameManager.Instance?.Campaign;
+            if (campaign == null) return NPCId.Roommate;
+            var all = campaign.Snapshot.npcs;
+            System.Array.Sort(all, (a, b) => a.favor != b.favor ? b.favor.CompareTo(a.favor) : a.reachedSequence.CompareTo(b.reachedSequence));
+            foreach (var npc in campaign.Content.npcs)
+                if (npc.id == all[0].npcId) return (NPCId)npc.legacyId;
+            return NPCId.Roommate;
         }
 
         public void OnBattleResult(bool victory)

@@ -38,10 +38,10 @@ namespace FinalDefense.Persistence
             if (value == null || value.version != 3 || value.saveId != saveId) throw new InvalidDataException("Invalid backup");
             return value;
         }
-        public SaveMetadata[] List() => Directory.GetFiles(root, "*.json").Where(p => System.IO.Path.GetFileNameWithoutExtension(p) != "settings" && System.IO.Path.GetFileNameWithoutExtension(p) != "unlocks").OrderBy(p => p).Select(p =>
+        public SaveMetadata[] List() => Directory.GetFiles(root, "*.json").Where(p => System.IO.Path.GetFileNameWithoutExtension(p) != "settings" && System.IO.Path.GetFileNameWithoutExtension(p) != "unlocks").OrderBy(p => File.GetLastWriteTimeUtc(p)).ThenBy(p => p, StringComparer.Ordinal).Select(p =>
         {
             string id = System.IO.Path.GetFileNameWithoutExtension(p);
-            try { var s = Read(id); return new SaveMetadata { saveId = id, runId = s.runId, day = s.day, gpa = s.gpa, phase = s.phase }; }
+            try { var s = Read(id); return new SaveMetadata { saveId = id, runId = s.runId, day = s.day, gpa = s.gpa, phase = s.phase, lastSavedUtc = File.GetLastWriteTimeUtc(p).ToString("O") }; }
             catch { return new SaveMetadata { saveId = id, error = "存档损坏或版本不支持；可尝试读取备份" }; }
         }).ToArray();
         public void SaveSettings(GameSettings value)

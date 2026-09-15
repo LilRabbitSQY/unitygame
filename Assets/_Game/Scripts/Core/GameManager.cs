@@ -152,11 +152,10 @@ namespace FinalDefense.Core
         }
         public bool CompleteBattle(BattleReport report)
         {
-            if (report == null || S?.battle == null) return false;
-            var s = S; var result = Campaign.CommitBattleOutcome(new BattleOutcome { runId = s.runId, battleId = s.battle.battleId, attemptId = s.battle.attemptId,
-                reason = report.won ? BattleEndReason.Victory : BattleEndReason.Defeat, protectionLost = report.protectionLost });
-            LastOperation = result; if (result.Success) LastBattleReport = report; return result.Success;
+            LastOperation = OperationResult.Fail(OperationError.InvalidInput, "战报缺少run/battle/attempt身份；请提交Session的BattleOutcome");
+            return false;
         }
+
         public void RecordBattleResult(bool won) { LastOperation = OperationResult.Fail(OperationError.InvalidInput, "请由战斗服务提交真实战果"); }
         public bool TryRetryBattle() => Campaign != null && (LastOperation = Campaign.RetryBattle(Action("retry"))).Success;
         public bool EnterShop() => Campaign != null && (LastOperation = Campaign.EnterShop(Action("shop"))).Success;

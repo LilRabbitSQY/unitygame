@@ -2,7 +2,7 @@
 """Compile and execute campaign rules with Unity's bundled .NET, using only temporary saves.
 No Editor, PlayerPrefs, imported Library or graphics session is used.
 """
-import argparse, json, re, subprocess, tempfile
+import argparse, hashlib, json, re, subprocess, tempfile
 from pathlib import Path
 
 def main():
@@ -29,6 +29,9 @@ def main():
         result=subprocess.run(cmd,cwd=root,text=True,capture_output=True)
         (out/f'{name}.log').write_text(result.stdout+result.stderr);print(result.stdout+result.stderr)
         if result.returncode:return result.returncode
+    result_text=(out/'tests.log').read_text()
+    counts=re.search(r'(\d+) scenarios passed; (\d+) assertions; 0 failed',result_text)
+    (out/'summary.json').write_text(json.dumps({'passed':True,'scenarios':int(counts[1]),'assertions':int(counts[2]),'unityVersion':version,'scope':'Offline managed campaign tests; fake AI and supplied test outcomes, not a natural Unity playthrough','sourceHashes':{str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources}},indent=2))
     print(f'PASS — offline campaign scope only; artifacts: {out}')
     return 0
 if __name__=='__main__':raise SystemExit(main())

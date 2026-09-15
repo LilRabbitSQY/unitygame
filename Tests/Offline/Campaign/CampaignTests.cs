@@ -64,6 +64,13 @@ internal static class CampaignTests
     static async Task Run(string name, Func<Task> body) { await body(); cases++; Console.WriteLine("PASS " + name); }
     public static async Task<int> Main(string[] args)
     {
+        if(args.Length>0 && args[0]=="--child")
+        {
+            content=codec.Decode<CampaignContent>(File.ReadAllText(Path.Combine(args[1],"Assets/Resources/Campaign/Content.json")));
+            var childStore=new AtomicCampaignStore(args[2],codec);
+            var childCampaign=new CampaignService(content,new CampaignRules(),childStore,codec,childStore.Read("cross"));
+            return childCampaign.CompleteIntroduction("child-intro").Success ? 0 : 1;
+        }
         content=codec.Decode<CampaignContent>(File.ReadAllText(Path.Combine(args[0],"Assets/Resources/Campaign/Content.json")));directory=Path.Combine(args[1],"isolated-saves");Directory.CreateDirectory(directory);
         try
         {
@@ -118,6 +125,13 @@ internal static class CampaignTests
                 var v2=LegacyCampaignMigration.Preview("{\"version\":2,\"day\":2,\"gpaHundredths\":9970,\"phase\":1,\"inventory\":[{\"key\":\"espresso_focus\",\"count\":2,\"purchased\":2}]}","m2",content,r,codec,1);
                 Check(v2.canMigrate && v2.proposed.gpa==9970 && v2.proposed.inventory.First(i=>i.itemId=="espresso_focus").count==2,"v2 precise inventory");
                 Check(!LegacyCampaignMigration.Preview("{\"version\":2,\"day\":2,\"gpaHundredths\":9000,\"phase\":2}","unsafe",content,r,codec,1).canMigrate,"battle cannot fabricate opponent");return Task.CompletedTask;
+            });
+            await Run("separate process save continuation",()=> {
+                var path=Path.Combine(directory,"cross-process");var store=new AtomicCampaignStore(path,codec);store.Write(Create("cross",store:store).Snapshot);
+                var start=new System.Diagnostics.ProcessStartInfo(Environment.ProcessPath){UseShellExecute=false};
+                start.ArgumentList.Add(typeof(CampaignTests).Assembly.Location);start.ArgumentList.Add("--child");start.ArgumentList.Add(args[0]);start.ArgumentList.Add(path);
+                using var process=System.Diagnostics.Process.Start(start);process.WaitForExit();Check(process.ExitCode==0,"child process result");
+                Check(store.Read("cross").phase==CampaignStage.Booking,"child transaction persisted");Check(store.Read("cross").receipts.Count(r=>r.actionId=="child-intro")==1,"receipt crossed process boundary");return Task.CompletedTask;
             });
             Console.WriteLine($"{cases} scenarios passed; {checks} assertions; 0 failed.");return 0;
         }

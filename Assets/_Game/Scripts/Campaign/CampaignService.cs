@@ -16,6 +16,25 @@ namespace FinalDefense.Campaign
         public CampaignSnapshot Snapshot { get { lock (gate) return Copy(state); } }
         public CampaignContent Content => Copy(content);
         public CampaignRules Rules => Copy(rules);
+        public string[] AvailableActions
+        {
+            get
+            {
+                var s = Snapshot;
+                switch (s.phase)
+                {
+                    case CampaignStage.Introduction: return new[] { "CompleteIntroduction" };
+                    case CampaignStage.Booking: return ValidAppointments(s.appointments) ? new[] { "EditAppointments", "ConfirmAppointments", "Gift" } : new[] { "EditAppointments", "Gift" };
+                    case CampaignStage.Dialogue: return !s.dialogue.opened ? new[] { "OpenDialogue" } : s.dialogue.turns < 1 ? new[] { "SendDialogue" } : s.dialogue.finished ? new[] { "FinishDialogue" } : new[] { "SendDialogue", "FinishDialogue" };
+                    case CampaignStage.Matching: return new[] { "SaveDraft" };
+                    case CampaignStage.Preparation: return new[] { "PrepareBattle" };
+                    case CampaignStage.Battle: return new[] { "ResumeBattle", "CommitBattleOutcome" };
+                    case CampaignStage.Result: return rules.retriesAllowed && s.outcome.reason != BattleEndReason.Victory ? new[] { "EnterShop", "RetryBattle" } : new[] { "EnterShop" };
+                    case CampaignStage.Shop: return new[] { "Buy", "Gift", "NextDay" };
+                    default: return Array.Empty<string>();
+                }
+            }
+        }
         public CampaignService(CampaignContent content, CampaignRules rules, ICampaignStore store, IDataCodec codec, CampaignSnapshot saved)
         {
             this.codec = codec ?? throw new ArgumentNullException(nameof(codec)); this.store = store ?? throw new ArgumentNullException(nameof(store));
@@ -95,6 +114,7 @@ namespace FinalDefense.Campaign
             if ((!opening && string.IsNullOrWhiteSpace(input)) || (input?.Length ?? 0) > 1000 || (opening && !string.IsNullOrEmpty(input))) throw new ArgumentException("开场无需输入，回复需1–1000字");
             var npc = content.Npc(s.dialogue.npcId); var n = s.npcs.First(v => v.npcId == npc.id);
             return new DialogueTurnRequest { runId = s.runId, conversationId = s.dialogue.conversationId, turnId = turnId, npcId = npc.id,
+                cameoId = opening ? s.dialogue.cameoId : null, cameoPersona = opening ? content.Npc(s.dialogue.cameoId)?.persona : null,
                 locationId = s.dialogue.locationId, input = input ?? "", persona = npc.persona, favor = n.favor, maxTurns = 10,
                 lastBattleSummary = s.lastBattleSummary, opening = opening, allowedTopics = new[] { "neutral" }.Concat(npc.positiveTopics).Concat(npc.negativeTopics).ToArray(),
                 hints = s.dialogue.hints, history = s.dialogue.history.Select(l => Copy(l)).ToArray() };

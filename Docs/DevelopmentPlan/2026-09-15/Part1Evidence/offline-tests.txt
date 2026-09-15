@@ -1,0 +1,17 @@
+PASS initial data and defensive copies
+PASS booking validation, lock and restore
+PASS dialogue errors, cancellation, daily favor cap
+PASS battle settlement, duplicates and GPA precision
+PASS gift target, stock, cap and atomic failures
+PASS forfeit, retries and crash checkpoint
+PASS 28 days with real campaign transactions, six endings
+PASS early negative GPA and final rank failures
+PASS atomic backup, multiple slots, settings and global unlocks
+PASS catalog news and deterministic reload
+PASS all six topic drops, before/after threshold, negative floor
+PASS cameo rewards, invalid service and duplicate inflight
+PASS malformed saves, slot archive and unknown version
+PASS tied highest favor uses event sequence
+PASS v1/v2 migration preserves GPA and rejects unsafe checkpoints
+PASS separate process save continuation
+16 scenarios passed; 4227 assertions; 0 failed.

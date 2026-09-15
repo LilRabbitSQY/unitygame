@@ -1,7 +1,7 @@
-# Part 1 交接（实现中，未满足完整验收）
+# Part 1 交接（代码已交接，外部验收未完成）
 
 工作目录 `/Users/bytedance/unitygame-campaign`，分支 `codex/fullgame-campaign`。
-共同基线 `15fc189c`；契约首批 `4b02c674`。保留原有源码、美术、战斗数据、测试、工具及策划快照；未加入 Library/Builds、历史临时截图、用户存档及无关网站目录。未推送远端。
+共同基线 `15fc189c`；契约首批 `4b02c674`；实现 `a646c858`、恢复与内容 `19bf07ac`、迁移预览 `83451c5b`。保留原有源码、美术、战斗数据、测试、工具及策划快照；未加入 Library/Builds、历史临时截图、用户存档及无关网站目录。未推送远端。
 
 ## 唯一状态与接口
 
@@ -44,8 +44,8 @@ campaign.NextDay(actionId);
 - `Campaign.Ranking`、`Snapshot.trends/npcs`、`Campaign.News`、`ReadNews(actionId,id)` 供信息页。
 - `IUnitCatalog` 为图鉴接口，Part2提供实现，不复制技能数值。
 - `BattleItemDefs.All` **19项**，`BattleItems`/`IsBattleItem`过滤12种战斗物品。新礼物字段 `favorGain/targetNpc/stackLimit/saleLimit`。其余现有ID、Name/Effect/Price保留。
-- `GameManager.LoadSettings/SaveSettings`，`LoadUnlocks`，`RecoverCampaignBackup`；设置与存档独立。UI应用音量与分辨率。
-- `GameManager.BeginNewGame/LoadProgress` 为兼容入口，正式UI请显示 OperationResult。`RecordBattleResult(bool)`、旧属性/GPA/金币直接修改、旧随机NPC回复均停用。保留签名只为可编译。
+- `GameManager.LoadSettings/SaveSettings`，`LoadUnlocks`，`RecoverCampaignBackup`；`StartCampaign(saveId, overwrite:true)`先保留永久archive备份，再原子替换；设置与存档独立。UI应用音量与分辨率。
+- `GameManager.BeginNewGame/LoadProgress` 为兼容入口，正式UI请显示 OperationResult。`CompleteBattle(BattleReport)`（没有身份）、`RecordBattleResult(bool)`、旧属性/GPA/金币直接修改、旧随机NPC回复均停用。保留签名只为可编译。
 
 ## 持久化与恢复
 
@@ -53,7 +53,7 @@ campaign.NextDay(actionId);
 
 战斗采用准备检查点，保留相同attempt/阵容/seed/物品。读档不消费、不重抽。主动离开已开始检查点走Forfeit；程序中断继续检查点。检查点恢复不是局内全现场存档。
 
-旧PlayerPrefs `FinalDefense.Campaign.v1` 不删、不写。`InspectLegacySave()` 先留只读副本再报告v1/v2原GPA；因旧档没有NPC/三次日程/匹配历史，尚不能无损迁移。D15未确认时不伪造迁移后的历史。
+旧PlayerPrefs `FinalDefense.Campaign.v1` 不删、不写。`InspectLegacySave()` 先留只读副本再报告v1/v2原GPA；因旧档没有NPC/三次日程/匹配历史，尚不能无损迁移。D15未确认时不伪造迁移后的历史。`PreviewLegacyMigration(newSaveId)`可展示精确保留的GPA/天数/库存及无法恢复的字段；只有`allowLegacyRestartDayMigration`与`approved`均确认，`MigrateLegacyCampaign`才允许预约边界档导入到新槽。战斗/结算中旧档仍拒绝不安全迁移。
 
 ## 规则待定（没有把建议冒充策划）
 
@@ -71,10 +71,36 @@ D09客串及掉落概率为−1（未定），不运行概率事件；提供确�
 
 ## 当前验证
 
-`python3 Tools/verify_campaign.py --output /tmp/unitygame-campaign-verification`：9场景、4059断言通过（第一轮）；验证初始化、预约、对话错误/迟到、每日额度、事务、重试、28天六NPC成功路径、两类失败、文件备份/设置/解锁。28天测试使用测试战果和测试AI，**不是自然战斗通关或M1真实闭环**。
+`python3 Tools/verify_campaign.py --output /tmp/unitygame-campaign-release-verification`：16场景、4227断言通过；验证初始化、预约、对话错误/迟到、每日额度、事务、重试、28天六NPC成功路径、两类失败、文件备份/设置/解锁、跨进程继续、旧v1/v2迁移预览、6种话题掉落和2种客串、39条新闻与确定性展示。28天测试使用测试战果和测试AI，**不是自然战斗通关或M1真实闭环**。
 
 运行时与Editor程序集通过离线编译，读取原工程已导入依赖，没有启动Editor、共享Library或使用正式PlayerPrefs。存在已有未赋值等警告，详见临时日志。
 
 ## 尚未完成的验收
 
-真实AI、规则确认、旧档迁移策略、客串概率、正式新闻展示条件/内容、Part2/3一天真实闭环及Unity成品体验。`CampaignContent.news`为空，不能把它宣称正式新闻已完成。最终结局目前采用最新主文案的简述，完整包装展示由Part3整合。
+真实AI、规则确认、旧档迁移策略、客串概率、NPC新闻解锁条件、Part2/3一天真实闭环及Unity成品体验。已导入39条原文新闻；通用14条中用保存种子每天选1–3条，并保存dailyNewsIds，不能读档重抽；25条NPC新闻仅入目录，联动解锁条件待定。最终结局已导入包装673–704完整原文，六位成功对白在NpcDefinition.endingLine。
+
+
+## 验收追踪
+
+| 任务 | 已实现 | 未完成/外部依赖 |
+|---|---|---|
+| A01 | 可恢复基线、共享契约、唯一状态、稳定ID、人设/初值/地点、生成器隔离旧战斗目录 | Part3关闭旧人格/DDL/EndingSystem正式入口；正式规则发布 |
+| A02 | 早中晚编辑/确认/执行锁、三次结束才编队、检查点与可用操作 | 真实页面操作验收 |
+| A03 | SSE协议/有界上下文/取消超时/标签验证/确定数值/额度/8彩蛋配置机制 | 真实服务、六NPC体验、概率定稿 |
+| A04 | 整数成绩、唯一结算、连胜/排名/对手成绩/Forfeit与重试配置 | 争议规则定稿、真实战斗完整闭环 |
+| A05 | 19项目录、价格/库存/赠礼目标/携带消费、失败回滚 | UI实际使用位置与Figma确认 |
+| A06 | 关系/成绩趋势、单位目录契约、39新闻、正式结局、全局解锁 | NPC新闻解锁条件、Part2单位目录适配 |
+| A07 | v3列表/原子备份/设置/跨进程、迁移预览与原档保留 | D15批准、真实Unity原生JSON与图形恢复验收 |
+| A08 | 独立测试、离线编译、经济/六结局可达性、交接与提交 | M1真实一天、自然28天、真实AI验收 |
+
+### 旧入口归属说明
+
+- `Battle/EndingSystem.cs`仍按旧属性/阈值判9结局，`Battle/GameProgressManager.cs`仍含旧学期路径：不属于Part1修改范围，Part3必须令新页面只读取`Snapshot.endingId/companionId`，不得调用旧DetermineEnding。
+- `UI/DDLPanel.cs`与人格问答属于Part3接线；Part1不再提供属性战斗加成或旧ActionPoints消费。
+- `NPCRelationshipManager`只从Campaign投影返回副本，不再保存第二套关系；旧随机对话已停用。
+- `GameDataGenerator`的旧棋子/敌人输出改到LegacyTowers/LegacyEnemies；NPC从Campaign内容生成，保留已有资产meta。
+- `Campaign.AvailableActions`返回当前阶段合法操作名；具体余额/库存失败仍以事务结果为准。
+
+未运行旧Demo断言作为新规则验收（初始100、直接跳战斗、旧假AI等断言已过时）；总验证入口与PlayMode由Part3更新。
+
+归档证据：[离线测试摘要](Part1Evidence/offline-summary.json)、[测试输出](Part1Evidence/offline-tests.txt)、[程序集编译摘要](Part1Evidence/compile-summary.json)。待确认选项详见[RULE-DECISIONS-PART-1.md](RULE-DECISIONS-PART-1.md)。

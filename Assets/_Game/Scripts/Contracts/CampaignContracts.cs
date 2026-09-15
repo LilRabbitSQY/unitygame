@@ -61,7 +61,7 @@ namespace FinalDefense.Contracts
     }
     [Serializable] public sealed class DialogueTurnRequest
     {
-        public string runId, conversationId, turnId, npcId, locationId, input, persona, lastBattleSummary;
+        public string runId, conversationId, turnId, npcId, locationId, input, persona, lastBattleSummary, cameoId, cameoPersona;
         public int favor, maxTurns, maxCharacters = 120; public bool opening;
         public string[] allowedTopics, hints; public DialogueLine[] history;
     }
@@ -82,7 +82,7 @@ namespace FinalDefense.Contracts
         SaveMetadata[] List();
     }
     public interface IDataCodec { string Encode<T>(T value); T Decode<T>(string value); }
-    [Serializable] public sealed class SaveMetadata { public string saveId, runId, error; public int day, gpa; public CampaignStage phase; }
+    [Serializable] public sealed class SaveMetadata { public string saveId, runId, error, lastSavedUtc; public int day, gpa; public CampaignStage phase; }
     [Serializable] public sealed class GameSettings { public int version = 1, width = 1920, height = 1080; public float music = 1, sound = 1; public bool fullscreen = true; }
     [Serializable] public sealed class UnlockData { public int version = 1; public string[] endings = Array.Empty<string>(); }
     public interface IUnitCatalog { UnitInfo[] GetUnits(); }

@@ -1,0 +1,23 @@
+{
+  "version": "proposal-2026-09-15.1",
+  "approved": false,
+  "tiedFirstWins": true,
+  "giftsShareDailyCap": true,
+  "thresholdAfterTurn": true,
+  "repeatCompanion": true,
+  "streakBonusFrom": 2,
+  "playerMaxGpa": 10000,
+  "npcMinGpa": 6000,
+  "npcMaxGpa": 10000,
+  "favorSixtyBand": 1,
+  "lowTurns": 3,
+  "mediumTurns": 6,
+  "highTurns": 10,
+  "matchCycleLength": 7,
+  "allowLegacyRestartDayMigration": false,
+  "retriesAllowed": false,
+  "retryPrice": 0,
+  "cameoChancePerTenThousand": -1,
+  "topicDropChancePerTenThousand": -1,
+  "probabilitySource": "D09 pending"
+}

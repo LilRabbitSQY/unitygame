@@ -9,7 +9,7 @@ namespace FinalDefense.Dialogue
     public sealed class CampaignDialogueCoordinator : IDisposable
     {
         private readonly CampaignService campaign; private readonly IDialogueService service; private readonly TimeSpan timeout;
-        private CancellationTokenSource pending; private readonly object gate = new object();
+        private CancellationTokenSource pending; private bool explicitlyCancelled; private readonly object gate = new object();
         public bool IsBusy { get { lock (gate) return pending != null; } }
         public CampaignDialogueCoordinator(CampaignService campaign, IDialogueService service, TimeSpan? timeout = null)
         { this.campaign = campaign; this.service = service; this.timeout = timeout ?? TimeSpan.FromSeconds(45); }
@@ -19,6 +19,7 @@ namespace FinalDefense.Dialogue
             lock (gate)
             {
                 if (pending != null) return OperationResult.Fail(OperationError.Conflict, "回复正在生成，请勿重复发送");
+                explicitlyCancelled = false;
                 pending = requestCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancel);
             }
             try
@@ -39,13 +40,13 @@ namespace FinalDefense.Dialogue
                 if (await Task.WhenAny(task, cancellationTask) != task)
                 {
                     _ = task.ContinueWith(t => { var ignored = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted);
-                    return OperationResult.Fail(cancel.IsCancellationRequested ? OperationError.Cancelled : OperationError.Timeout, "请求已中止，未消耗行程，可重试");
+                    return OperationResult.Fail((cancel.IsCancellationRequested || explicitlyCancelled) ? OperationError.Cancelled : OperationError.Timeout, "请求已中止，未消耗行程，可重试");
                 }
                 var reply = await task;
                 requestCancellation.Token.ThrowIfCancellationRequested();
                 return campaign.CommitDialogue(request, reply);
             }
-            catch (OperationCanceledException) { return OperationResult.Fail(OperationError.Cancelled, "请求已取消，可重试"); }
+            catch (OperationCanceledException) { return OperationResult.Fail((cancel.IsCancellationRequested || explicitlyCancelled) ? OperationError.Cancelled : OperationError.Timeout, "请求已中止，可重试"); }
             catch { return OperationResult.Fail(OperationError.Unavailable, "AI服务暂时不可用，未结算，可重试"); }
             finally
             {
@@ -53,7 +54,7 @@ namespace FinalDefense.Dialogue
                 requestCancellation.Dispose();
             }
         }
-        public void Cancel() { lock (gate) pending?.Cancel(); }
+        public void Cancel() { lock (gate) { explicitlyCancelled = true; pending?.Cancel(); } }
         public void Dispose() => Cancel();
     }
 }

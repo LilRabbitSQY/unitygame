@@ -1,0 +1,18 @@
+{
+  "scope": "Offline C# compile only. Read-only imported references from original project; no Editor launched.",
+  "runtime": {
+    "exitCode": 0,
+    "warnings": 39
+  },
+  "editor": {
+    "exitCode": 0,
+    "warnings": 3
+  },
+  "hashes": {
+    "Assets/_Game/Scripts/Core/GameManager.cs": "e4714ee44c6876d511ccbcdf3b307f91834a7ae150171f6bce5f714bbcc1ef71",
+    "Assets/_Game/Scripts/NPC/NPCRelationshipManager.cs": "6d01b09ad49b3d47fe294dd8b430a81b3d3f625cb5ea44b1591ef444cb28c693",
+    "Assets/_Game/Scripts/Editor/GameDataGenerator.cs": "3af356424de7d0883cb5418786ac4f3fa3ff066af9b2c0514be0558fb9af50d2",
+    "Assets/Resources/Campaign/Content.json": "512f2f7125779d1575402688134e779837e73868805b951999fede953b42da1f",
+    "Assets/Resources/Campaign/Rules.json": "8c92b382996ed15fbde2b080353a1fff3335d2a76008cb76c7fd97ca1839ddc9"
+  }
+}
