@@ -15,4 +15,5 @@ PASS tied highest favor uses event sequence
 PASS v1/v2 migration preserves GPA and rejects unsafe checkpoints
 PASS separate process save continuation
 PASS Unity empty inline checkpoint normalization
-17 scenarios passed; 4230 assertions; 0 failed.
+PASS gateway SSE transport and malformed streams
+18 scenarios passed; 4238 assertions; 0 failed.

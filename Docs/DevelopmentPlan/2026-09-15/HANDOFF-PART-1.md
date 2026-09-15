@@ -71,7 +71,7 @@ D09客串及掉落概率为−1（未定），不运行概率事件；提供确�
 
 ## 当前验证
 
-`python3 Tools/verify_campaign.py --output /tmp/unitygame-campaign-nativefix-verification`：17场景、4230断言通过；验证初始化、预约、对话错误/迟到、每日额度、事务、重试、28天六NPC成功路径、两类失败、文件备份/设置/解锁、跨进程继续、旧v1/v2迁移预览、6种话题掉落和2种客串、39条新闻与确定性展示。28天测试使用测试战果和测试AI，**不是自然战斗通关或M1真实闭环**。
+`python3 Tools/verify_campaign.py --output /tmp/unitygame-campaign-gateway-verification`：18场景、4238断言通过；验证初始化、预约、对话错误/迟到、每日额度、事务、重试、28天六NPC成功路径、两类失败、文件备份/设置/解锁、跨进程继续、旧v1/v2迁移预览、6种话题掉落和2种客串、39条新闻与确定性展示。28天测试使用测试战果和测试AI，**不是自然战斗通关或M1真实闭环**。
 
 运行时与Editor程序集通过离线编译，读取原工程已导入依赖，没有启动Editor、共享Library或使用正式PlayerPrefs。存在已有未赋值等警告，详见临时日志。
 
@@ -106,3 +106,5 @@ D09客串及掉落概率为−1（未定），不运行概率事件；提供确�
 归档证据：[离线测试摘要](Part1Evidence/offline-summary.json)、[测试输出](Part1Evidence/offline-tests.txt)、[程序集编译摘要](Part1Evidence/compile-summary.json)。待确认选项详见[RULE-DECISIONS-PART-1.md](RULE-DECISIONS-PART-1.md)。
 
 真实Unity发现的空内联对象问题已通过`4145c47d`修复：将完全缺少身份的dialogue/draftRequest/draft/battle/outcome还原null，部分身份错误不掩盖。离线17场景已回归；Part3随后重跑真实Unity EditMode，12/12通过，包含原生数组/空对象与预约事务读档。摘要见`Part1Evidence/native-unity-summary.json`，图形全链路仍由Part3继续验证。
+
+追加客户端HTTP/SSE传输层测试：请求上下文和短期token、分片输出、最终文本一致性、错误媒体类型、非法JSON、无最终回复、超长单行/文本；注入仅测试程序集可用的内存transport，不访问外网。18场景4238断言通过。

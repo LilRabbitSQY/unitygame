@@ -33,6 +33,17 @@ internal sealed class FailingStore : ICampaignStore
 {
     public void Write(CampaignSnapshot s) => throw new IOException(); public CampaignSnapshot Read(string id) => null; public SaveMetadata[] List() => Array.Empty<SaveMetadata>();
 }
+internal sealed class GatewayTestTransport : System.Net.Http.HttpMessageHandler
+{
+    public string body, mediaType = "text/event-stream";
+    public System.Net.HttpStatusCode status = System.Net.HttpStatusCode.OK;
+    public string receivedBody, receivedToken;
+    protected override async Task<System.Net.Http.HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage message, CancellationToken token)
+    {
+        receivedBody = await message.Content.ReadAsStringAsync(); receivedToken = message.Headers.Authorization?.Parameter;
+        return new System.Net.Http.HttpResponseMessage(status) { Content = new System.Net.Http.StringContent(body, System.Text.Encoding.UTF8, mediaType) };
+    }
+}
 internal static class CampaignTests
 {
     static readonly JsonCodec codec = new JsonCodec(); static CampaignContent content; static string directory; static int checks, cases;
@@ -140,6 +151,20 @@ internal static class CampaignTests
                 s.battle=new BattleStartContext{runId="present"};CampaignSnapshotCompatibility.NormalizeEmptyCheckpoints(s);Check(s.battle!=null,"partial corrupt identity not hidden");
                 var migration=LegacyCampaignMigration.Preview("{\"version\":1,\"day\":4,\"gpa\":100,\"phase\":1}","news-day",content,new CampaignRules(),codec,1);
                 Check(migration.proposed.dailyNewsIds.SequenceEqual(CampaignService.SelectNews(content,1,4)),"migration selects actual-day news");return Task.CompletedTask;
+            });
+            await Run("gateway SSE transport and malformed streams",async()=> {
+                var request=new DialogueTurnRequest{conversationId="c",turnId="t",npcId="liu_ruoshui",opening=true};
+                var reply=new DialogueTurnResult{conversationId="c",turnId="t",text="你好",emotion="neutral",topic="neutral",status=DialogueStatus.Completed,hints=new[]{"一","二","三"}};
+                string valid="data: {\"delta\":\"你\"}\n\ndata: {\"delta\":\"好\"}\n\ndata: {\"result\":"+codec.Encode(reply)+"}\n\n";
+                var transport=new GatewayTestTransport{body=valid};using(var gateway=new HttpDialogueGateway(new Uri("https://gateway.invalid/dialogue"),codec,transport,()=>"test-only-token"))
+                {
+                    string streamed="";var result=await gateway.SendAsync(request,s=>streamed+=s,CancellationToken.None);
+                    Check(streamed=="你好" && result.text==streamed,"SSE chunks and final");Check(transport.receivedToken=="test-only-token" && transport.receivedBody.Contains("liu_ruoshui"),"request context and session authentication");
+                }
+                string[] bad={"data: {\"delta\":\"错\"}\n\ndata: {\"result\":"+codec.Encode(reply)+"}\n\n","data: not-json\n\n","data: {\"delta\":\"未完成\"}\n\n",new string('x',8193)+"\n", "data: {\"delta\":\""+new string('字',121)+"\"}\n\n"};
+                foreach(var body in bad){using var gateway=new HttpDialogueGateway(new Uri("https://gateway.invalid/dialogue"),codec,new GatewayTestTransport{body=body});bool rejected=false;try{await gateway.SendAsync(request,null,CancellationToken.None);}catch{rejected=true;}Check(rejected,"malformed stream rejected");}
+                using(var gateway=new HttpDialogueGateway(new Uri("https://gateway.invalid/dialogue"),codec,new GatewayTestTransport{body=valid,mediaType="application/json"}))
+                {bool rejected=false;try{await gateway.SendAsync(request,null,CancellationToken.None);}catch(InvalidDataException){rejected=true;}Check(rejected,"wrong content type rejected");}
             });
             Console.WriteLine($"{cases} scenarios passed; {checks} assertions; 0 failed.");return 0;
         }

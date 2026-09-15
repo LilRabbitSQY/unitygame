@@ -17,10 +17,12 @@ namespace FinalDefense.Dialogue
         [Serializable] private sealed class Packet { public string delta; public DialogueTurnResult result; }
         private readonly HttpClient client; private readonly Uri endpoint; private readonly IDataCodec codec; private readonly Func<string> sessionToken;
         public HttpDialogueGateway(Uri endpoint, IDataCodec codec, Func<string> sessionToken = null)
+            : this(endpoint, codec, new HttpClientHandler { AllowAutoRedirect = false }, sessionToken) { }
+        internal HttpDialogueGateway(Uri endpoint, IDataCodec codec, HttpMessageHandler transport, Func<string> sessionToken = null)
         {
             if (endpoint == null || endpoint.Scheme != "https" || !string.IsNullOrEmpty(endpoint.UserInfo)) throw new ArgumentException("Gateway requires HTTPS without embedded credentials");
             this.endpoint = endpoint; this.codec = codec; this.sessionToken = sessionToken;
-            client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = Timeout.InfiniteTimeSpan };
+            client = new HttpClient(transport) { Timeout = Timeout.InfiniteTimeSpan };
         }
         public async Task<DialogueTurnResult> SendAsync(DialogueTurnRequest request, Action<string> onChunk, CancellationToken cancellation)
         {
