@@ -1,8 +1,8 @@
 > 最新验收：六NPC真实DeepSeek开场/回复6/6通过，含流式/标签/三提示/好感+2；见`Part1Evidence/live-ai-results.json`及AI-SETUP.md。历史“真实AI未接通”状态由此更新；最终Player联网和自然28天体验仍由整合验收覆盖。
 
-> AI接入更新：用户已选择将密钥编入客户端，新增DeepSeek直连；不再需要部署网关。配置和打包步骤见[AI-SETUP.md](AI-SETUP.md)。当前密钥为空，尚未真实调用。
+> AI接入更新：用户已选择将密钥编入客户端，新增DeepSeek直连；不再需要部署网关。配置和打包步骤见[AI-SETUP.md](AI-SETUP.md)。仓库模板密钥为空；本地已按用户授权配置并完成真实调用，凭据未提交。
 
-> 更新：用户已授权按暂定规则实现。当前默认配置已升级为 `provisional-2026-09-15.2`，未最终定稿不再阻止新游戏。本文下方历史“规则未批阻断”“概率未启用”描述由 [未定规则与暂定实现](RULE-DECISIONS-PART-1.md) 取代。真实AI服务配置仍是独立外部依赖。
+> 更新：用户已授权按暂定规则实现。当前默认配置已升级为 `provisional-2026-09-15.2`，未最终定稿不再阻止新游戏。本文下方历史“规则未批阻断”“概率未启用”描述由 [未定规则与暂定实现](RULE-DECISIONS-PART-1.md) 取代。真实AI服务现已配置，安装包验证由Part3串行完成。
 
 # Part 1 交接（代码已交接，外部验收未完成）
 
@@ -15,7 +15,7 @@
 
 ```csharp
 var gm = GameManager.Instance;
-var result = gm.StartCampaign("slot-1"); // 已存在时拒绝覆盖；未批准规则时返回 RulesPending
+var result = gm.StartCampaign("slot-1"); // 已存在时拒绝覆盖；用户授权的暂定规则允许新游戏
 var saves = gm.ListCampaignSaves();
 result = gm.ContinueCampaign("slot-1");
 var campaign = gm.Campaign;
@@ -69,35 +69,29 @@ campaign.NextDay(actionId);
 
 D09客串及掉落概率为−1（未定），不运行概率事件；提供确定种子抽样实现与配置接口。不能宣称真实彩蛋概率已完成。D07携带选择由Part3显式交互确定。D08沿用关卡正式道具表的3秒/+1及19个ID。商品一局总售卖量，不自动按天刷新。D15旧人格/DDL/旧结局UI入口仍需Part3移除正式路径。
 
-## AI交付状态
+## 当前交付与验收状态
 
-提供 `IDialogueService`、`CampaignDialogueCoordinator`、HTTPS SSE `HttpDialogueGateway`；后者是游戏网关协议，不是直接调用服务商API。网关使用 `FINALDEFENSE_DIALOGUE_GATEWAY`，短期会话token由 `FINALDEFENSE_GATEWAY_SESSION` 注入。Provider密钥不得嵌入客户端。服务返回 `data: {"delta":"文字"}` 及最终 `data: {"result":{...DialogueTurnResult}}`，SSE事件间空行。最终文本须与流文本一致；合法topic/emotion、120字、3提示、身份校验后才结算。失败、取消、超时、晚回复不扣行程、不改好感。
+以下为当前状态，后文按时间保留的验证记录用于追溯。
 
-人设来自包装95–129；六NPC提升/降低话题来自包装215–232；原包装93指定deepseek v4 flash，但模型可用端点、网关、凭据与预算尚未交付，**未接通真实AI，未完成六NPC真人体验验证**。测试使用明示FakeDialogue，仅在Tests目录。
+- 用户授权以暂定决策实现未定规则，配置为 `provisional-2026-09-15.2`；`approved=false`仅标记策划状态，不阻止游戏。见[RULE-DECISIONS-PART-1.md](RULE-DECISIONS-PART-1.md)。
+- 用户授权将API凭据编入客户端。生产入口选择DeepSeek直连，网关仅为可选兼容路径。本地凭据已配置，仓库模板留空，日志和公开证据不含凭据。见[AI-SETUP.md](AI-SETUP.md)。
+- 六NPC真实开场及回复均通过，覆盖流式片段、三提示、合法情感/话题、程序好感结算；[真实调用结果](Part1Evidence/live-ai-results.json)明确区分于Unity Player验证。
+- 最新离线验证20场景、4290断言通过，包含错误恢复、重复操作、交易/存档和六结局；[摘要及源码哈希](Part1Evidence/ai-hardening-summary.json)。自动化默认不调用付费服务。
+- Unity原生EditMode 12/12、图形整合4/4及布局入口1/1通过。证据位于整合工程 `Docs/FullGameVerification/2026-09-15/`；图形对话使用明示替身。
+- 单一整合工程提交 `5931ced0` 的生产Campaign、Draft、BattleSession连续28日组合验证：28胜、952断言，初始GPA70，前27天各购买0.10GPA补给，最终排名1。实际Rules.json未改写，Outcome由战斗自然产生。证据位于整合工程 `Docs/FullGameVerification/2026-09-15-part2-bridge-integrated/`。此项对话为替身，不能称为图形成品自然28天。
 
-## 当前验证
-
-`python3 Tools/verify_campaign.py --output /tmp/unitygame-campaign-gateway-verification`：18场景、4238断言通过；验证初始化、预约、对话错误/迟到、每日额度、事务、重试、28天六NPC成功路径、两类失败、文件备份/设置/解锁、跨进程继续、旧v1/v2迁移预览、6种话题掉落和2种客串、39条新闻与确定性展示。28天测试使用测试战果和测试AI，**不是自然战斗通关或M1真实闭环**。
-
-运行时与Editor程序集通过离线编译，读取原工程已导入依赖，没有启动Editor、共享Library或使用正式PlayerPrefs。存在已有未赋值等警告，详见临时日志。
-
-## 尚未完成的验收
-
-真实AI、规则确认、旧档迁移策略、客串概率、NPC新闻解锁条件、Part2/3一天真实闭环及Unity成品体验。已导入39条原文新闻；通用14条中用保存种子每天选1–3条，并保存dailyNewsIds，不能读档重抽；25条NPC新闻仅入目录，联动解锁条件待定。最终结局已导入包装673–704完整原文，六位成功对白在NpcDefinition.endingLine。
-
-
-## 验收追踪
-
-| 任务 | 已实现 | 未完成/外部依赖 |
+| 任务 | 当前实现与证据 | 仍需整合验收的范围 |
 |---|---|---|
-| A01 | 可恢复基线、共享契约、唯一状态、稳定ID、人设/初值/地点、生成器隔离旧战斗目录 | Part3关闭旧人格/DDL/EndingSystem正式入口；正式规则发布 |
-| A02 | 早中晚编辑/确认/执行锁、三次结束才编队、检查点与可用操作 | 真实页面操作验收 |
-| A03 | SSE协议/有界上下文/取消超时/标签验证/确定数值/额度/8彩蛋配置机制 | 真实服务、六NPC体验、概率定稿 |
-| A04 | 整数成绩、唯一结算、连胜/排名/对手成绩/Forfeit与重试配置 | 争议规则定稿、真实战斗完整闭环 |
-| A05 | 19项目录、价格/库存/赠礼目标/携带消费、失败回滚 | UI实际使用位置与Figma确认 |
-| A06 | 关系/成绩趋势、单位目录契约、39新闻、正式结局、全局解锁 | NPC新闻解锁条件、Part2单位目录适配 |
-| A07 | v3列表/原子备份/设置/跨进程、迁移预览与原档保留 | D15批准、真实Unity原生JSON与图形恢复验收 |
-| A08 | 独立测试、离线编译、经济/六结局可达性、交接与提交 | M1真实一天、自然28天、真实AI验收 |
+| A01 | 公共基线、契约、唯一状态、稳定ID、六NPC/地点和生成器隔离 | 最终成品的旧入口关闭核对 |
+| A02 | 三预约编辑/锁定/顺序、检查点及操作接口；离线与图形链路通过 | 最终Player恢复 |
+| A03 | 真实DeepSeek六NPC通过；有界上下文、流式、错误恢复、数值校验、额度和8彩蛋 | Player真实联网、头像表现与完整一天体验 |
+| A04 | 整数成绩、排名、连胜、重试、唯一结算；生产战果28日接桥通过 | 最终Player连续运行 |
+| A05 | 19种道具、库存、目标赠礼、携带消费及失败回滚 | 最终Player交易交互 |
+| A06 | 成绩关系、单位目录接口、39条新闻与解锁条件、正式结局与全局记录 | 最终Player页面核对 |
+| A07 | v3原子备份、设置、迁移原档保留、跨进程恢复；原生JSON测试通过 | 最终Player冷启动与恢复 |
+| A08 | 独立验证、接口示例、迁移/决策说明、生产战斗经济可达性 | 真实AI图形一天闭环及成品连续自然流程证据 |
+
+不再将规则确认、网关或API凭据列为阻断项。尚未用安装包证据证明的项目保持未完成，由Part3串行操作Unity和Player，Part1负责修复其发现的主流程/AI/存档问题。
 
 ### 旧入口归属说明
 
@@ -133,3 +127,7 @@ DeepSeek直连协议回归：20场景4288断言通过，运行时/Editor离线�
 ## 生产战果直接接桥补充
 
 已核查Part2 `Tests/Integration/Part2CampaignBridge.cs`及`2026-09-15-part2-bridge/bridge-results.json`（SHA256 7e9a6e8719f5a36e8a1d5feec2af5ade3b1e6eb513c6e7812de3bb0d50683666）：28场生产Session自然结束后，原样Outcome进入Campaign唯一结算，并进行每日前27天0.10 GPA购买和次日恢复。该证据补上之前“战斗与经济未直接接桥”的缺口。运行使用UI当时Campaign与Part2候选战斗源，尚未覆盖最新`.2`暂定规则和直连适配器；需整合分支重跑。AI仍为明示测试替身，非真实AI或图形成品自然28天体验。
+
+## 最新整合桥接核对
+
+上述旧“需整合分支重跑”已由单一整合工程 `5931ced0` 的28日、952断言结果补齐。最新AI修复 `0077d332` 已由Part3合入为 `985bde95`，包括任意JSON字段顺序的流式文本解析和正负话题/情绪约束。安装包验证须使用包含此修复的源码。
