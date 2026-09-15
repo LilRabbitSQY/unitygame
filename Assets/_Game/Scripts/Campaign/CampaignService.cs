@@ -291,7 +291,7 @@ namespace FinalDefense.Campaign
             s.companionId = first ? s.npcs.OrderByDescending(n => n.favor).ThenBy(n => n.reachedSequence).ThenBy(n => n.npcId, StringComparer.Ordinal).First().npcId : null;
             s.endingId = first ? "success_" + s.companionId : s.gpa < 0 ? "failure_gpa" : "failure_rank"; s.phase = CampaignStage.Ending;
         }
-        private static string[] SelectNews(CampaignContent content, int seed, int day)
+        internal static string[] SelectNews(CampaignContent content, int seed, int day)
         {
             // General authored news is available to everyone. NPC unlock conditions remain a content decision.
             var candidates = content.news.Where(n => string.IsNullOrEmpty(n.npcId) && day >= n.firstDay && day <= n.lastDay).ToArray();

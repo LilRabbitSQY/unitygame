@@ -133,6 +133,14 @@ internal static class CampaignTests
                 using var process=System.Diagnostics.Process.Start(start);process.WaitForExit();Check(process.ExitCode==0,"child process result");
                 Check(store.Read("cross").phase==CampaignStage.Booking,"child transaction persisted");Check(store.Read("cross").receipts.Count(r=>r.actionId=="child-intro")==1,"receipt crossed process boundary");return Task.CompletedTask;
             });
+            await Run("Unity empty inline checkpoint normalization",()=> {
+                var s=Create().Snapshot;s.dialogue=new DialogueCheckpoint();s.draftRequest=new DraftRequest();s.draft=new DraftSnapshot();s.battle=new BattleStartContext();s.outcome=new BattleOutcome();s.appointments[0]=new Appointment();
+                CampaignSnapshotCompatibility.NormalizeEmptyCheckpoints(s);
+                Check(s.dialogue==null && s.draftRequest==null && s.draft==null && s.battle==null && s.outcome==null && s.appointments[0]==null,"canonical null checkpoints");
+                s.battle=new BattleStartContext{runId="present"};CampaignSnapshotCompatibility.NormalizeEmptyCheckpoints(s);Check(s.battle!=null,"partial corrupt identity not hidden");
+                var migration=LegacyCampaignMigration.Preview("{\"version\":1,\"day\":4,\"gpa\":100,\"phase\":1}","news-day",content,new CampaignRules(),codec,1);
+                Check(migration.proposed.dailyNewsIds.SequenceEqual(CampaignService.SelectNews(content,1,4)),"migration selects actual-day news");return Task.CompletedTask;
+            });
             Console.WriteLine($"{cases} scenarios passed; {checks} assertions; 0 failed.");return 0;
         }
         catch(Exception ex){Console.Error.WriteLine(ex);return 1;}

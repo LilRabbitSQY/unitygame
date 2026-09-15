@@ -31,7 +31,7 @@ namespace FinalDefense.Persistence
                 return result;
             }
             var state = CampaignService.NewState(newSaveId, content, rules, seed);
-            state.gpa = (int)gpa; state.day = old.day;
+            state.gpa = (int)gpa; state.day = old.day; state.dailyNewsIds = CampaignService.SelectNews(content, seed, old.day);
             // Explicitly retain a notice instead of fabricating past dialogue, ranks or battle identities.
             state.migrationNotice = "由v" + old.version + "迁移：保留第" + old.day + "天、原GPA与库存；当日从引导/重新预约开始。NPC按新策划初值初始化，连胜和关系/排名历史无法恢复。旧档与其备份仍保留。";
             var entries = old.inventory ?? Array.Empty<LegacyItem>();

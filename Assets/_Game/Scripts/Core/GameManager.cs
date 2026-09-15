@@ -19,7 +19,12 @@ namespace FinalDefense.Core
     {
         [Serializable] private sealed class ArrayBox<T> { public T value; }
         public string Encode<T>(T value) => typeof(T).IsArray ? JsonUtility.ToJson(new ArrayBox<T> { value = value }) : JsonUtility.ToJson(value);
-        public T Decode<T>(string value) => typeof(T).IsArray ? JsonUtility.FromJson<ArrayBox<T>>(value).value : JsonUtility.FromJson<T>(value);
+        public T Decode<T>(string value)
+        {
+            T result = typeof(T).IsArray ? JsonUtility.FromJson<ArrayBox<T>>(value).value : JsonUtility.FromJson<T>(value);
+            if (result is CampaignSnapshot snapshot) CampaignSnapshotCompatibility.NormalizeEmptyCheckpoints(snapshot);
+            return result;
+        }
     }
     public class GameManager : Singleton<GameManager>
     {
