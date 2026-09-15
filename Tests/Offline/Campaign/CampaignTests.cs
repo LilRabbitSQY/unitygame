@@ -18,7 +18,7 @@ internal sealed class JsonCodec : IDataCodec
 }
 internal sealed class FakeDialogue : IDialogueService
 {
-    public string topic = "neutral", emotion = "neutral"; public bool invalid, fail, never; public int calls;
+    public string topic = "neutral", emotion = "neutral"; public bool invalid, fail, never, finish = true; public int calls;
     public async Task<DialogueTurnResult> SendAsync(DialogueTurnRequest r, Action<string> chunk, CancellationToken token)
     {
         calls++; if (never) { await Task.Delay(200); } else await Task.Delay(1, token);
@@ -26,7 +26,7 @@ internal sealed class FakeDialogue : IDialogueService
         chunk?.Invoke("测试文本");
         return new DialogueTurnResult { conversationId = r.conversationId, turnId = r.turnId, status = DialogueStatus.Completed,
             text = invalid ? new string('字', 121) : "测试文本", emotion = r.opening ? "neutral" : emotion, topic = r.opening ? "neutral" : topic,
-            hints = new[] { "提示一", "提示二", "提示三" }, endConversation = !r.opening };
+            hints = new[] { "提示一", "提示二", "提示三" }, endConversation = !r.opening && finish };
     }
 }
 internal sealed class FailingStore : ICampaignStore
@@ -76,6 +76,41 @@ internal static class CampaignTests
             await Run("28 days with real campaign transactions, six endings",async()=> {foreach(var npc in content.npcs.Where(n=>n.romance)){var c=Create();for(int day=1;day<=28;day++){await Three(c,npc.id,npc.positiveTopics[0],"happy");Prepare(c,content.npcs[(day-1)%6].id);Good(c.CommitBattleOutcome(Outcome(c,true)));if(day<28){Good(c.EnterShop(Id()));Good(c.Buy(Id(),"sparkling_focus"));Good(c.NextDay(Id()));}}Check(c.Snapshot.endingId=="success_"+npc.id,"companion ending "+npc.id);Check(c.Ranking.First(r=>r.id=="player").rank==1,"rank first with shopping");Check(c.Snapshot.npcs.First(n=>n.npcId==npc.id).favor==100,"favor reachable");}});
             await Run("early negative GPA and final rank failures",async()=> {var c=Create();for(int day=1;day<=24;day++){await Three(c);Prepare(c);Good(c.CommitBattleOutcome(Outcome(c,false)));if(day<24){Good(c.EnterShop(Id()));Good(c.NextDay(Id()));}}Check(c.Snapshot.gpa==-200 && c.Snapshot.endingId=="failure_gpa","negative failure");var x=Create();for(int day=1;day<=28;day++){await Three(x);Prepare(x);Good(x.CommitBattleOutcome(Outcome(x,day%2==0)));if(day<28){Good(x.EnterShop(Id()));Good(x.NextDay(Id()));}}Check(x.Snapshot.endingId=="failure_rank","rank failure");});
             await Run("atomic backup, multiple slots, settings and global unlocks",()=> {var store=new AtomicCampaignStore(Path.Combine(directory,"files"),codec);var c=Create("one",store:store);store.Write(c.Snapshot);Good(c.CompleteIntroduction(Id()));var two=Create("two",store:store);store.Write(two.Snapshot);Check(store.List().Length==2,"two slots");File.WriteAllText(Path.Combine(directory,"files","one.json"),"broken");Check(store.List().Count(s=>s.error!=null)==1,"corrupt metadata");Check(store.ReadBackup("one").phase==CampaignStage.Introduction,"backup valid");store.SaveSettings(new GameSettings{music=.4f});Check(store.LoadSettings().music==.4f,"settings");store.RecordUnlock("success_liu_ruoshui");store.RecordUnlock("success_liu_ruoshui");Check(store.LoadUnlocks().endings.Length==1,"global dedupe");return Task.CompletedTask;});
+            await Run("catalog news and deterministic reload",()=> { var c=Create();Check(content.news.Length==39,"39 sourced articles");Check(c.News.Length>=1 && c.News.Length<=3,"1–3 per day");var restored=Create(state:c.Snapshot);Check(c.News.Select(n=>n.id).SequenceEqual(restored.News.Select(n=>n.id)),"no reroll");Good(c.ReadNews("news",c.News[0].id));Good(c.ReadNews("news",c.News[0].id));Check(c.Snapshot.readNews.Length==1,"read once");return Task.CompletedTask;});
+            await Run("all six topic drops, before/after threshold, negative floor",async()=> {
+                string[] topics={"ACGN同人","美妆","学术","盲盒","电竞","咖啡"};
+                string[] items={"signed_fan_art","makeup_sample","competition_manual","balulu_figure","custom_keyboard","coffee_coupon"};
+                for(int i=0;i<6;i++){
+                    var r=new CampaignRules{topicDropChancePerTenThousand=10000};var state=CampaignService.NewState("drop",content,r,42);state.npcs[i].favor=38;
+                    var c=Create(rules:r,state:state);await Three(c,content.npcs[i].id,topics[i],"happy");
+                    Check(c.Snapshot.inventory.First(v=>v.itemId==items[i]).count==3,"one per conversation "+items[i]);
+                }
+                var beforeRules=new CampaignRules{topicDropChancePerTenThousand=10000,thresholdAfterTurn=false};var ss=CampaignService.NewState("before",content,beforeRules,42);ss.npcs[0].favor=38;
+                var before=Create(rules:beforeRules,state:ss);await Three(before,"liu_ruoshui","ACGN同人","happy");Check(before.Snapshot.inventory.First(i=>i.itemId=="signed_fan_art").count==2,"first turn threshold uses pre-value");
+                var negative=Create();await Three(negative,"wan_sirui","冷漠回绝","sad");Check(negative.Snapshot.npcs[1].favor==0 && negative.Snapshot.npcs[1].dailyGain==0,"negative unrestricted, floor zero");
+            });
+            await Run("cameo rewards, invalid service and duplicate inflight",async()=> {
+                bool teacher=false,dean=false;
+                for(int seed=1;seed<=12 && !(teacher&&dean);seed++){
+                    var r=new CampaignRules{cameoChancePerTenThousand=10000};var c=Create(rules:r,state:CampaignService.NewState("cameo",content,r,seed));
+                    await Three(c);teacher |= c.Snapshot.inventory.First(i=>i.itemId=="leave_note").count>0;dean |= c.Snapshot.inventory.First(i=>i.itemId=="recommendation_letter").count>0;
+                }
+                Check(teacher&&dean,"both cameo paths");
+                var c2=Create();Good(c2.CompleteIntroduction(Id()));Good(c2.EditAppointments(Id(),Enumerable.Range(0,3).Select(i=>new Appointment{npcId="liu_ruoshui",locationId="library"}).ToArray()));Good(c2.ConfirmAppointments(Id()));
+                var fake=new FakeDialogue{never=true};using var coordinator=new CampaignDialogueCoordinator(c2,fake,TimeSpan.FromSeconds(1));var pending=coordinator.SendAsync("inflight","",null);Check(!(await coordinator.SendAsync("another","",null)).Success,"double send refused");coordinator.Cancel();Check(!(await pending).Success,"cancel no effect");await Task.Delay(220);Check(!c2.Snapshot.dialogue.opened,"cancelled late result ignored");
+                fake.never=false;fake.fail=true;Check(!(await coordinator.SendAsync("network","",null)).Success,"network failure");Check(c2.Snapshot.npcs[0].favor==0,"failure no reward");
+            });
+            await Run("malformed saves, slot archive and unknown version",()=> {
+                var original=Create().Snapshot;original.npcs[0].npcId=original.npcs[1].npcId;bool rejected=false;try{Create(state:original);}catch(ArgumentException){rejected=true;}Check(rejected,"duplicate NPC rejected");
+                var store=new AtomicCampaignStore(Path.Combine(directory,"archive"),codec);var c=Create("slot",store:store);store.Write(c.Snapshot);store.ArchiveSlot("slot");Check(Directory.GetFiles(Path.Combine(directory,"archive"),"*.archive-*").Length==1,"permanent archive");
+                var p=Path.Combine(directory,"archive","slot.json");File.WriteAllText(p,"{\"version\":99,\"saveId\":\"slot\"}");rejected=false;try{store.Read("slot");}catch(NotSupportedException){rejected=true;}Check(rejected,"unknown version not replaced");
+                Check(File.ReadAllText(p).Contains("99"),"unknown file preserved");return Task.CompletedTask;
+            });
+            await Run("tied highest favor uses event sequence",async()=> {
+                var r=new CampaignRules();var state=CampaignService.NewState("tie",content,r,42);state.day=28;state.gpa=9900;
+                foreach(var n in state.npcs){n.favor=10;n.reachedSequence=++state.sequence;}state.npcs[5].reachedSequence=1;
+                var c=Create(rules:r,state:state);await Three(c);Prepare(c);Good(c.CommitBattleOutcome(Outcome(c,true)));Check(c.Snapshot.companionId=="ming_shan","earliest attained tie");
+            });
             Console.WriteLine($"{cases} scenarios passed; {checks} assertions; 0 failed.");return 0;
         }
         catch(Exception ex){Console.Error.WriteLine(ex);return 1;}

@@ -67,6 +67,15 @@ namespace FinalDefense.Persistence
             var u = LoadUnlocks(); if (u.endings.Contains(ending)) return;
             u.endings = u.endings.Concat(new[] { ending }).ToArray(); WriteAtomic(System.IO.Path.Combine(root, "unlocks.json"), codec.Encode(u));
         }
+        public void ArchiveSlot(string saveId)
+        {
+            string path = FileFor(saveId); if (!File.Exists(path)) return;
+            // Keep a permanent copy in addition to the rolling previous-transaction backup.
+            string archive = path + ".archive-" + Guid.NewGuid().ToString("N");
+            using (var source = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var target = new FileStream(archive, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            { source.CopyTo(target); target.Flush(true); }
+        }
         public void PreserveLegacy(string json)
         {
             string path = System.IO.Path.Combine(root, "legacy-" + Guid.NewGuid().ToString("N") + ".readonly");

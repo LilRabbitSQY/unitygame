@@ -15,7 +15,11 @@ namespace FinalDefense.Core
     // Compatibility projection for existing scenes. New pages consume Campaign.Snapshot.phase.
     public enum CampaignPhase { Personality, Schedule, Battle, Result, Shop, Complete }
     public sealed class UnityCampaignCodec : IDataCodec
-    { public string Encode<T>(T value) => JsonUtility.ToJson(value); public T Decode<T>(string value) => JsonUtility.FromJson<T>(value); }
+    {
+        [Serializable] private sealed class ArrayBox<T> { public T value; }
+        public string Encode<T>(T value) => typeof(T).IsArray ? JsonUtility.ToJson(new ArrayBox<T> { value = value }) : JsonUtility.ToJson(value);
+        public T Decode<T>(string value) => typeof(T).IsArray ? JsonUtility.FromJson<ArrayBox<T>>(value).value : JsonUtility.FromJson<T>(value);
+    }
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField] private PlayerStats playerStats;
@@ -96,19 +100,21 @@ namespace FinalDefense.Core
                     catch { PersistenceWarning = "结局已保存在本局；全局解锁写入失败，下次继续时重试"; }
             };
             CurrentBattleConfiguration = null;
-            LastBattleReport = state.outcome == null ? null : new BattleReport { won = state.outcome.reason == BattleEndReason.Victory, protectionLost = state.outcome.protectionLost };
+            LastBattleReport = state.phase != CampaignStage.Result && state.phase != CampaignStage.Shop && state.phase != CampaignStage.Ending ? null : new BattleReport { won = state.outcome.reason == BattleEndReason.Victory, protectionLost = state.outcome.protectionLost };
             if (state.phase == CampaignStage.Ending) try { store.RecordUnlock(state.endingId); } catch { PersistenceWarning = "全局解锁保存失败"; }
         }
         public SaveMetadata[] ListCampaignSaves() { EnsureServices(); return store.List(); }
-        public OperationResult StartCampaign(string saveId)
+        public OperationResult StartCampaign(string saveId, bool overwrite = false)
         {
             EnsureServices();
             if (!rules.approved) return LastOperation = OperationResult.Fail(OperationError.RulesPending, "规则配置尚待确认，不能开启正式新游戏");
-            if (store.List().Any(s => s.saveId == saveId)) return LastOperation = OperationResult.Fail(OperationError.Conflict, "存档ID已存在，请选择新档");
+            if (!overwrite && store.List().Any(s => s.saveId == saveId)) return LastOperation = OperationResult.Fail(OperationError.Conflict, "存档ID已存在，请选择新档");
             try
             {
                 var state = CampaignService.NewState(saveId, content, rules, Guid.NewGuid().GetHashCode());
-                var service = new CampaignService(content, rules, store, codec, state); store.Write(state); Attach(state);
+                var service = new CampaignService(content, rules, store, codec, state);
+                if (overwrite) store.ArchiveSlot(saveId);
+                store.Write(state); Attach(state);
                 return LastOperation = new OperationResult { message = "新游戏已保存" };
             }
             catch { return LastOperation = OperationResult.Fail(OperationError.PersistenceFailed, "无法创建存档"); }

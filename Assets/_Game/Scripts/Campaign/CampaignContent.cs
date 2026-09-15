@@ -5,11 +5,11 @@ namespace FinalDefense.Campaign
 {
     [Serializable] public sealed class NpcDefinition
     {
-        public string id, name, portraitKey, style, persona, source; public int legacyId, initialFavor, initialGpa; public bool romance;
+        public string id, name, portraitKey, style, persona, source, endingLine; public int legacyId, initialFavor, initialGpa; public bool romance;
         public string[] positiveTopics, negativeTopics;
     }
     [Serializable] public sealed class LocationDefinition { public string id, name, source; }
-    [Serializable] public sealed class NewsDefinition { public string id, text, source; public int firstDay, lastDay; }
+    [Serializable] public sealed class NewsDefinition { public string id, text, source, npcId; public int firstDay, lastDay; }
     [Serializable] public sealed class CampaignContent
     {
         public string version, worldText, worldSource, endingSuccess, endingFailure, endingSource;

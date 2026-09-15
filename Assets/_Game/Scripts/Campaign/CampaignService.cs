@@ -28,13 +28,13 @@ namespace FinalDefense.Campaign
             return new CampaignSnapshot { saveId = saveId, runId = Guid.NewGuid().ToString("N"), rulesVersion = rules.version,
                 contentVersion = content.version, seed = seed, phase = CampaignStage.Introduction,
                 npcs = content.npcs.Where(n => n.romance).Select(n => new NpcSnapshot { npcId = n.id, favor = n.initialFavor, gpa = n.initialGpa, reachedSequence = n.legacyId + 1 }).ToArray(),
-                sequence = 6, inventory = BattleItemDefs.All.Select(i => new InventoryEntry { itemId = i.key }).ToArray() };
+                dailyNewsIds = SelectNews(content, seed, 1), sequence = 6, inventory = BattleItemDefs.All.Select(i => new InventoryEntry { itemId = i.key }).ToArray() };
         }
         private T Copy<T>(T value) => value == null ? default(T) : codec.Decode<T>(codec.Encode(value));
         private OperationResult Error(OperationError error, string text) => OperationResult.Fail(error, text);
         private OperationResult Ok(string message = "操作完成") => new OperationResult { message = message };
         private static bool Id(string id) => !string.IsNullOrWhiteSpace(id) && id.Length <= 160;
-        private OperationResult Apply(string actionId, object payload, Func<CampaignSnapshot, OperationResult> mutate)
+        private OperationResult Apply(string actionId, Payload payload, Func<CampaignSnapshot, OperationResult> mutate)
         {
             CampaignSnapshot published = null; OperationResult result;
             lock (gate)
@@ -169,7 +169,7 @@ namespace FinalDefense.Campaign
                 s.phase = CampaignStage.Matching;
                 s.draftRequest = new DraftRequest { runId = s.runId, battleId = s.runId + ":battle:" + s.day, day = s.day,
                     rulesVersion = rules.version, seed = unchecked(s.seed + s.day * 104729), cycleLength = rules.matchCycleLength,
-                    playerGpa = s.gpa, candidates = Copy(s.npcs), history = Copy(s.matchHistory) };
+                    playerGpa = s.gpa, candidates = Copy(s.npcs), history = s.matchHistory.Skip(((s.day - 1) / rules.matchCycleLength) * rules.matchCycleLength).ToArray() };
             }
             return Ok();
         });
@@ -183,7 +183,7 @@ namespace FinalDefense.Campaign
                 return Error(OperationError.InvalidInput, "编队身份、种子或棋子互斥校验失败");
             var opponent = s.npcs.First(n => n.npcId == draft.opponentId);
             if (s.gpa != opponent.gpa && draft.playerFirst != (s.gpa < opponent.gpa)) return Error(OperationError.InvalidInput, "低GPA方应先手");
-            if (s.draft != null && (s.draft.opponentId != draft.opponentId || s.draft.playerFirst != draft.playerFirst)) return Error(OperationError.Conflict, "不能重抽对手或先手");
+            if (s.draft != null && !string.IsNullOrEmpty(s.draft.battleId) && (s.draft.opponentId != draft.opponentId || s.draft.playerFirst != draft.playerFirst)) return Error(OperationError.Conflict, "不能重抽对手或先手");
             if (draft.locked && (draft.playerUnits.Length == 0 || draft.playerUnits.Length != draft.enemyUnits.Length || draft.availableUnits.Length != 0)) return Error(OperationError.InvalidInput, "锁定阵容必须双方各半且无剩余棋子");
             s.draft = Copy(draft); if (draft.locked) s.phase = CampaignStage.Preparation; return Ok();
         });
@@ -254,7 +254,7 @@ namespace FinalDefense.Campaign
         public OperationResult NextDay(string actionId) => Apply(actionId, new Payload { op = "next" }, s =>
         {
             if (s.phase != CampaignStage.Shop || !s.daySettled || s.day >= 28) return Error(OperationError.WrongPhase, "当前不能进入下一天");
-            s.day++; s.phase = CampaignStage.Booking; s.slot = 0; s.appointments = new Appointment[3]; s.dialogue = null;
+            s.day++; s.dailyNewsIds = SelectNews(content, s.seed, s.day); s.phase = CampaignStage.Booking; s.slot = 0; s.appointments = new Appointment[3]; s.dialogue = null;
             s.draftRequest = null; s.draft = null; s.battle = null; s.outcome = null; s.daySettled = false;
             foreach (var n in s.npcs) n.dailyGain = 0; return Ok();
         });
@@ -271,9 +271,16 @@ namespace FinalDefense.Campaign
             s.companionId = first ? s.npcs.OrderByDescending(n => n.favor).ThenBy(n => n.reachedSequence).ThenBy(n => n.npcId, StringComparer.Ordinal).First().npcId : null;
             s.endingId = first ? "success_" + s.companionId : s.gpa < 0 ? "failure_gpa" : "failure_rank"; s.phase = CampaignStage.Ending;
         }
-        public NewsDefinition[] News => content.news.Where(n => Snapshot.day >= n.firstDay && Snapshot.day <= n.lastDay).Select(Copy).ToArray();
+        private static string[] SelectNews(CampaignContent content, int seed, int day)
+        {
+            // General authored news is available to everyone. NPC unlock conditions remain a content decision.
+            var candidates = content.news.Where(n => string.IsNullOrEmpty(n.npcId) && day >= n.firstDay && day <= n.lastDay).ToArray();
+            return candidates.OrderBy(n => Roll(seed, day * 541 + Array.IndexOf(candidates, n) * 3571)).ThenBy(n => n.id, StringComparer.Ordinal)
+                .Take(1 + Roll(seed, day * 73) % 3).Select(n => n.id).ToArray();
+        }
+        public NewsDefinition[] News { get { var ids = Snapshot.dailyNewsIds; return content.news.Where(n => ids.Contains(n.id)).Select(Copy).ToArray(); } }
         public OperationResult ReadNews(string actionId, string newsId) => Apply(actionId, new Payload { op = "news", a = newsId }, s =>
-        { if (!content.news.Any(n => n.id == newsId && s.day >= n.firstDay && s.day <= n.lastDay)) return Error(OperationError.NotFound, "新闻不可用"); s.readNews = s.readNews.Union(new[] { newsId }).ToArray(); return Ok(); });
+        { if (!s.dailyNewsIds.Contains(newsId)) return Error(OperationError.NotFound, "新闻不可用"); s.readNews = s.readNews.Union(new[] { newsId }).ToArray(); return Ok(); });
         public void Validate(CampaignSnapshot s)
         {
             if (s == null || s.version != 3 || !AtomicCampaignStore.ValidId(s.saveId) || !Id(s.runId) || s.rulesVersion != rules.version || s.contentVersion != content.version
@@ -282,7 +289,7 @@ namespace FinalDefense.Campaign
                 || s.npcs.Select(n => n.npcId).Distinct().Count() != 6 || s.inventory == null || s.inventory.Length != BattleItemDefs.All.Length
                 || s.inventory.Any(i => i == null || BattleItemDefs.Find(i.itemId) == null || i.count < 0 || i.count > BattleItemDefs.Find(i.itemId).stackLimit || i.purchased < 0 || i.purchased > BattleItemDefs.Find(i.itemId).saleLimit)
                 || s.inventory.Select(i => i.itemId).Distinct().Count() != s.inventory.Length || s.receipts == null || s.receipts.Any(r => r == null || !Id(r.actionId) || r.result == null || r.fingerprint == null)
-                || s.receipts.Select(r => r.actionId).Distinct().Count() != s.receipts.Length || s.trends == null || s.matchHistory == null || s.readNews == null || s.slot < 0 || s.slot > 3 || s.appointments == null || s.appointments.Length != 3)
+                || s.receipts.Select(r => r.actionId).Distinct().Count() != s.receipts.Length || s.trends == null || s.matchHistory == null || s.readNews == null || s.dailyNewsIds == null || s.dailyNewsIds.Length > 3 || s.dailyNewsIds.Any(id => !content.news.Any(n => n.id == id)) || s.slot < 0 || s.slot > 3 || s.appointments == null || s.appointments.Length != 3)
                 throw new ArgumentException("Invalid campaign save");
             if (s.phase >= CampaignStage.Dialogue && s.phase <= CampaignStage.Shop && !ValidAppointments(s.appointments)) throw new ArgumentException("Invalid appointment checkpoint");
             if (s.phase == CampaignStage.Dialogue && (s.slot > 2 || s.dialogue == null || s.dialogue.npcId != s.appointments[s.slot].npcId || s.dialogue.locationId != s.appointments[s.slot].locationId || !Id(s.dialogue.conversationId) || s.dialogue.turns < 0 || s.dialogue.turns > 10 || s.dialogue.history == null || s.dialogue.history.Length > 21 || s.dialogue.grantedItems == null || s.dialogue.hints == null)) throw new ArgumentException("Invalid dialogue checkpoint");
@@ -291,6 +298,39 @@ namespace FinalDefense.Campaign
             if (s.phase >= CampaignStage.Battle && s.phase <= CampaignStage.Shop && (s.battle == null || s.battle.runId != s.runId || s.battle.battleId != s.draft.battleId || !Id(s.battle.attemptId) || s.battle.battleItems == null || s.battle.battleItems.Any(i => BattleItemDefs.Find(i)?.IsBattleItem != true))) throw new ArgumentException("Invalid battle checkpoint");
             if ((s.phase == CampaignStage.Result || s.phase == CampaignStage.Shop) && (!s.daySettled || s.outcome == null)) throw new ArgumentException("Invalid settlement checkpoint");
             if (s.phase == CampaignStage.Ending && (string.IsNullOrEmpty(s.endingId) || !s.daySettled)) throw new ArgumentException("Invalid ending checkpoint");
+            if (s.trends.Length > 28 || s.matchHistory.Length > 28 || s.matchHistory.Any(id => content.Npc(id)?.romance != true)
+                || s.trends.Any(t => t == null || t.day < 1 || t.day > s.day || t.ranking == null || t.ranking.Length != 7)
+                || s.trends.Select(t => t.day).Distinct().Count() != s.trends.Length) throw new ArgumentException("Invalid history");
+            if (s.phase == CampaignStage.Dialogue)
+            {
+                var d = s.dialogue;
+                if (d.conversationId != s.runId + ":" + s.day + ":" + s.slot || d.history.Any(l => l == null || string.IsNullOrWhiteSpace(l.text) || (l.role != "user" && l.role != "assistant"))
+                    || d.history.Length != (d.opened ? 1 + d.turns * 2 : 0) || (d.finished && (!d.opened || d.turns < 1))
+                    || !content.emotionTags.Contains(d.emotion) || (d.opened && (d.hints.Length != 3 || d.hints.Any(string.IsNullOrWhiteSpace)))
+                    || d.grantedItems.Any(id => BattleItemDefs.Find(id)?.IsBattleItem != true) || d.grantedItems.Distinct().Count() != d.grantedItems.Length
+                    || (!string.IsNullOrEmpty(d.cameoId) && d.cameoId != "wang_yijun" && d.cameoId != "ning_qishan")) throw new ArgumentException("Invalid dialogue history");
+            }
+            if (s.phase >= CampaignStage.Matching && s.phase <= CampaignStage.Shop)
+            {
+                var r = s.draftRequest;
+                if (r.runId != s.runId || r.day != s.day || r.battleId != s.runId + ":battle:" + s.day || r.rulesVersion != rules.version
+                    || r.seed != unchecked(s.seed + s.day * 104729) || r.candidates == null || r.candidates.Length != 6 || r.history == null) throw new ArgumentException("Invalid draft request");
+                if (s.draft != null && !string.IsNullOrEmpty(s.draft.battleId))
+                {
+                    var d = s.draft;
+                    if (d.battleId != r.battleId || d.seed != r.seed || d.rulesVersion != rules.version || content.Npc(d.opponentId)?.romance != true
+                        || d.playerUnits == null || d.enemyUnits == null || d.availableUnits == null) throw new ArgumentException("Invalid saved draft");
+                    var all = d.playerUnits.Concat(d.enemyUnits).Concat(d.availableUnits).ToArray();
+                    if (all.Any(u => !Id(u)) || all.Distinct().Count() != all.Length || (d.locked && (d.playerUnits.Length == 0 || d.playerUnits.Length != d.enemyUnits.Length || d.availableUnits.Length != 0))) throw new ArgumentException("Invalid saved roster");
+                }
+            }
+            if (s.phase >= CampaignStage.Battle && s.phase <= CampaignStage.Shop)
+            {
+                var b = s.battle;
+                if (b.seed != s.draft.seed || b.playerUnits == null || b.enemyUnits == null || !b.playerUnits.SequenceEqual(s.draft.playerUnits) || !b.enemyUnits.SequenceEqual(s.draft.enemyUnits)
+                    || !Id(b.levelId) || !Id(b.contentVersion) || b.initialCost < 0 || b.protection < 1 || b.battleItems.Distinct().Count() != b.battleItems.Length) throw new ArgumentException("Invalid battle recovery");
+                if (s.daySettled && s.outcome != null && (s.outcome.runId != s.runId || s.outcome.battleId != b.battleId)) throw new ArgumentException("Invalid outcome identity");
+            }
             if (s.gpa < 0 && s.phase != CampaignStage.Ending) throw new ArgumentException("Negative GPA must terminate campaign");
         }
     }

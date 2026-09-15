@@ -56,6 +56,7 @@ namespace FinalDefense.Contracts
         public DialogueCheckpoint dialogue; public DraftRequest draftRequest; public DraftSnapshot draft; public BattleStartContext battle;
         public BattleOutcome outcome; public bool daySettled; public string endingId, companionId, lastBattleSummary;
         public DailyRecord[] trends = Array.Empty<DailyRecord>(); public string[] matchHistory = Array.Empty<string>();
+        public string[] dailyNewsIds = Array.Empty<string>();
         public OperationReceipt[] receipts = Array.Empty<OperationReceipt>(); public string[] readNews = Array.Empty<string>();
     }
     [Serializable] public sealed class DialogueTurnRequest
