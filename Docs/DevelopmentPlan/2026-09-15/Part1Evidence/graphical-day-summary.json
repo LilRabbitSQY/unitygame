@@ -1,0 +1,23 @@
+{
+  "source": "/Users/bytedance/unitygame-ui/Docs/FullGameVerification/2026-09-15/campaign-ui-results.xml",
+  "sha256": "d5e485b45f94b80780514561d85bca257415291e7dadc732c08324451d196e80",
+  "result": {
+    "id": "2",
+    "testcasecount": "2",
+    "result": "Passed",
+    "total": "2",
+    "passed": "2",
+    "failed": "0",
+    "inconclusive": "0",
+    "skipped": "0",
+    "asserts": "0",
+    "engine-version": "3.5.0.0",
+    "clr-version": "4.0.30319.42000",
+    "start-time": "2026-09-15 08:31:42Z",
+    "end-time": "2026-09-15 08:31:45Z",
+    "duration": "3.649956"
+  },
+  "actionsSource": "/Users/bytedance/unitygame-ui/Docs/FullGameVerification/2026-09-15/campaign-ui-fixture/campaign-ui-actions.txt",
+  "actionsSha256": "e4fb8ac0205567debbfb612143b89549693d0b415057b90f2bbd67ed925e14b4",
+  "scope": "Real Unity pages and EventSystem pointer clicks; proposal rules fixture and fake AI. Deploy/pause/forfeit/settle/shop/day2 reload; not real AI or natural 28-day completion."
+}

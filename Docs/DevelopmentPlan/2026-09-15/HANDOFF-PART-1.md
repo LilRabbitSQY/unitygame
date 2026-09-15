@@ -108,3 +108,10 @@ D09客串及掉落概率为−1（未定），不运行概率事件；提供确�
 真实Unity发现的空内联对象问题已通过`4145c47d`修复：将完全缺少身份的dialogue/draftRequest/draft/battle/outcome还原null，部分身份错误不掩盖。离线17场景已回归；Part3随后重跑真实Unity EditMode，12/12通过，包含原生数组/空对象与预约事务读档。摘要见`Part1Evidence/native-unity-summary.json`，图形全链路仍由Part3继续验证。
 
 追加客户端HTTP/SSE传输层测试：请求上下文和短期token、分片输出、最终文本一致性、错误媒体类型、非法JSON、无最终回复、超长单行/文本；注入仅测试程序集可用的内存transport，不访问外网。18场景4238断言通过。
+
+
+## Part3 图形链路证据补充
+
+已核实 `campaign-ui-results.xml`：2/2通过（一天链路与音效）。真实EventSystem点击菜单→三次预约/对话→16棋互斥选棋→Prepare→部署/暂停/弃局→唯一结算→购买→day2读档，空draft问题修复后不再阻断。摘要及原XML/动作日志哈希见 `Part1Evidence/graphical-day-summary.json`。
+
+这证明页面绑定与业务状态链路；规则使用显式测试配置、聊天使用AI替身，因此仍不满足A03真实AI及A08完整真实内容闭环，不能将其标为正式M1验收或自然28天通关。
