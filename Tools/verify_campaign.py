@@ -8,6 +8,7 @@ from pathlib import Path
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path)
+    parser.add_argument('--live-ai',action='store_true',help='Explicitly run 12 real provider requests using configured key')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
     version=re.search(r'm_EditorVersion:\s*(\S+)',(root/'ProjectSettings/ProjectVersion.txt').read_text())[1]
@@ -24,14 +25,18 @@ def main():
     binary=out/'CampaignTests.dll'; rsp=out/'compile.rsp'
     rsp.write_text('\n'.join(['-target:exe','-langversion:9.0',f'-out:"{binary}"']+[f'-r:"{p}"' for p in framework.glob('*.dll')]+[f'"{p}"' for p in sources]))
     commands=[[str(dotnet),'exec',str(csc),'/nologo','/nostdlib','/noconfig','@'+str(rsp)],[str(dotnet),str(binary),str(root),str(out)]]
+    if args.live_ai: commands[-1].append('--live-ai')
     (out/'CampaignTests.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':framework.name,'framework':{'name':'Microsoft.NETCore.App','version':pack.name}}}))
     for name,cmd in zip(['compile','tests'],commands):
         result=subprocess.run(cmd,cwd=root,text=True,capture_output=True)
         (out/f'{name}.log').write_text(result.stdout+result.stderr);print(result.stdout+result.stderr)
         if result.returncode:return result.returncode
+    if args.live_ai:
+        print(f'PASS — real AI smoke results: {out}/live-ai-results.json')
+        return 0
     result_text=(out/'tests.log').read_text()
     counts=re.search(r'(\d+) scenarios passed; (\d+) assertions; 0 failed',result_text)
-    (out/'summary.json').write_text(json.dumps({'passed':True,'scenarios':int(counts[1]),'assertions':int(counts[2]),'unityVersion':version,'scope':'Offline managed campaign tests; fake AI and supplied test outcomes, not a natural Unity playthrough','sourceHashes':{str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources}},indent=2))
+    (out/'summary.json').write_text(json.dumps({'passed':True,'scenarios':int(counts[1]),'assertions':int(counts[2]),'unityVersion':version,'scope':'Offline managed campaign tests; fake AI and supplied test outcomes, not a natural Unity playthrough','sourceHashes':{str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources if p.name != 'EmbeddedAiConfig.cs'}},indent=2))
     print(f'PASS — offline campaign scope only; artifacts: {out}')
     return 0
 if __name__=='__main__':raise SystemExit(main())

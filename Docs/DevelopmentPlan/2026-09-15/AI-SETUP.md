@@ -12,7 +12,7 @@ public const string Endpoint = "https://api.deepseek.com/chat/completions";
 public const string Model = "deepseek-flash";
 ```
 
-填入后重新编译/打包，游戏自动使用DeepSeek直连。仓库当前ApiKey为空，不含真实密钥；尚未进行真实付费调用。不要将示例文字当密钥。
+填入后重新编译/打包，游戏自动使用DeepSeek直连。已提交的配置模板ApiKey为空，不含真实密钥；本机配置已完成真实调用，结果见文末。不要将示例文字当密钥。
 
 若ApiKey为空，仍支持旧的可选网关环境变量；两者均没有时界面报告AI未配置并保留当前行程。修改代码中的密钥后，需要重新打包才能更新已发布客户端。
 
@@ -31,3 +31,9 @@ public const string Model = "deepseek-flash";
 ## 验收边界
 
 离线测试使用内存HTTP传输替身，检查真实供应商协议的请求、流解析与失败处理；不是成功访问DeepSeek的证据。填入实际密钥后，还需六NPC实际对话、网络异常恢复及打包后联网验证。
+
+## 已完成真实服务验证
+
+2026-09-15：使用本机配置的真实密钥，通过生产DeepSeekDialogueService、CampaignDialogueCoordinator与CampaignService完成六位NPC各一次开场和玩家回复。6/6成功，流式片段、3提示、正向标签、好感+2均通过。不是Python探活替代游戏适配器。首轮出现的正向话题配neutral及JSON字段顺序问题已修复；仍保持失败不结算。原始合成对话结果见Part1Evidence/live-ai-results.json，文件不含密钥。
+
+复现命令（会发12次真实请求）：`python3 Tools/verify_campaign.py --live-ai --output /tmp/campaign-live-ai-check`。默认测试命令仍完全离线。可用FINALDEFENSE_LIVE_NPC_FILTER限定稳定NPC ID，避免无必要重复付费测试。

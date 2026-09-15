@@ -75,6 +75,7 @@ internal static class CampaignTests
     static async Task Run(string name, Func<Task> body) { await body(); cases++; Console.WriteLine("PASS " + name); }
     public static async Task<int> Main(string[] args)
     {
+        if(args.Length>2 && args[2]=="--live-ai") return await LiveAiVerification.Run(args[0],args[1]);
         if(args.Length>0 && args[0]=="--child")
         {
             content=codec.Decode<CampaignContent>(File.ReadAllText(Path.Combine(args[1],"Assets/Resources/Campaign/Content.json")));
@@ -189,6 +190,8 @@ internal static class CampaignTests
                 }
                 var bad=new GatewayTestTransport{body=wire.Replace("\"stop\"","\"length\"")};using(var service=new DeepSeekDialogueService("test-key","https://api.deepseek.com/chat/completions","deepseek-flash",codec,bad))
                 {bool rejected=false;try{await service.SendAsync(new DialogueTurnRequest{opening=true},null,CancellationToken.None);}catch(InvalidDataException){rejected=true;}Check(rejected,"truncated generation rejected");}
+                Check(DeepSeekDialogueService.PartialText("{\"emotion\":\"happy\",\"text\":\"你好")=="你好","property order independent");
+                Check(DeepSeekDialogueService.PartialText("{\"nested\":{\"text\":\"wrong\"},\"text\":\"right")=="right","nested text ignored");
                 Check(DeepSeekDialogueService.PartialText("{\"text\":\"a\\u4f")=="a","incomplete unicode buffered");
                 Check(DeepSeekDialogueService.PartialText("{\"text\":\"a\\u4f60")=="a你","unicode decoded");
             });

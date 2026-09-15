@@ -117,6 +117,7 @@ namespace FinalDefense.Campaign
                 cameoId = opening ? s.dialogue.cameoId : null, cameoPersona = opening ? content.Npc(s.dialogue.cameoId)?.persona : null,
                 locationId = s.dialogue.locationId, input = input ?? "", persona = npc.persona, favor = n.favor, maxTurns = 10,
                 lastBattleSummary = s.lastBattleSummary, opening = opening, allowedTopics = new[] { "neutral" }.Concat(npc.positiveTopics).Concat(npc.negativeTopics).ToArray(),
+                positiveTopics = Copy(npc.positiveTopics), negativeTopics = Copy(npc.negativeTopics),
                 hints = s.dialogue.hints, history = s.dialogue.history.Select(l => Copy(l)).ToArray() };
         }
         // This endpoint is for the service coordinator, never for direct model/UI numerical changes.

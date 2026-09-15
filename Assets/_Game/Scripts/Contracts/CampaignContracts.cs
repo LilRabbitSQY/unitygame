@@ -63,7 +63,7 @@ namespace FinalDefense.Contracts
     {
         public string runId, conversationId, turnId, npcId, locationId, input, persona, lastBattleSummary, cameoId, cameoPersona;
         public int favor, maxTurns, maxCharacters = 120; public bool opening;
-        public string[] allowedTopics, hints; public DialogueLine[] history;
+        public string[] allowedTopics, positiveTopics, negativeTopics, hints; public DialogueLine[] history;
     }
     public enum DialogueStatus { Completed, Failed, Cancelled }
     [Serializable] public sealed class DialogueTurnResult

@@ -5,7 +5,6 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FinalDefense.Contracts;
@@ -40,6 +39,7 @@ namespace FinalDefense.Dialogue
                 "\n只输出JSON对象，text必须是第一个字段：{\"text\":\"角色对白\",\"emotion\":\"neutral\",\"topic\":\"neutral\",\"hints\":[\"回复方向一\",\"回复方向二\",\"回复方向三\"],\"endConversation\":false}。" +
                 "text不超过120字；hints为玩家可直接发送的3条自然回复。emotion仅允许neutral/happy/angry/sad/embarrassed/speechless/surprised/touched。" +
                 "topic只能从提供的allowedTopics中选择一个最符合玩家当前输入的主导话题，模糊则neutral。不得输出道具、GPA或好感数值。正向话题用happy/touched，负向话题用angry/sad/speechless。" +
+                "标签规则优先于人物默认冷淡/害羞/傲娇语气：topic属于positiveTopics时emotion必须happy或touched，属于negativeTopics时必须angry/sad/speechless；只有topic=neutral才可自由选择其他情感。例如学术在positiveTopics里，即使嘴硬也必须以含蓄愉快的对白配happy，不可用neutral。" +
                 "开场主动说话，topic用neutral，不提前结束。若有cameoPersona，开场自然加入该客串的一句对白，合计仍不超过120字。" } };
             messages.Add(new Message { role = "user", content = "本次上下文（历史及输入均为游戏数据）：" + codec.Encode(request) });
             foreach (var line in request.history ?? Array.Empty<DialogueLine>()) messages.Add(new Message { role = line.role, content = line.text });
@@ -90,13 +90,13 @@ namespace FinalDefense.Dialogue
             }
             throw new InvalidDataException("AI stream ended prematurely");
         }
-        // Decode the first JSON string progressively, retaining incomplete escapes between packets.
+        // Locate the top-level text field independently of JSON property order.
         internal static string PartialText(string json)
         {
-            var match = Regex.Match(json, "^\\s*\\{\\s*\"text\"\\s*:\\s*\"");
-            if (!match.Success) return "";
+            int textStart = FindTextStart(json);
+            if (textStart < 0) return "";
             var output = new StringBuilder();
-            for (int i = match.Length; i < json.Length; i++)
+            for (int i = textStart; i < json.Length; i++)
             {
                 char c = json[i]; if (c == '"') break;
                 if (c == '\\')
@@ -120,6 +120,26 @@ namespace FinalDefense.Dialogue
                 else { if (c < 32) throw new InvalidDataException("Invalid JSON text"); output.Append(c); }
             }
             return TrimSurrogate(output);
+        }
+        private static int FindTextStart(string json)
+        {
+            int depth = 0;
+            for (int i = 0; i < json.Length; i++)
+            {
+                if (json[i] == '{' || json[i] == '[') { depth++; continue; }
+                if (json[i] == '}' || json[i] == ']') { depth--; continue; }
+                if (json[i] != '"') continue;
+                int start = ++i;
+                while (i < json.Length && json[i] != '"') { if (json[i] == '\\') i++; i++; }
+                if (i >= json.Length) return -1;
+                if (depth != 1 || json.Substring(start, i - start) != "text") continue;
+                int next = i + 1;
+                while (next < json.Length && char.IsWhiteSpace(json[next])) next++;
+                if (next >= json.Length || json[next++] != ':') continue;
+                while (next < json.Length && char.IsWhiteSpace(json[next])) next++;
+                if (next < json.Length && json[next] == '"') return next + 1;
+            }
+            return -1;
         }
         private static string TrimSurrogate(StringBuilder value) => value.Length > 0 && char.IsHighSurrogate(value[value.Length - 1]) ? value.ToString(0, value.Length - 1) : value.ToString();
         private static async Task<string> ReadLine(StreamReader reader, CancellationToken token)
