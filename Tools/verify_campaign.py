@@ -19,7 +19,7 @@ def main():
     sources=[]
     for folder in ['Contracts','Campaign','Persistence']:
         sources+=sorted((scripts/folder).glob('*.cs'))
-    sources+=[scripts/'Shop/BattleItemDefs.cs',scripts/'Dialogue/CampaignDialogueCoordinator.cs',scripts/'Dialogue/HttpDialogueGateway.cs']
+    sources+=[scripts/'Shop/BattleItemDefs.cs',scripts/'Dialogue/CampaignDialogueCoordinator.cs',scripts/'Dialogue/HttpDialogueGateway.cs',scripts/'Dialogue/DeepSeekDialogueService.cs',scripts/'Dialogue/EmbeddedAiConfig.cs']
     sources+=sorted((root/'Tests/Offline/Campaign').glob('*.cs'))
     binary=out/'CampaignTests.dll'; rsp=out/'compile.rsp'
     rsp.write_text('\n'.join(['-target:exe','-langversion:9.0',f'-out:"{binary}"']+[f'-r:"{p}"' for p in framework.glob('*.dll')]+[f'"{p}"' for p in sources]))

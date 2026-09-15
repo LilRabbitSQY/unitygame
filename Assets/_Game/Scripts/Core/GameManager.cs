@@ -84,9 +84,11 @@ namespace FinalDefense.Core
             content = codec.Decode<CampaignContent>(Resources.Load<TextAsset>("Campaign/Content").text);
             var ruleAsset = Resources.Load<TextAsset>("Campaign/Rules"); rules = ruleAsset == null ? new CampaignRules() : codec.Decode<CampaignRules>(ruleAsset.text);
             store = new AtomicCampaignStore(System.IO.Path.Combine(Application.persistentDataPath, "CampaignV3"), codec);
-            // Optional HTTPS game gateway. Provider secrets never enter Resources or PlayerPrefs.
+            // User-selected packaged direct connection; optional gateway remains a fallback.
             string endpoint = Environment.GetEnvironmentVariable("FINALDEFENSE_DIALOGUE_GATEWAY");
-            if (!string.IsNullOrEmpty(endpoint) && Uri.TryCreate(endpoint, UriKind.Absolute, out var uri) && uri.Scheme == "https")
+            if (!string.IsNullOrWhiteSpace(EmbeddedAiConfig.ApiKey))
+                dialogueService = new DeepSeekDialogueService(EmbeddedAiConfig.ApiKey, EmbeddedAiConfig.Endpoint, EmbeddedAiConfig.Model, codec);
+            else if (!string.IsNullOrEmpty(endpoint) && Uri.TryCreate(endpoint, UriKind.Absolute, out var uri) && uri.Scheme == "https")
                 dialogueService = new HttpDialogueGateway(uri, codec, () => Environment.GetEnvironmentVariable("FINALDEFENSE_GATEWAY_SESSION"));
         }
         public void ConfigureDialogueService(IDialogueService service)

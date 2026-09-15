@@ -28,7 +28,7 @@ namespace FinalDefense.Dialogue
                 try { request = campaign.CreateDialogueRequest(turnId, input); }
                 catch (ArgumentException) { return OperationResult.Fail(OperationError.InvalidInput, "输入不能为空或超过1000字"); }
                 catch (InvalidOperationException) { return OperationResult.Fail(OperationError.WrongPhase, "当前无法发送对话"); }
-                if (service == null) return OperationResult.Fail(OperationError.Unavailable, "AI网关尚未配置，当前行程已保留");
+                if (service == null) return OperationResult.Fail(OperationError.Unavailable, "AI服务尚未配置，当前行程已保留");
                 requestCancellation.CancelAfter(timeout);
                 var task = service.SendAsync(request, fragment =>
                 {

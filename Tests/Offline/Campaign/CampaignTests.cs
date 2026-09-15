@@ -174,6 +174,24 @@ internal static class CampaignTests
                 var loss=Create(rules:rules);await Three(loss);Prepare(loss);Good(loss.CommitBattleOutcome(Outcome(loss,false)));Good(loss.RetryBattle("paid-retry"));Good(loss.RetryBattle("paid-retry"));Check(loss.Snapshot.gpa==6600,"retry charges exactly one GPA");Good(loss.CommitBattleOutcome(Outcome(loss,true)));Check(loss.Snapshot.gpa==6600,"retry cannot farm score");
                 rules.npcNewsChancePerTenThousand=10000;var npcs=c.Snapshot.npcs;npcs[0].favor=30;var news=CampaignService.SelectNews(content,42,2,npcs,rules);Check(news.Any(id=>content.news.First(n=>n.id==id).npcId=="liu_ruoshui"),"unlocked NPC news selected");
             });
+            await Run("direct DeepSeek structured stream",async()=> {
+                string reply="{\"text\":\"你好\\n学姐\",\"emotion\":\"neutral\",\"topic\":\"neutral\",\"hints\":[\"一\",\"二\",\"三\"],\"endConversation\":false}";
+                string wire="";
+                foreach(char character in reply) wire+="data: "+JsonSerializer.Serialize(new{choices=new[]{new{delta=new{content=character.ToString()},finish_reason=(string)null}}})+"\n\n";
+                wire+="data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n";
+                var transport=new GatewayTestTransport{body=wire};
+                using(var service=new DeepSeekDialogueService("test-key","https://api.deepseek.com/chat/completions","deepseek-flash",codec,transport))
+                {
+                    string streamed="";var response=await service.SendAsync(new DialogueTurnRequest{conversationId="c",turnId="t",opening=true,persona="内敛",history=Array.Empty<DialogueLine>()},part=>streamed+=part,CancellationToken.None);
+                    Check(response.text=="你好\n学姐" && streamed==response.text,"direct incremental text decoding");Check(response.conversationId=="c" && response.turnId=="t","local identity preserved");
+                    using var body=JsonDocument.Parse(transport.receivedBody);Check(body.RootElement.GetProperty("stream").GetBoolean() && body.RootElement.GetProperty("response_format").GetProperty("type").GetString()=="json_object","provider wire format");
+                    Check(transport.receivedToken=="test-key","embedded key authentication");
+                }
+                var bad=new GatewayTestTransport{body=wire.Replace("\"stop\"","\"length\"")};using(var service=new DeepSeekDialogueService("test-key","https://api.deepseek.com/chat/completions","deepseek-flash",codec,bad))
+                {bool rejected=false;try{await service.SendAsync(new DialogueTurnRequest{opening=true},null,CancellationToken.None);}catch(InvalidDataException){rejected=true;}Check(rejected,"truncated generation rejected");}
+                Check(DeepSeekDialogueService.PartialText("{\"text\":\"a\\u4f")=="a","incomplete unicode buffered");
+                Check(DeepSeekDialogueService.PartialText("{\"text\":\"a\\u4f60")=="a你","unicode decoded");
+            });
             Console.WriteLine($"{cases} scenarios passed; {checks} assertions; 0 failed.");return 0;
         }
         catch(Exception ex){Console.Error.WriteLine(ex);return 1;}

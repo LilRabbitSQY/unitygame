@@ -1,3 +1,5 @@
+> AI接入更新：用户已选择将密钥编入客户端，新增DeepSeek直连；不再需要部署网关。配置和打包步骤见[AI-SETUP.md](AI-SETUP.md)。当前密钥为空，尚未真实调用。
+
 > 更新：用户已授权按暂定规则实现。当前默认配置已升级为 `provisional-2026-09-15.2`，未最终定稿不再阻止新游戏。本文下方历史“规则未批阻断”“概率未启用”描述由 [未定规则与暂定实现](RULE-DECISIONS-PART-1.md) 取代。真实AI服务配置仍是独立外部依赖。
 
 # Part 1 交接（代码已交接，外部验收未完成）
@@ -123,3 +125,5 @@ D09客串及掉落概率为−1（未定），不运行概率事件；提供确�
 已核查Part2 `content-results.json` 共168场、覆盖28天自然胜利，文件SHA256 `7be4a7605a4472ec5dc7fbc2f53047336efd8d36da64490928ea748438d4d0dc`。该证据证明关卡可胜；Part1另有7000起步、胜200/连胜额外200、对手反向50、每日购买扣10后的28天成功测试。两者互补，但未在同一连续Campaign/Session中直接传递生产BattleOutcome，不能称为自然28天综合通关。结果JSON缺少run/battle/attempt/NPC身份，不得重新包装成胜利DTO冒充生产战果。组合验收需真实DraftService→PrepareBattle→BattleSession→CommitBattleOutcome连续28天，真实AI仍另待服务交付。
 
 暂定规则实现验证：`python3 Tools/verify_campaign.py --output /tmp/unitygame-campaign-provisional-verification-2`，19场景4281断言通过；运行时/Editor离线编译通过。新增覆盖读取实际Rules.json、重试收费去重、战斗彩蛋去重、NPC新闻解锁。此次新游戏入口取消approved检查，原生UI复测交Part3。
+
+DeepSeek直连协议回归：20场景4288断言通过，运行时/Editor离线编译通过。证据`Part1Evidence/direct-ai-summary.json`；未使用真实密钥、未发起付费请求。
